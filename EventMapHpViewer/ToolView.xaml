@@ -1,0 +1,35 @@
+﻿<Grid x:Class="EventMapHpViewer.ToolView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EventMapHpViewer"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:ToolViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+    </Grid.Resources>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition/>
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2">
+        <TextBlock Text="※出撃(海域選択)画面を開いた際に更新されます。"
+			   Style="{DynamicResource DefaultTextStyleKey}"/>
+        <TextBlock Text="※マップHPは、ボス旗艦のHPを削ると連動して減少します。"
+			   Style="{DynamicResource DefaultTextStyleKey}"/>
+    </StackPanel>
+    <TextBlock Text="攻略中マップHP" Grid.Column="0" Grid.Row="1"/>
+    <TextBlock Text="最低必要撃破回数" Grid.Column="0" Grid.Row="2"/>
+    <TextBlock Text="{Binding NextEventMapHp}" Grid.Column="1" Grid.Row="1"/>
+    <TextBlock Text="{Binding RemainingCount}" Grid.Column="1" Grid.Row="2"/>
+</Grid>
