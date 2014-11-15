@@ -28,7 +28,7 @@ namespace EventMapHpViewer
             public int api_max_maphp { get; set; }
             public int api_state { get; set; }
         }
-        
+
         public static readonly IDictionary<int, int[]> EventBossDictionary = new Dictionary<int, int[]>
         {
             {271, new[] {566}},
@@ -36,7 +36,11 @@ namespace EventMapHpViewer
             {273, new[] {585}},
             {274, new[] {583, 584}},
             {275, new[] {586}},
-            {276, new[] {557}}
+            {276, new[] {557}},
+            {281, new[] {595}},
+            {282, new[] {597, 598}},
+            {283, new[] {557}},
+            {284, new[] {559, 600}}
         };
     };
 }
