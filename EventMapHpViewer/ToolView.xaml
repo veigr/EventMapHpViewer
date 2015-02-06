@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:EventMapHpViewer"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:ToolViewModel}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <Grid.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="4"/>
@@ -22,14 +22,17 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition/>
     </Grid.RowDefinitions>
-    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2">
-        <TextBlock Text="※出撃(海域選択)画面を開いた際に更新されます。"
-			   Style="{DynamicResource DefaultTextStyleKey}"/>
-        <TextBlock Text="※マップHPは、ボス旗艦のHPを削ると連動して減少します。"
-			   Style="{DynamicResource DefaultTextStyleKey}"/>
-    </StackPanel>
-    <TextBlock Text="攻略中マップHP" Grid.Column="0" Grid.Row="1"/>
-    <TextBlock Text="最低必要撃破回数" Grid.Column="0" Grid.Row="2"/>
-    <TextBlock Text="{Binding NextEventMapHp}" Grid.Column="1" Grid.Row="1"/>
-    <TextBlock Text="{Binding RemainingCount}" Grid.Column="1" Grid.Row="2"/>
+    <TextBlock Text="攻略中マップHP" Grid.Column="0" Grid.Row="0"/>
+    <TextBlock Text="最低必要撃破回数" Grid.Column="0" Grid.Row="1"/>
+    <TextBlock Text="{Binding NextEventMapHp}" Grid.Column="1" Grid.Row="0"/>
+    <TextBlock Text="{Binding RemainingCount}" Grid.Column="1" Grid.Row="1"/>
+    
+    <TextBlock Style="{DynamicResource DefaultTextStyleKey}" Grid.Row="2" Grid.ColumnSpan="2">
+        ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
+        ※マップHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
+        対応イベント：<LineBreak/>
+        ・2014夏<LineBreak/>
+        ・2014秋<LineBreak/>
+        ・2015冬 (暫定 / 甲のみ / ボス情報に推測含む)<LineBreak/>
+    </TextBlock>
 </Grid>
