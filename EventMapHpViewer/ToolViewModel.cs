@@ -58,6 +58,7 @@ namespace EventMapHpViewer
                 var map = MapInfoProxy.Maps.api_data.LastOrDefault(x => x.api_eventmap != null);
                 if (map == null) return "No Map";
                 if (!MapInfo.EventBossDictionary.ContainsKey(map.api_id)) return "未対応マップ";
+                if (map.api_cleared == 1) return "クリア";
                 if (map.api_eventmap.api_selected_rank == 0) return "難易度未選択";
 
                 var shipMaster = KanColleClient.Current.Master.Ships;
