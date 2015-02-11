@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EventMapHpViewer"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance local:ToolViewModel}"
+             d:DataContext="{d:DesignData /SampleData/ToolViewModelSampleData.xaml}"
              d:DesignHeight="300" d:DesignWidth="500">
     <Grid.Resources>
         <Style TargetType="TextBlock">
@@ -31,8 +31,8 @@
         ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
         ※マップHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
         対応イベント：<LineBreak/>
-        ・2014夏<LineBreak/>
+        ・2015冬<LineBreak/>
         ・2014秋<LineBreak/>
-        ・2015冬 (暫定 / 甲のみ / ボス情報に推測含む)<LineBreak/>
+        ・2014夏<LineBreak/>
     </TextBlock>
 </Grid>

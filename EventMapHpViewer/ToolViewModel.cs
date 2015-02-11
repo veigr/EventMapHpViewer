@@ -57,16 +57,16 @@ namespace EventMapHpViewer
                 if (MapInfoProxy == null || MapInfoProxy.Maps == null) return "No Data";
                 var map = MapInfoProxy.Maps.api_data.LastOrDefault(x => x.api_eventmap != null);
                 if (map == null) return "No Map";
-                if (!MapInfo.EventBossDictionary.ContainsKey(map.api_id)) return "未対応マップ";
+                if (!MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank].ContainsKey(map.api_id)) return "未対応マップ";
                 if (map.api_cleared == 1) return "クリア";
                 if (map.api_eventmap.api_selected_rank == 0) return "難易度未選択";
 
                 var shipMaster = KanColleClient.Current.Master.Ships;
                 var lastBossHp = shipMaster
-                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_id].Last())
+                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank][map.api_id].Last())
                                 .Value.HP;
                 var normalBossHp = shipMaster
-                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_id].First())
+                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank][map.api_id].First())
                                 .Value.HP;
                 if (map.api_eventmap.api_now_maphp <= lastBossHp) return "1回";
                 return (Math.Ceiling((double)(map.api_eventmap.api_now_maphp - lastBossHp) / normalBossHp) + 1) + "回";

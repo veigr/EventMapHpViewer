@@ -30,25 +30,55 @@ namespace EventMapHpViewer
             public int api_selected_rank { get; set; }
         }
 
-        public static readonly IDictionary<int, int[]> EventBossDictionary = new Dictionary<int, int[]>
-        {
-            {271, new[] {566}},
-            {272, new[] {581, 582}},
-            {273, new[] {585}},
-            {274, new[] {583, 584}},
-            {275, new[] {586}},
-            {276, new[] {557}},
+        public static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossDictionary
+            = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
+            {
+                {   //難易度未選択
+                    0, new Dictionary<int, int[]>
+                    {
+                        {271, new[] {566}},
+                        {272, new[] {581, 582}},
+                        {273, new[] {585}},
+                        {274, new[] {583, 584}},
+                        {275, new[] {586}},
+                        {276, new[] {557}},
 
-            {281, new[] {595}},
-            {282, new[] {597, 598}},
-            {283, new[] {557}},
-            {284, new[] {599, 600}},
-
-            {291, new[] {571, 572}},
-            {292, new[] {579, 565}},
-            {293, new[] {602}},
-            {294, new[] {586}},
-            {295, new[] {604}},
-        };
-    };
+                        {281, new[] {595}},
+                        {282, new[] {597, 598}},
+                        {283, new[] {557}},
+                        {284, new[] {599, 600}},
+                    }
+                },
+                {   //丙
+                    1, new Dictionary<int, int[]>
+                    {
+                        {291, new[] {570, 571}},
+                        {292, new[] {528, 565}},
+                        {293, new[] {601}},
+                        {294, new[] {586}},
+                        {295, new[] {603}},
+                    }
+                },
+                {   //乙
+                    2, new Dictionary<int, int[]>
+                    {
+                        {291, new[] {571}},
+                        {292, new[] {528, 565}},
+                        {293, new[] {601, 602}},
+                        {294, new[] {586}},
+                        {295, new[] {604}},
+                    }
+                },
+                {    //甲
+                    3, new Dictionary<int, int[]>
+                    {
+                        {291, new[] {571, 572}},
+                        {292, new[] {579, 565}},
+                        {293, new[] {602}},
+                        {294, new[] {586}},
+                        {295, new[] {604}},
+                    }
+                },
+            };
+    }
 }
