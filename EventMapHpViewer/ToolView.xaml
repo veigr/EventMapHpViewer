@@ -22,17 +22,18 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition/>
     </Grid.RowDefinitions>
-    <TextBlock Text="攻略中マップHP" Grid.Column="0" Grid.Row="0"/>
-    <TextBlock Text="最低必要撃破回数" Grid.Column="0" Grid.Row="1"/>
+    <TextBlock Text="공략중 맵 HP" Grid.Column="0" Grid.Row="0"/>
+    <TextBlock Text="최저 필요 격파 회수" Grid.Column="0" Grid.Row="1"/>
     <TextBlock Text="{Binding NextEventMapHp}" Grid.Column="1" Grid.Row="0"/>
     <TextBlock Text="{Binding RemainingCount}" Grid.Column="1" Grid.Row="1"/>
     
     <TextBlock Style="{DynamicResource DefaultTextStyleKey}" Grid.Row="2" Grid.ColumnSpan="2">
-        ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
-        ※マップHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
-        対応イベント：<LineBreak/>
-        ・2015冬<LineBreak/>
-        ・2014秋<LineBreak/>
-        ・2014夏<LineBreak/>
+        ※출격(해역선택)화면을 열때 갱신됩니다.<LineBreak/>
+        ※맵 HP는 보스 기함의 HP를 소모시켜 감소시킵니다.<LineBreak/>
+		※지원하지 않는 이벤트 해역이라도 남는 HP는 표시됩니다.<LineBreak/>	
+        지원 이벤트：<LineBreak/>
+        ・2015겨울<LineBreak/>
+        ・2014가을<LineBreak/>
+        ・2014여름<LineBreak/>
     </TextBlock>
 </Grid>
