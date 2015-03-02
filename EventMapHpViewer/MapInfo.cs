@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grabacr07.KanColleWrapper.Models;
+using Grabacr07.KanColleWrapper;
 
 namespace EventMapHpViewer
 {
@@ -20,6 +18,70 @@ namespace EventMapHpViewer
             public int api_exboss_flag { get; set; }
             public int api_defeat_count { get; set; }
             public Api_Eventmap api_eventmap { get; set; }
+
+            public Grabacr07.KanColleWrapper.Models.MapInfo Master
+            {
+                get { return KanColleClient.Current.Master.MapInfos[this.api_id]; }
+            }
+
+            public string MapNumber
+            {
+                get
+                {
+                    return this.Master.MapAreaId + "-" + this.Master.IdInEachMapArea;
+                }
+            }
+
+            public string Name
+            {
+                get { return this.Master.Name; }
+            }
+
+            public string AreaName
+            {
+                get { return this.Master.MapArea.Name; }
+            }
+
+            public int Max
+            {
+                get
+                {
+                    if (this.api_exboss_flag == 1)
+                        return this.Master.RequiredDefeatCount;
+                    if (this.api_eventmap != null) return this.api_eventmap.api_max_maphp;
+                    return 1;
+                }
+            }
+
+            public int Current
+            {
+                get
+                {
+                    if (this.api_exboss_flag == 1)
+                        return this.Master.RequiredDefeatCount - this.api_defeat_count;
+                    if (this.api_eventmap != null) return this.api_eventmap.api_now_maphp;
+                    return 0;
+                }
+            }
+
+            public int RemainingCount
+            {
+                get
+                {
+                    if (this.api_exboss_flag == 1)
+                    {
+                        return this.Current;
+                    }
+
+                    if (this.api_eventmap == null) return -1;
+
+                    var shipMaster = KanColleClient.Current.Master.Ships;
+                    var lastBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].Last()].HP;
+                    var normalBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].First()].HP;
+                    if (this.Current <= lastBossHp) return 1;
+                    return (int)Math.Ceiling((double) (this.Current - lastBossHp) / normalBossHp) + 1;
+                }
+            }
         }
 
         public class Api_Eventmap

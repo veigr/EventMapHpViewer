@@ -1,30 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.Composition;
 using Grabacr07.KanColleViewer.Composition;
-using Grabacr07.KanColleWrapper;
 
 namespace EventMapHpViewer
 {
     [Export(typeof(IToolPlugin))]
-    [ExportMetadata("Title", "EventMapHpViewer")]
-    [ExportMetadata("Description", "Map HP を表示します。")]
-    [ExportMetadata("Version", "1.0.0")]
+    [ExportMetadata("Title", "MapHPViewer")]
+    [ExportMetadata("Description", "Map HPを表示します。")]
+    [ExportMetadata("Version", "2.0.0")]
     [ExportMetadata("Author", "@veigr")]
     public class EventMapHpViewer : IToolPlugin
     {
-        private readonly ToolViewModel _vm = new ToolViewModel
-        {
-            MapInfoProxy = new MapInfoProxy()
-        };
+        private readonly ToolViewModel _vm = new ToolViewModel(new MapInfoProxy());
 
         public object GetToolView()
         {
-            return new ToolView {DataContext = _vm};
+            return new ToolView {DataContext = this._vm};
         }
 
         public string ToolName

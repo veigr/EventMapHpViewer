@@ -1,76 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grabacr07.KanColleWrapper;
+﻿using System.Linq;
 using Livet;
+using Livet.EventListeners;
 
 namespace EventMapHpViewer
 {
     public class ToolViewModel : ViewModel
     {
+        private readonly MapInfoProxy mapInfoProxy;
 
-        #region MapInfoProxy変更通知プロパティ
-        private MapInfoProxy _MapInfoProxy;
+        public ToolViewModel(MapInfoProxy proxy)
+        {
+            this.mapInfoProxy = proxy;
 
-        public MapInfoProxy MapInfoProxy
+            if (this.mapInfoProxy == null) return;
+
+            this.CompositeDisposable.Add(new PropertyChangedEventListener(this.mapInfoProxy)
+            {
+                {
+                    () => this.mapInfoProxy.Maps, (sender, args) =>
+                    {
+                        this.Maps = this.mapInfoProxy.Maps.api_data
+                            .OrderBy(x => x.api_id)
+                            .Select(x => new MapInfoViewModel(x))
+                            .Where(x => !x.IsCleared)
+                            .ToArray();
+                        this.IsNoMap = !this.Maps.Any();
+                    }
+                }
+            });
+        }
+
+        #region Maps変更通知プロパティ
+        private MapInfoViewModel[] _Maps;
+
+        public MapInfoViewModel[] Maps
         {
             get
-            { return _MapInfoProxy; }
+            { return this._Maps; }
             set
             { 
-                if (_MapInfoProxy == value)
+                if (this._Maps == value)
                     return;
-                _MapInfoProxy = value;
-                if (_MapInfoProxy != null)
-                {
-                    _MapInfoProxy.PropertyChanged += (sender, e) =>
-                    {
-                        if (e.PropertyName == "Maps")
-                        {
-                            RaisePropertyChanged(() => NextEventMapHp);
-                            RaisePropertyChanged(() => RemainingCount);
-                        }
-                    };
-                }
-                RaisePropertyChanged();
+                this._Maps = value;
+                this.RaisePropertyChanged();
             }
         }
         #endregion
 
-        public string NextEventMapHp
+
+        #region IsNoMap変更通知プロパティ
+        private bool _IsNoMap;
+
+        public bool IsNoMap
         {
             get
-            {
-                if (MapInfoProxy.Maps == null) return "No Data";
-                var map = MapInfoProxy.Maps.api_data.LastOrDefault(x => x.api_eventmap != null);
-                if (map == null) return "No Map";
-                return map.api_eventmap.api_now_maphp + "/" + map.api_eventmap.api_max_maphp;
+            { return this._IsNoMap; }
+            set
+            { 
+                if (this._IsNoMap == value)
+                    return;
+                this._IsNoMap = value;
+                this.RaisePropertyChanged();
             }
         }
+        #endregion
 
-        public string RemainingCount
-        {
-            get
-            {
-                if (MapInfoProxy == null || MapInfoProxy.Maps == null) return "No Data";
-                var map = MapInfoProxy.Maps.api_data.LastOrDefault(x => x.api_eventmap != null);
-                if (map == null) return "No Map";
-                if (!MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank].ContainsKey(map.api_id)) return "未対応マップ";
-                if (map.api_cleared == 1) return "クリア";
-                if (map.api_eventmap.api_selected_rank == 0) return "難易度未選択";
-
-                var shipMaster = KanColleClient.Current.Master.Ships;
-                var lastBossHp = shipMaster
-                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank][map.api_id].Last())
-                                .Value.HP;
-                var normalBossHp = shipMaster
-                                .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank][map.api_id].First())
-                                .Value.HP;
-                if (map.api_eventmap.api_now_maphp <= lastBossHp) return "1回";
-                return (Math.Ceiling((double)(map.api_eventmap.api_now_maphp - lastBossHp) / normalBossHp) + 1) + "回";
-            }
-        }
     }
 }
