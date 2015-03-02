@@ -1,7 +1,7 @@
 EventMapHpViewer
 ================
 
-KanColleViewer で攻略中イベントマップのHPと最低必要撃破回数を表示するプラグインです。
+KanColleViewer で攻略中マップのHPと最低必要撃破回数を表示するプラグインです。
 
 ### 対応イベント
 
