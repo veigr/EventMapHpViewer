@@ -41,6 +41,10 @@
       <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\CertMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Desktop.Metro, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>KanColleViewerAssemblies\Desktop.Metro.dll</HintPath>
+    </Reference>
     <Reference Include="FiddlerCore4">
       <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\FiddlerCore4.dll</HintPath>
       <Private>False</Private>
@@ -56,6 +60,10 @@
     <Reference Include="Livet">
       <HintPath>..\packages\LivetCask.1.1.0.0\lib\net45\Livet.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="MetroRadiance, Version=0.1.0.18891, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>KanColleViewerAssemblies\MetroRadiance.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\LivetCask.1.1.0.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -119,6 +127,10 @@
   </ItemGroup>
   <ItemGroup>
     <DesignData Include="SampleData\ToolViewModelSampleData.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="KanColleViewerAssemblies\Desktop.Metro.dll" />
+    <Content Include="KanColleViewerAssemblies\MetroRadiance.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

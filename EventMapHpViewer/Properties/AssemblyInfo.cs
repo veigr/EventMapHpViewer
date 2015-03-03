@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
@@ -18,6 +19,16 @@ using System.Runtime.InteropServices;
 // 参照不可能になります。COM からこのアセンブリ内の型にアクセスする場合は、
 // その型の ComVisible 属性を true に設定してください。
 [assembly: ComVisible(false)]
+
+[assembly: ThemeInfo(
+    ResourceDictionaryLocation.None, //テーマ固有のリソース ディクショナリが置かれている場所
+    //(リソースがページ、
+    //またはアプリケーション リソース ディクショナリに見つからない場合に使用されます)
+    ResourceDictionaryLocation.SourceAssembly //汎用リソース ディクショナリが置かれている場所
+    //(リソースがページ、
+    //アプリケーション、またはいずれのテーマ固有のリソース ディクショナリにも見つからない場合に使用されます)
+)]
+
 
 // 次の GUID は、このプロジェクトが COM に公開される場合の、typelib の ID です
 [assembly: Guid("101436f4-9308-4892-a88a-19efbdf2ed5f")]
