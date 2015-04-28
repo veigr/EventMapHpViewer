@@ -145,7 +145,7 @@
                                            Margin="3,0,7,0">
                                     <Run Text="後"/>
                                     <Run Text="{Binding RemainingCount}"
-                                            Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                         Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                     <Run Text="回"/>
                                 </TextBlock>
                             </Grid>
@@ -160,8 +160,10 @@
                    Margin="5,15">
             ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
             ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
+            ※難易度未選択時のHPは9999固定です。<LineBreak/>
             <LineBreak/>
-            ■対応イベント: 2014夏～2015冬<LineBreak/>
+            ■対応イベント: 2014夏～2015春<LineBreak/>
+            ※2015春は甲のみ
         </TextBlock>
     </Grid>
 </UserControl>

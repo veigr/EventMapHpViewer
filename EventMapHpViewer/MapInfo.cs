@@ -76,10 +76,17 @@ namespace EventMapHpViewer
                     if (this.api_eventmap == null) return -1;
 
                     var shipMaster = KanColleClient.Current.Master.Ships;
-                    var lastBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].Last()].HP;
-                    var normalBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].First()].HP;
-                    if (this.Current <= lastBossHp) return 1;
-                    return (int)Math.Ceiling((double) (this.Current - lastBossHp) / normalBossHp) + 1;
+                    try
+                    {
+                        var lastBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].Last()].HP;
+                        var normalBossHp = shipMaster[EventBossDictionary[this.api_eventmap.api_selected_rank][this.api_id].First()].HP;
+                        if (this.Current <= lastBossHp) return 1;
+                        return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return -1;
+                    }
                 }
             }
         }
@@ -95,50 +102,60 @@ namespace EventMapHpViewer
         public static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossDictionary
             = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
             {
-                {   //難易度未選択
+                { //難易度未選択
                     0, new Dictionary<int, int[]>
                     {
-                        {271, new[] {566}},
-                        {272, new[] {581, 582}},
-                        {273, new[] {585}},
-                        {274, new[] {583, 584}},
-                        {275, new[] {586}},
-                        {276, new[] {557}},
+                        { 271, new[] { 566 } },
+                        { 272, new[] { 581, 582 } },
+                        { 273, new[] { 585 } },
+                        { 274, new[] { 583, 584 } },
+                        { 275, new[] { 586 } },
+                        { 276, new[] { 557 } },
 
-                        {281, new[] {595}},
-                        {282, new[] {597, 598}},
-                        {283, new[] {557}},
-                        {284, new[] {599, 600}},
+                        { 281, new[] { 595 } },
+                        { 282, new[] { 597, 598 } },
+                        { 283, new[] { 557 } },
+                        { 284, new[] { 599, 600 } },
                     }
                 },
-                {   //丙
+                { //丙
                     1, new Dictionary<int, int[]>
                     {
-                        {291, new[] {570, 571}},
-                        {292, new[] {528, 565}},
-                        {293, new[] {601}},
-                        {294, new[] {586}},
-                        {295, new[] {603}},
+                        { 291, new[] { 570, 571 } },
+                        { 292, new[] { 528, 565 } },
+                        { 293, new[] { 601 } },
+                        { 294, new[] { 586 } },
+                        { 295, new[] { 603 } },
+                        { 301, new[] { 566 } },
+                        { 302, new[] { 545 } },
                     }
                 },
-                {   //乙
+                { //乙
                     2, new Dictionary<int, int[]>
                     {
-                        {291, new[] {571}},
-                        {292, new[] {528, 565}},
-                        {293, new[] {601, 602}},
-                        {294, new[] {586}},
-                        {295, new[] {604}},
+                        { 291, new[] { 571 } },
+                        { 292, new[] { 528, 565 } },
+                        { 293, new[] { 601, 602 } },
+                        { 294, new[] { 586 } },
+                        { 295, new[] { 604 } },
+                        { 301, new[] { 566 } },
+                        { 302, new[] { 545 } },
                     }
                 },
-                {    //甲
+                { //甲
                     3, new Dictionary<int, int[]>
                     {
-                        {291, new[] {571, 572}},
-                        {292, new[] {579, 565}},
-                        {293, new[] {602}},
-                        {294, new[] {586}},
-                        {295, new[] {604}},
+                        { 291, new[] { 571, 572 } },
+                        { 292, new[] { 579, 565 } },
+                        { 293, new[] { 602 } },
+                        { 294, new[] { 586 } },
+                        { 295, new[] { 604 } },
+                        { 301, new[] { 566 } },
+                        { 302, new[] { 545 } },
+                        { 303, new[] { 558 } },
+                        { 304, new[] { 606, 608 } },
+                        { 305, new[] { 610, 612 } },
+                        { 306, new[] { 604 } },
                     }
                 },
             };

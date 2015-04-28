@@ -97,9 +97,9 @@ namespace EventMapHpViewer
 
 
         #region RemainingCount変更通知プロパティ
-        private int _RemainingCount;
+        private string _RemainingCount;
 
-        public int RemainingCount
+        public string RemainingCount
         {
             get
             { return this._RemainingCount; }
@@ -157,9 +157,9 @@ namespace EventMapHpViewer
             this.AreaName = info.AreaName;
             this.Current = info.Current;
             this.Max = info.Max;
-            this.RemainingCount = info.RemainingCount;
+            this.RemainingCount = 0 < info.RemainingCount ? info.RemainingCount.ToString() : "?";
             this.IsCleared = info.api_cleared == 1;
-            var color = this.RemainingCount < 2
+            var color = info.RemainingCount < 2
                 ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
                 : new SolidColorBrush(Color.FromRgb(64, 200, 32));
             color.Freeze();
