@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.Composition;
+using EventMapHpViewer.Models;
+using EventMapHpViewer.ViewModels;
 using Grabacr07.KanColleViewer.Composition;
 
 namespace EventMapHpViewer

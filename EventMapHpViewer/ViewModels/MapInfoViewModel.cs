@@ -1,7 +1,8 @@
 ﻿using System.Windows.Media;
+using EventMapHpViewer.Models;
 using Livet;
 
-namespace EventMapHpViewer
+namespace EventMapHpViewer.ViewModels
 {
     public class MapInfoViewModel : ViewModel
     {
@@ -150,7 +151,26 @@ namespace EventMapHpViewer
         #endregion
 
 
-        public MapInfoViewModel(MapInfo.Api_Data info)
+        #region IsRankSelected変更通知プロパティ
+        private bool _IsRankSelected;
+
+        public bool IsRankSelected
+        {
+            get
+            { return this._IsRankSelected; }
+            set
+            { 
+                if (this._IsRankSelected == value)
+                    return;
+                this._IsRankSelected = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+
+        public MapInfoViewModel(MapInfo info)
         {
             this.MapNumber = info.MapNumber;
             this.Name = info.Name;
@@ -158,12 +178,15 @@ namespace EventMapHpViewer
             this.Current = info.Current;
             this.Max = info.Max;
             this.RemainingCount = 0 < info.RemainingCount ? info.RemainingCount.ToString() : "?";
-            this.IsCleared = info.api_cleared == 1;
+            this.IsCleared = info.IsCleared == 1;
             var color = info.RemainingCount < 2
                 ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
                 : new SolidColorBrush(Color.FromRgb(64, 200, 32));
             color.Freeze();
             this.GaugeColor = color;
+            this.IsRankSelected = info.Eventmap == null
+                || info.Eventmap.SelectedRank != 0
+                || info.Eventmap.NowMapHp != 9999;
         }
     }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:EventMapHpViewer"
+             xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DesignWidth="500"
@@ -70,7 +70,7 @@
             <ItemsControl Grid.Row="1"
                           ItemsSource="{Binding Maps}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:MapInfoViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:MapInfoViewModel}">
                         <Border BorderThickness="0,0,0,1"
                                 BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                             <Grid Margin="0,5">
@@ -139,6 +139,7 @@
                                 </ProgressBar>
 
                                 <TextBlock Grid.Column="3"
+                                           Grid.Row="0"
                                            Grid.RowSpan="2"
                                            HorizontalAlignment="Right"
                                            VerticalAlignment="Center"
@@ -148,8 +149,32 @@
                                          Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                     <Run Text="回"/>
                                 </TextBlock>
+
+
+                                <Grid x:Name="UnselectedIndicator"
+                                      Grid.Column="2"
+                                      Grid.Row="0"
+                                      Grid.RowSpan="2"
+                                      Grid.ColumnSpan="2"
+                                      Visibility="Collapsed">
+                                    <Border Background="{DynamicResource FleetRepairingBrushKey}"
+                                            Opacity=".7"
+                                            Margin="0,0,4,0" />
+                                    <TextBlock Text="難易度 未選択"
+                                               Style="{DynamicResource EmphaticTextStyleKey}"
+                                               HorizontalAlignment="Center" />
+                                </Grid>
                             </Grid>
                         </Border>
+                        
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsRankSelected}"
+                                         Value="False">
+                                <Setter TargetName="UnselectedIndicator"
+                                        Property="Visibility"
+                                        Value="Visible"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -160,7 +185,6 @@
                    Margin="5,15">
             ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
             ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
-            ※難易度未選択時のHPは9999固定です。<LineBreak/>
             <LineBreak/>
             ■対応イベント: 2014夏～2015春<LineBreak/>
             ※2015春は甲のみ
