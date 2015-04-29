@@ -57,9 +57,9 @@ namespace EventMapHpViewer
                 if (MapInfoProxy == null || MapInfoProxy.Maps == null) return "No Data";
                 var map = MapInfoProxy.Maps.api_data.LastOrDefault(x => x.api_eventmap != null);
                 if (map == null) return "No Map";
-                if (!MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank].ContainsKey(map.api_id)) return "미대응 해역";
-                if (map.api_cleared == 1) return "클리어";
-                if (map.api_eventmap.api_selected_rank == 0) return "난이도 미선택";
+                if (!MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank].ContainsKey(map.api_id)) return "未対応マップ";
+                if (map.api_cleared == 1) return "クリア";
+                if (map.api_eventmap.api_selected_rank == 0) return "難易度未選択";
 
                 var shipMaster = KanColleClient.Current.Master.Ships;
                 var lastBossHp = shipMaster
@@ -68,8 +68,8 @@ namespace EventMapHpViewer
                 var normalBossHp = shipMaster
                                 .Single(x => x.Key == MapInfo.EventBossDictionary[map.api_eventmap.api_selected_rank][map.api_id].First())
                                 .Value.HP;
-                if (map.api_eventmap.api_now_maphp <= lastBossHp) return "1회";
-                return (Math.Ceiling((double)(map.api_eventmap.api_now_maphp - lastBossHp) / normalBossHp) + 1) + "회";
+                if (map.api_eventmap.api_now_maphp <= lastBossHp) return "1回";
+                return (Math.Ceiling((double)(map.api_eventmap.api_now_maphp - lastBossHp) / normalBossHp) + 1) + "回";
             }
         }
     }
