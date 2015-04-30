@@ -5,12 +5,14 @@ using Grabacr07.KanColleWrapper;
 
 namespace EventMapHpViewer.Models
 {
-    public class MapInfos
+    public class Maps
     {
-        public MapInfo[] MapInfoList { get; set; }
+        public Map[] MapList { get; set; }
+        public static MasterTable<MapArea> MapAreas { get; set; }
+        public static MasterTable<MapInfo> MapInfos { get; set; }
     }
 
-    public class MapInfo
+    public class Map
     {
         public int Id { get; set; }
         public int IsCleared { get; set; }
@@ -18,9 +20,9 @@ namespace EventMapHpViewer.Models
         public int DefeatCount { get; set; }
         public Eventmap Eventmap { get; set; }
 
-        public Grabacr07.KanColleWrapper.Models.MapInfo Master
+        public MapInfo Master
         {
-            get { return KanColleClient.Current.Master.MapInfos[this.Id]; }
+            get { return Maps.MapInfos[this.Id]; }
         }
 
         public string MapNumber

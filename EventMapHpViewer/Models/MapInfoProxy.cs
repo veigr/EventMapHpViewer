@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using EventMapHpViewer.Models.Raw;
-using Fiddler;
 using Grabacr07.KanColleWrapper;
 using Livet;
 
@@ -16,9 +12,9 @@ namespace EventMapHpViewer.Models
     {
 
         #region Maps変更通知プロパティ
-        private MapInfos _Maps;
+        private Maps _Maps;
 
-        public MapInfos Maps
+        public Maps Maps
         {
             get
             { return this._Maps; }
@@ -34,16 +30,24 @@ namespace EventMapHpViewer.Models
 
         public MapInfoProxy()
         {
-            this.Maps = new MapInfos();
+            this.Maps = new Maps();
 
             var proxy = KanColleClient.Current.Proxy;
+
+            proxy.api_start2
+                .TryParse<kcsapi_start2>()
+                .Subscribe(x =>
+                {
+                    Maps.MapAreas = new MasterTable<MapArea>(x.Data.api_mst_maparea.Select(m => new MapArea(m)));
+                    Maps.MapInfos = new MasterTable<MapInfo>(x.Data.api_mst_mapinfo.Select(m => new MapInfo(m, Maps.MapAreas)));
+                });
 
             proxy.ApiSessionSource.Where(s => s.PathAndQuery.StartsWith("/kcsapi/api_get_member/mapinfo"))
                 .TryParse<member_mapinfo[]>()
                 .Subscribe(m =>
                 {
                     Debug.WriteLine("MapInfoProxy - member_mapinfo");
-                    this.Maps.MapInfoList = m.Data.Select(x => new MapInfo
+                    this.Maps.MapList = m.Data.Select(x => new Map
                     {
                         IsCleared = x.api_cleared,
                         DefeatCount = x.api_defeat_count,
@@ -68,7 +72,7 @@ namespace EventMapHpViewer.Models
             //    .Subscribe(m =>
             //    {
             //        if (m.Data.api_eventmap == null) return;
-            //        var eventMap = this.Maps.MapInfoList.LastOrDefault(x => x.Eventmap != null);
+            //        var eventMap = this.Maps.MapList.LastOrDefault(x => x.Eventmap != null);
             //        if (eventMap == null) return;
             //        if (eventMap.Eventmap.MaxMapHp != 9999) return;
             //        Debug.WriteLine("MapInfoProxy - map_start_next");

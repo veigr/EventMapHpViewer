@@ -20,9 +20,9 @@ namespace EventMapHpViewer.ViewModels
                 {
                     () => this.mapInfoProxy.Maps, (sender, args) =>
                     {
-                        this.Maps = this.mapInfoProxy.Maps.MapInfoList
+                        this.Maps = this.mapInfoProxy.Maps.MapList
                             .OrderBy(x => x.Id)
-                            .Select(x => new MapInfoViewModel(x))
+                            .Select(x => new MapViewModel(x))
                             .Where(x => !x.IsCleared)
                             .ToArray();
                         this.IsNoMap = !this.Maps.Any();
@@ -32,9 +32,9 @@ namespace EventMapHpViewer.ViewModels
         }
 
         #region Maps変更通知プロパティ
-        private MapInfoViewModel[] _Maps;
+        private MapViewModel[] _Maps;
 
-        public MapInfoViewModel[] Maps
+        public MapViewModel[] Maps
         {
             get
             { return this._Maps; }

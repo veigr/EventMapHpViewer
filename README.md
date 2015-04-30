@@ -13,10 +13,6 @@ KanColleViewer で、攻略中マップのHPと最低必要撃破回数を一覧
 * 2014秋
 * 2014夏
 
-### 動作環境
-
-* KanColleViewer version 3.7 以上
-
 ### インストール
 
 * `EventMapHpViewer.dll` を KanColleViewer の `Plugins` ディレクトリに放り込んで下さい。
@@ -24,9 +20,10 @@ KanColleViewer で、攻略中マップのHPと最低必要撃破回数を一覧
 ### 使用ライブラリ
 
 * [KanColleViewer](http://grabacr.net/kancolleviewer)
+* [MetroRadiance](https://www.nuget.org/packages/MetroRadiance)
 * [Reactive Extensions](http://rx.codeplex.com/)
-* [Livet](http://ugaya40.net/livet)
-* [FiddlerCore](http://fiddler2.com/fiddlercore)
+* [Livet](http://ugaya40.hateblo.jp/entry/Livet)
+* [FiddlerCore](http://www.telerik.com/fiddler/fiddlercore)
 
 
 #### ライセンス

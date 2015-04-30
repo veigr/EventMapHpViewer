@@ -70,7 +70,7 @@
             <ItemsControl Grid.Row="1"
                           ItemsSource="{Binding Maps}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:MapInfoViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:MapViewModel}">
                         <Border BorderThickness="0,0,0,1"
                                 BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                             <Grid Margin="0,5">

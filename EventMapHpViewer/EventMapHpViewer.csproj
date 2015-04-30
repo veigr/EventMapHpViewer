@@ -108,16 +108,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventMapHpViewer.cs" />
-    <Compile Include="Models\MapInfos.cs" />
+    <Compile Include="Models\MapArea.cs" />
+    <Compile Include="Models\MapInfo.cs" />
+    <Compile Include="Models\Maps.cs" />
     <Compile Include="Models\MapInfoProxy.cs" />
     <Compile Include="Models\Raw\Api_Eventmap.cs" />
+    <Compile Include="Models\Raw\kcsapi_mst_maparea.cs" />
+    <Compile Include="Models\Raw\kcsapi_mst_mapinfo.cs" />
+    <Compile Include="Models\Raw\kcsapi_start2.cs" />
     <Compile Include="Models\Raw\member_mapinfo.cs" />
     <Compile Include="Models\Raw\map_start_next.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolView.xaml.cs">
       <DependentUpon>ToolView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MapInfoViewModel.cs" />
+    <Compile Include="ViewModels\MapViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

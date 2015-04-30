@@ -4,7 +4,7 @@ using Livet;
 
 namespace EventMapHpViewer.ViewModels
 {
-    public class MapInfoViewModel : ViewModel
+    public class MapViewModel : ViewModel
     {
 
         #region MapNumber変更通知プロパティ
@@ -170,7 +170,7 @@ namespace EventMapHpViewer.ViewModels
 
 
 
-        public MapInfoViewModel(MapInfo info)
+        public MapViewModel(Map info)
         {
             this.MapNumber = info.MapNumber;
             this.Name = info.Name;
