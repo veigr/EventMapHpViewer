@@ -47,7 +47,7 @@ namespace EventMapHpViewer.Models
                 .Subscribe(m =>
                 {
                     Debug.WriteLine("MapInfoProxy - member_mapinfo");
-                    this.Maps.MapList = m.Data.Select(x => new Map
+                    this.Maps.MapList = m.Data.Select(x => new MapData
                     {
                         IsCleared = x.api_cleared,
                         DefeatCount = x.api_defeat_count,

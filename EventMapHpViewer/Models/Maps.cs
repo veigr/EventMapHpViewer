@@ -7,12 +7,12 @@ namespace EventMapHpViewer.Models
 {
     public class Maps
     {
-        public Map[] MapList { get; set; }
+        public MapData[] MapList { get; set; }
         public static MasterTable<MapArea> MapAreas { get; set; }
         public static MasterTable<MapInfo> MapInfos { get; set; }
     }
 
-    public class Map
+    public class MapData
     {
         public int Id { get; set; }
         public int IsCleared { get; set; }
@@ -122,6 +122,7 @@ namespace EventMapHpViewer.Models
                         { 302, new[] { 545 } },
                         { 304, new[] { 605, 607 } },
                         { 305, new[] { 609, 611 } },
+                        { 306, new[] { 603 } },
                     }
                 },
                 { //乙

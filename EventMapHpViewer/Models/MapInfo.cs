@@ -30,7 +30,7 @@ namespace EventMapHpViewer.Models
 			this.Id = mapinfo.api_id;
 			this.Name = mapinfo.api_name;
 			this.MapAreaId = mapinfo.api_maparea_id;
-			this.MapArea = mapAreas[mapinfo.api_maparea_id] ?? Models.MapArea.Dummy;
+			this.MapArea = mapAreas[mapinfo.api_maparea_id] ?? MapArea.Dummy;
 			this.IdInEachMapArea = mapinfo.api_no;
 			this.Level = mapinfo.api_level;
 			this.OperationName = mapinfo.api_opetext;

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
+             xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DesignWidth="500"
@@ -23,7 +24,13 @@
                 <ResourceDictionary Source="pack://application:,,,/KanColleViewer;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/KanColleViewer;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            
+            <l:VisibilityAndBooleanConverter x:Key="TrueToVisibleConverter"
+                                             ConvertWhenTrue="Visible"
+                                             ConvertWhenFalse="Collapsed"/>
+            <l:VisibilityAndBooleanConverter x:Key="FalseToVisibleConverter"
+                                             ConvertWhenTrue="Collapsed"
+                                             ConvertWhenFalse="Visible"/>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -49,7 +56,7 @@
                 BorderBrush="{DynamicResource ActiveBorderBrushKey}">
             <TextBlock Text="No Map"
                        VerticalAlignment="Center"
-                       Visibility="{Binding IsNoMap, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Visibility="{Binding IsNoMap, Converter={StaticResource TrueToVisibleConverter}}"
                        Margin="20"
                        d:IsHidden="True"/>
         </Border>
@@ -143,12 +150,22 @@
                                            Grid.RowSpan="2"
                                            HorizontalAlignment="Right"
                                            VerticalAlignment="Center"
-                                           Margin="3,0,7,0">
+                                           Margin="3,0,7,0"
+                                           Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
                                     <Run Text="後"/>
                                     <Run Text="{Binding RemainingCount}"
                                          Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                     <Run Text="回"/>
                                 </TextBlock>
+                                
+                                <TextBlock Grid.Column="3"
+                                           Grid.Row="0"
+                                           Grid.RowSpan="2"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="3,0,7,0"
+                                           Visibility="{Binding IsSupported, Converter={StaticResource FalseToVisibleConverter}}"
+                                           Text="未対応"/>
 
 
                                 <Grid x:Name="UnselectedIndicator"
@@ -156,25 +173,15 @@
                                       Grid.Row="0"
                                       Grid.RowSpan="2"
                                       Grid.ColumnSpan="2"
-                                      Visibility="Collapsed">
-                                    <Border Background="{DynamicResource FleetRepairingBrushKey}"
-                                            Opacity=".7"
-                                            Margin="0,0,4,0" />
-                                    <TextBlock Text="難易度 未選択"
-                                               Style="{DynamicResource EmphaticTextStyleKey}"
+                                      Visibility="{Binding IsRankSelected, Converter={StaticResource FalseToVisibleConverter}}">
+                                    <Border Background="{DynamicResource ThemeBrushKey}"
+                                            Margin="0" />
+                                    <TextBlock Text="難易度を選択してください"
+                                               VerticalAlignment="Center"
                                                HorizontalAlignment="Center" />
                                 </Grid>
                             </Grid>
                         </Border>
-                        
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding IsRankSelected}"
-                                         Value="False">
-                                <Setter TargetName="UnselectedIndicator"
-                                        Property="Visibility"
-                                        Value="Visible"/>
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
