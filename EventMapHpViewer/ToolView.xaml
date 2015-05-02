@@ -193,8 +193,7 @@
             ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
             ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
             <LineBreak/>
-            ■対応イベント: 2014夏～2015春<LineBreak/>
-            ※2015春は乙以外
+            ■対応イベント: 2014夏～2015春
         </TextBlock>
     </Grid>
 </UserControl>
