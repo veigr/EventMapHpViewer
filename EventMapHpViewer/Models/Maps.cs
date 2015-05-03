@@ -58,10 +58,11 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.IsExBoss == 1)
-                    return this.Master.RequiredDefeatCount - this.DefeatCount;
-                if (this.Eventmap != null) return this.Eventmap.NowMapHp;
-                return 0;
+                if (this.IsExBoss == 1)　return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
+                
+                if (this.Eventmap != null) return this.Eventmap.NowMapHp;   //イベント海域
+
+                return 1;   //ゲージ無し通常海域
             }
         }
 
@@ -71,22 +72,22 @@ namespace EventMapHpViewer.Models
             {
                 if (this.IsExBoss == 1)
                 {
-                    return this.Current;
+                    return this.Current;    //ゲージ有り通常海域
                 }
 
-                if (this.Eventmap == null) return -1;
+                if (this.Eventmap == null) return 1;    //ゲージ無し通常海域
 
                 var shipMaster = KanColleClient.Current.Master.Ships;
                 try
                 {
                     var lastBossHp = shipMaster[EventBossDictionary[this.Eventmap.SelectedRank][this.Id].Last()].HP;
                     var normalBossHp = shipMaster[EventBossDictionary[this.Eventmap.SelectedRank][this.Id].First()].HP;
-                    if (this.Current <= lastBossHp) return 1;
-                    return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;
+                    if (this.Current <= lastBossHp) return 1;   //最後の1回
+                    return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;   //イベント海域
                 }
                 catch (KeyNotFoundException)
                 {
-                    return -1;
+                    return -1;  //未対応
                 }
             }
         }
