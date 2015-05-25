@@ -35,11 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BCMakeCert">
-      <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\BCMakeCert.dll</HintPath>
+      <HintPath>..\packages\FiddlerCore.4.5.1.0\lib\net40\BCMakeCert.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CertMaker">
-      <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\CertMaker.dll</HintPath>
+      <HintPath>..\packages\FiddlerCore.4.5.1.0\lib\net40\CertMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Desktop.Metro, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -48,7 +48,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FiddlerCore4">
-      <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\FiddlerCore4.dll</HintPath>
+      <HintPath>..\packages\FiddlerCore.4.5.1.0\lib\net40\FiddlerCore4.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KanColleViewer">
@@ -68,15 +68,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MetroRadiance.Chrome">
-      <HintPath>..\packages\MetroRadiance.Chrome.1.0.0\lib\net45\MetroRadiance.Chrome.dll</HintPath>
+      <HintPath>..\packages\MetroRadiance.Chrome.1.0.16\lib\net45\MetroRadiance.Chrome.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MetroRadiance.Core">
-      <HintPath>..\packages\MetroRadiance.Core.1.0.0\lib\net45\MetroRadiance.Core.dll</HintPath>
+      <HintPath>..\packages\MetroRadiance.Core.1.0.16\lib\net45\MetroRadiance.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetroRadiance.1.0.16\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+    <Reference Include="Microsoft.Expression.Interactions">
+      <HintPath>..\packages\MetroRadiance.Chrome.1.0.16\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -100,7 +100,8 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetroRadiance.1.0.16\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\MetroRadiance.Chrome.1.0.16\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xaml" />
