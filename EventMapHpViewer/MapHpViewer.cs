@@ -5,28 +5,21 @@ using Grabacr07.KanColleViewer.Composition;
 
 namespace EventMapHpViewer
 {
-    [Export(typeof(IToolPlugin))]
+    [Export(typeof(IPlugin))]
+    [Export(typeof(ITool))]
+    [ExportMetadata("Guid", "101436F4-9308-4892-A88A-19EFBDF2ED5F")]
     [ExportMetadata("Title", "MapHPViewer")]
     [ExportMetadata("Description", "Map HPを表示します。")]
-    [ExportMetadata("Version", "2.2.1")]
+    [ExportMetadata("Version", "2.3")]
     [ExportMetadata("Author", "@veigr")]
-    public class MapHpViewer : IToolPlugin
+    public class MapHpViewer : IPlugin, ITool
     {
         private readonly ToolViewModel _vm = new ToolViewModel(new MapInfoProxy());
 
-        public object GetToolView()
-        {
-            return new ToolView {DataContext = this._vm};
-        }
+        public void Initialize() {}
 
-        public string ToolName
-        {
-            get { return "MapHP"; }
-        }
+        public string Name => "MapHP";
 
-        public object GetSettingsView()
-        {
-            return null;
-        }
+        public object View => new ToolView { DataContext = this._vm };
     }
 }

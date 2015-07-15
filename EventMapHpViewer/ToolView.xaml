@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+             Background="{DynamicResource ThemeBrushKey}"
+             Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
              d:DesignHeight="300"
              d:DesignWidth="500"
@@ -13,16 +15,28 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.CheckBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Expander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.FocusVisualStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.PasswordBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.RadioButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Scrollbar.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Tooltip.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Icons.xaml" />
+                
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Themes/Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Themes/Accents/Purple.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Desktop.Metro;component/Styles/Controls.xaml" />
-                
-                <ResourceDictionary Source="pack://application:,,,/KanColleViewer;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/KanColleViewer;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/KanColleViewer;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.HorizontalFlatListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.ListView.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.PinButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.TabControl.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.Text.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <l:VisibilityAndBooleanConverter x:Key="TrueToVisibleConverter"
@@ -34,166 +48,170 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0"
-                BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-            <TextBlock Text="攻略中マップ"
-                       Style="{DynamicResource HeaderTextStyleKey}"
-                       Margin="10,0,10,10"/>
-        </Border>
-
-
-        <Border Grid.Row="1"
-                BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-            <TextBlock Text="No Map"
-                       VerticalAlignment="Center"
-                       Visibility="{Binding IsNoMap, Converter={StaticResource TrueToVisibleConverter}}"
-                       Margin="20"
-                       d:IsHidden="True"/>
-        </Border>
-        
-        <Grid Grid.Row="1"
-              Grid.IsSharedSizeScope="True">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="MapNumber"/>
-                    <ColumnDefinition SharedSizeGroup="MapName"/>
-                    <ColumnDefinition SharedSizeGroup="Count"/>
-                </Grid.ColumnDefinitions>
-            </Grid>
-            <ItemsControl Grid.Row="1"
-                          ItemsSource="{Binding Maps}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:MapViewModel}">
-                        <Border BorderThickness="0,0,0,1"
-                                BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-                            <Grid Margin="0,5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="MapNumber"/>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="MapName"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Count"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
+                <TextBlock Text="攻略中マップ"
+                           Style="{DynamicResource HeaderTextStyleKey}"
+                           Margin="10,0,10,10"/>
+            </Border>
+
+
+            <Border Grid.Row="1"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
+                <TextBlock Text="No Map"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsNoMap, Converter={StaticResource TrueToVisibleConverter}}"
+                           Margin="20"
+                           d:IsHidden="True"/>
+            </Border>
+        
+            <Grid Grid.Row="1"
+                  Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="MapNumber"/>
+                        <ColumnDefinition SharedSizeGroup="MapName"/>
+                        <ColumnDefinition SharedSizeGroup="Count"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+                <ItemsControl Grid.Row="1"
+                              ItemsSource="{Binding Maps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:MapViewModel}">
+                            <Border BorderThickness="0,0,0,1"
+                                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
+                                <Grid Margin="0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="MapNumber"/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="MapName"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="Count"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
                     
-                                <TextBlock Grid.Column="0"
-                                           Grid.RowSpan="2"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Center"
-                                           Margin="7,0,5,0">
-                                    <Run Text="{Binding MapNumber}"
-                                         Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                </TextBlock>
-
-                                <TextBlock Grid.Column="1"
-                                            Grid.Row="0"
-                                            Text="{Binding AreaName}"
-                                            Style="{DynamicResource DefaultTextStyleKey}"
-                                            Margin="3,0,5,0"/>
-
-                                <TextBlock Grid.Column="1"
-                                            Grid.Row="1"
-                                            Text="{Binding Name}"
-                                            Style="{DynamicResource DefaultTextStyleKey}"
-                                            Margin="3,0,5,0"/>
-
-                                <TextBlock Grid.Column="2"
-                                            Grid.Row="0"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Bottom">
-                                    <Run Text="{Binding Current}"
-                                         Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                    <Run Text="/"/>
-                                    <Run Text="{Binding Max}"/>
-                                </TextBlock>
-
-                                <ProgressBar Grid.Column="2"
-                                             Grid.Row="1"
-                                             Height="10"
-                                             VerticalAlignment="Top"
-                                             Minimum="0"
-                                             Maximum="{Binding Max}"
-                                             Value="{Binding Current}"
-                                             Foreground="{Binding GaugeColor}"
-                                             Background="White"
-                                             Margin="3,0">
-                                    <ProgressBar.Template>
-                                        <ControlTemplate TargetType="{x:Type ProgressBar}">
-                                            <Grid Background="{TemplateBinding Background}">
-                                                <Border x:Name="PART_Track" />
-                                                <Border x:Name="PART_Indicator"
-                                                        Background="{TemplateBinding Foreground}"
-                                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </ProgressBar.Template>
-                                </ProgressBar>
-
-                                <TextBlock Grid.Column="3"
-                                           Grid.Row="0"
-                                           Grid.RowSpan="2"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Center"
-                                           Margin="3,0,7,0"
-                                           Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
-                                    <Run Text="後"/>
-                                    <Run Text="{Binding RemainingCount}"
-                                         Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                    <Run Text="回"/>
-                                </TextBlock>
-                                
-                                <TextBlock Grid.Column="3"
-                                           Grid.Row="0"
-                                           Grid.RowSpan="2"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           Margin="3,0,7,0"
-                                           Visibility="{Binding IsSupported, Converter={StaticResource FalseToVisibleConverter}}"
-                                           Text="未対応"/>
-
-
-                                <Grid x:Name="UnselectedIndicator"
-                                      Grid.Column="2"
-                                      Grid.Row="0"
-                                      Grid.RowSpan="2"
-                                      Grid.ColumnSpan="2"
-                                      Visibility="{Binding IsRankSelected, Converter={StaticResource FalseToVisibleConverter}}">
-                                    <Border Background="{DynamicResource ThemeBrushKey}"
-                                            Margin="0" />
-                                    <TextBlock Text="難易度を選択してください"
+                                    <TextBlock Grid.Column="0"
+                                               Grid.RowSpan="2"
+                                               HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
-                                               HorizontalAlignment="Center" />
+                                               Margin="7,0,5,0">
+                                        <Run Text="{Binding MapNumber}"
+                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Grid.Column="1"
+                                                Grid.Row="0"
+                                                Text="{Binding AreaName}"
+                                                Style="{DynamicResource DefaultTextStyleKey}"
+                                                Margin="3,0,5,0"/>
+
+                                    <TextBlock Grid.Column="1"
+                                                Grid.Row="1"
+                                                Text="{Binding Name}"
+                                                Style="{DynamicResource DefaultTextStyleKey}"
+                                                Margin="3,0,5,0"/>
+
+                                    <TextBlock Grid.Column="2"
+                                                Grid.Row="0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Bottom">
+                                        <Run Text="{Binding Current}"
+                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                        <Run Text="/"/>
+                                        <Run Text="{Binding Max}"/>
+                                    </TextBlock>
+
+                                    <ProgressBar Grid.Column="2"
+                                                 Grid.Row="1"
+                                                 Height="10"
+                                                 VerticalAlignment="Top"
+                                                 Minimum="0"
+                                                 Maximum="{Binding Max}"
+                                                 Value="{Binding Current}"
+                                                 Foreground="{Binding GaugeColor}"
+                                                 Background="White"
+                                                 Margin="3,0">
+                                        <ProgressBar.Template>
+                                            <ControlTemplate TargetType="{x:Type ProgressBar}">
+                                                <Grid Background="{TemplateBinding Background}">
+                                                    <Border x:Name="PART_Track" />
+                                                    <Border x:Name="PART_Indicator"
+                                                            Background="{TemplateBinding Foreground}"
+                                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </ProgressBar.Template>
+                                    </ProgressBar>
+
+                                    <TextBlock Grid.Column="3"
+                                               Grid.Row="0"
+                                               Grid.RowSpan="2"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Margin="3,0,7,0"
+                                               Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
+                                        <Run Text="後"/>
+                                        <Run Text="{Binding RemainingCount}"
+                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                        <Run Text="回"/>
+                                    </TextBlock>
+                                
+                                    <TextBlock Grid.Column="3"
+                                               Grid.Row="0"
+                                               Grid.RowSpan="2"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Margin="3,0,7,0"
+                                               Visibility="{Binding IsSupported, Converter={StaticResource FalseToVisibleConverter}}"
+                                               Text="未対応"/>
+
+
+                                    <Grid x:Name="UnselectedIndicator"
+                                          Grid.Column="2"
+                                          Grid.Row="0"
+                                          Grid.RowSpan="2"
+                                          Grid.ColumnSpan="2"
+                                          Visibility="{Binding IsRankSelected, Converter={StaticResource FalseToVisibleConverter}}">
+                                        <Border Background="{DynamicResource ThemeBrushKey}"
+                                                Margin="0" />
+                                        <TextBlock Text="難易度を選択してください"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center" />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+            <TextBlock Grid.Row="2"
+                       Style="{DynamicResource DefaultTextStyleKey}"
+                       TextWrapping="WrapWithOverflow"
+                       Margin="5,15">
+                ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
+                ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
+                <LineBreak/>
+                ■対応イベント: 2014夏～2015春
+            </TextBlock>
         </Grid>
-        <TextBlock Grid.Row="2"
-                   Style="{DynamicResource DefaultTextStyleKey}"
-                   TextWrapping="WrapWithOverflow"
-                   Margin="5,15">
-            ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
-            ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
-            <LineBreak/>
-            ■対応イベント: 2014夏～2015春
-        </TextBlock>
-    </Grid>
+        
+    </ScrollViewer>
 </UserControl>

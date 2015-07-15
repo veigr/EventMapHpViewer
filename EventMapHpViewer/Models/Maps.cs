@@ -20,37 +20,20 @@ namespace EventMapHpViewer.Models
         public int DefeatCount { get; set; }
         public Eventmap Eventmap { get; set; }
 
-        public MapInfo Master
-        {
-            get { return Maps.MapInfos[this.Id]; }
-        }
+        public MapInfo Master => Maps.MapInfos[this.Id];
 
-        public string MapNumber
-        {
-            get
-            {
-                return this.Master.MapAreaId + "-" + this.Master.IdInEachMapArea;
-            }
-        }
+        public string MapNumber => this.Master.MapAreaId + "-" + this.Master.IdInEachMapArea;
 
-        public string Name
-        {
-            get { return this.Master.Name; }
-        }
+        public string Name => this.Master.Name;
 
-        public string AreaName
-        {
-            get { return this.Master.MapArea.Name; }
-        }
+        public string AreaName => this.Master.MapArea.Name;
 
         public int Max
         {
             get
             {
-                if (this.IsExBoss == 1)
-                    return this.Master.RequiredDefeatCount;
-                if (this.Eventmap != null) return this.Eventmap.MaxMapHp;
-                return 1;
+                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount;
+                return this.Eventmap?.MaxMapHp ?? 1;
             }
         }
 
@@ -59,10 +42,7 @@ namespace EventMapHpViewer.Models
             get
             {
                 if (this.IsExBoss == 1)　return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
-                
-                if (this.Eventmap != null) return this.Eventmap.NowMapHp;   //イベント海域
-
-                return 1;   //ゲージ無し通常海域
+                return this.Eventmap?.NowMapHp /*イベント海域*/?? 1 /*ゲージ無し通常海域*/;
             }
         }
 

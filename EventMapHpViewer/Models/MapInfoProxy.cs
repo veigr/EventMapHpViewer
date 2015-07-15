@@ -42,7 +42,7 @@ namespace EventMapHpViewer.Models
                     Maps.MapInfos = new MasterTable<MapInfo>(x.Data.api_mst_mapinfo.Select(m => new MapInfo(m, Maps.MapAreas)));
                 });
 
-            proxy.ApiSessionSource.Where(s => s.PathAndQuery.StartsWith("/kcsapi/api_get_member/mapinfo"))
+            proxy.ApiSessionSource.Where(s => s.Request.PathAndQuery.StartsWith("/kcsapi/api_get_member/mapinfo"))
                 .TryParse<member_mapinfo[]>()
                 .Subscribe(m =>
                 {

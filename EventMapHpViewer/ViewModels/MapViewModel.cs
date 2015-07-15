@@ -142,7 +142,7 @@ namespace EventMapHpViewer.ViewModels
             { return this._GaugeColor; }
             set
             { 
-                if (this._GaugeColor == value)
+                if (Equals(this._GaugeColor, value))
                     return;
                 this._GaugeColor = value;
                 this.RaisePropertyChanged();
