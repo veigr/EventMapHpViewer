@@ -10,16 +10,16 @@ namespace EventMapHpViewer
     [ExportMetadata("Guid", "101436F4-9308-4892-A88A-19EFBDF2ED5F")]
     [ExportMetadata("Title", "MapHPViewer")]
     [ExportMetadata("Description", "Map HPを表示します。")]
-    [ExportMetadata("Version", "2.3.0")]
+    [ExportMetadata("Version", "2.3")]
     [ExportMetadata("Author", "@veigr")]
     public class MapHpViewer : IPlugin, ITool
     {
-        private readonly ToolView v = new ToolView { DataContext = new ToolViewModel(new MapInfoProxy()) };
+        private readonly ToolViewModel _vm = new ToolViewModel(new MapInfoProxy());
 
         public void Initialize() {}
 
         public string Name => "MapHP";
 
-        public object View => this.v;
+        public object View => new ToolView { DataContext = this._vm };
     }
 }
