@@ -10,16 +10,17 @@ namespace EventMapHpViewer
     [ExportMetadata("Guid", "101436F4-9308-4892-A88A-19EFBDF2ED5F")]
     [ExportMetadata("Title", "MapHPViewer")]
     [ExportMetadata("Description", "Map HPを表示します。")]
-    [ExportMetadata("Version", "2.3")]
+    [ExportMetadata("Version", "2.3.0")]
     [ExportMetadata("Author", "@veigr")]
     public class MapHpViewer : IPlugin, ITool
     {
-        private readonly ToolViewModel _vm = new ToolViewModel(new MapInfoProxy());
+        private readonly ToolViewModel vm = new ToolViewModel(new MapInfoProxy());
 
         public void Initialize() {}
 
         public string Name => "MapHP";
 
-        public object View => new ToolView { DataContext = this._vm };
+        // タブ表示するたびに new されてしまうが、今のところ new しないとマルチウィンドウで正常に表示されない
+        public object View => new ToolView { DataContext = this.vm };
     }
 }
