@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 using EventMapHpViewer.Models;
 using Livet;
 
@@ -97,6 +98,26 @@ namespace EventMapHpViewer.ViewModels
         #endregion
 
 
+        #region SelectedRank変更通知プロパティ
+        private string _SelectedRank;
+
+        public string SelectedRank
+        {
+            get
+            { return this._SelectedRank; }
+            set
+            {
+                if (this._SelectedRank == value)
+                    return;
+                this._SelectedRank = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        public Visibility SelectedRankVisibility
+            => string.IsNullOrEmpty(this.SelectedRank) ? Visibility.Collapsed : Visibility.Visible;
+
         #region RemainingCount変更通知プロパティ
         private string _RemainingCount;
 
@@ -194,6 +215,7 @@ namespace EventMapHpViewer.ViewModels
             this.AreaName = info.AreaName;
             this.Current = info.Current;
             this.Max = info.Max;
+            this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
             this.RemainingCount = info.RemainingCount.ToString();
             this.IsCleared = info.IsCleared == 1;
             var color = info.RemainingCount < 2
