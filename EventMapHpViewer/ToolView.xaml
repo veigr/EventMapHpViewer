@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
@@ -48,11 +49,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <l:LivetCallMethodAction MethodTarget="{Binding}"
+                                     MethodName="Loaded" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled"
                   PanningMode="Both">
         <Grid Margin="8,4">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -173,21 +182,55 @@
                                         </ProgressBar.Template>
                                     </ProgressBar>
 
-                                    <TextBlock Grid.Column="4"
-                                               Grid.Row="0"
-                                               Grid.RowSpan="2"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               Margin="3,0,7,0"
-                                               Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
-                                        <Run Text="後"
-                                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                        <Run Text="{Binding RemainingCount}"
-                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                        <Run Text="回"
-                                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                    </TextBlock>
-                                
+                                    <Control Grid.Column="4"
+                                             Grid.Row="0"
+                                             Grid.RowSpan="2"
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Margin="3,0,7,0"
+                                             Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
+                                        <Control.Style>
+                                            <Style TargetType="{x:Type Control}">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <TextBlock>
+                                                                <Run Text="後"
+                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                <Run Text="{Binding RemainingCount}"
+                                                                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                <Run Text="回"
+                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                            </TextBlock>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding GaugeType}" Value="Transport">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate>
+                                                                    <TextBlock>
+                                                                <Run Text="後 A:"
+                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                <Run Text="{Binding RemainingCount}"
+                                                                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                <Run Text="S:"
+                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                <Run Text="{Binding RemainingCountTransportS}"
+                                                                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                <Run Text="回"
+                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                    </TextBlock>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Control.Style>
+                                    </Control>
+
                                     <TextBlock Grid.Column="4"
                                                Grid.Row="0"
                                                Grid.RowSpan="2"
@@ -216,13 +259,31 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
-            <TextBlock Grid.Row="2"
+
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        Margin="5,15,5,0">
+                <TextBlock Text="輸送力"
+                           Style="{DynamicResource EmphaticTextStyleKey}"/>
+                <TextBlock Text="(暫定)  A:"
+                           Style="{DynamicResource DefaultTextStyleKey}"
+                           VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding TransportCapacity}"
+                           Style="{DynamicResource EmphaticTextStyleKey}"/>
+                <TextBlock Text="  S:"
+                           Style="{DynamicResource DefaultTextStyleKey}"
+                           VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding TransportCapacityS}"
+                           Style="{DynamicResource EmphaticTextStyleKey}"/>
+                
+            </StackPanel>
+            
+            <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
                        TextWrapping="WrapWithOverflow"
-                       Margin="5,15">
+                       Margin="5,15,5,0">
                 ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
-                ※輸送ゲージの残回数表示には未対応です。<LineBreak/>
             </TextBlock>
         </Grid>
         

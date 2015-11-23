@@ -46,6 +46,9 @@ namespace EventMapHpViewer.Models
             }
         }
 
+        /// <summary>
+        /// 残回数。輸送の場合はA勝利の残回数。
+        /// </summary>
         public int RemainingCount
         {
             get
@@ -57,8 +60,12 @@ namespace EventMapHpViewer.Models
 
                 if (this.Eventmap == null) return 1;    //ゲージ無し通常海域
 
-                if (this.Eventmap.GaugeType == GaugeType.Transport) return -1;  //TPゲージはとりあえず未対応( TODO: 輸送力計算したい)
-
+                if (this.Eventmap.GaugeType == GaugeType.Transport)
+                {
+                    var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+                    return (int)Math.Ceiling((double)this.Current / capacityA);
+                }
+                
                 try
                 {
                     var lastBossHp = EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id].Last();
@@ -72,6 +79,21 @@ namespace EventMapHpViewer.Models
                 }
             }
         }
+
+        /// <summary>
+        /// 輸送ゲージのS勝利時の残回数
+        /// </summary>
+        public int RemainingCountTransportS
+        {
+            get
+            {
+                if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
+                var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
+                return (int)Math.Ceiling((double)this.Current / capacity);
+            }
+        }
+
+        public GaugeType GaugeType => this.Eventmap?.GaugeType ?? GaugeType.Normal;
 
         public static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossHpDictionary
             = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
