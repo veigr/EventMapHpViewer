@@ -60,6 +60,7 @@ namespace EventMapHpViewer.Models
                                 NowMapHp = x.api_eventmap.api_now_maphp,
                                 SelectedRank = x.api_eventmap.api_selected_rank,
                                 State = x.api_eventmap.api_state,
+                                GaugeType = (GaugeType)x.api_eventmap.api_gauge_type,
                             }
                             : null,
                     }).ToArray();

@@ -57,6 +57,8 @@ namespace EventMapHpViewer.Models
 
                 if (this.Eventmap == null) return 1;    //ゲージ無し通常海域
 
+                if (this.Eventmap.GaugeType == GaugeType.Transport) return -1;  //TPゲージはとりあえず未対応( TODO: 輸送力計算したい)
+
                 try
                 {
                     var lastBossHp = EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id].Last();
@@ -82,37 +84,25 @@ namespace EventMapHpViewer.Models
                 { //丙
                     1, new Dictionary<int, int[]>
                     {
-                        { 311, new[] { 150 } },
-                        { 312, new[] { 210 } },
-                        { 313, new[] { 350 } },
-                        { 314, new[] { 500 } },
-                        { 315, new[] { 400 } },
-                        { 316, new[] { 350 } },
-                        { 317, new[] { 255 } },
+                        { 321, new[] { 80 } },
+                        { 324, new[] { 110, 130 } },
+                        { 325, new[] { 255 } },
                     }
                 },
                 { //乙
                     2, new Dictionary<int, int[]>
                     {
-                        { 311, new[] { 150, 190 } },
-                        { 312, new[] { 210 } },
-                        { 313, new[] { 350 } },
-                        { 314, new[] { 500 } },
-                        { 315, new[] { 400 } },
-                        { 316, new[] { 350 } },
-                        { 317, new[] { 255 } },
+                        { 321, new[] { 88 } },
+                        { 324, new[] { 110, 130 } },
+                        { 325, new[] { 255 } },
                     }
                 },
                 { //甲
                     3, new Dictionary<int, int[]>
                     {
-                        { 311, new[] { 150, 190 } },
-                        { 312, new[] { 270 } },
-                        { 313, new[] { 350 } },
-                        { 314, new[] { 500 } },
-                        { 315, new[] { 400 } },
-                        { 316, new[] { 350 } },
-                        { 317, new[] { 255 } },
+                        { 321, new[] { 88 } },
+                        { 324, new[] { 130, 160 } },
+                        { 325, new[] { 255 } },
                     }
                 },
             };
@@ -124,6 +114,7 @@ namespace EventMapHpViewer.Models
         public int MaxMapHp { get; set; }
         public int State { get; set; }
         public int SelectedRank { get; set; }
+        public GaugeType GaugeType { get; set; }
 
         public string SelectedRankText
         {

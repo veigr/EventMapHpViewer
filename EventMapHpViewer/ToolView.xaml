@@ -8,7 +8,7 @@
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
-             d:DesignHeight="300"
+             d:DesignHeight="500"
              d:DesignWidth="500"
              d:DataContext="{d:DesignData /SampleData/ToolViewModelSampleData.xaml}">
     
@@ -222,6 +222,7 @@
                        Margin="5,15">
                 ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
+                ※輸送ゲージの残回数表示には未対応です。<LineBreak/>
             </TextBlock>
         </Grid>
         

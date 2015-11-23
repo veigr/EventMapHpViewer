@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MapHpViewer.cs" />
+    <Compile Include="Models\GaugeType.cs" />
     <Compile Include="Models\MapArea.cs" />
     <Compile Include="Models\MapInfo.cs" />
     <Compile Include="Models\Maps.cs" />
