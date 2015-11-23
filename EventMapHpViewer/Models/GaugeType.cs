@@ -10,8 +10,8 @@ namespace EventMapHpViewer.Models
     {
         Normal = 0,
         // 1, 2 は実際には返ってこないので暫定。逆かも。
-        Event = 1,
-        Extra = 2,
+        Extra = 1,
+        Event = 2,
         Transport = 3,
     }
 }
