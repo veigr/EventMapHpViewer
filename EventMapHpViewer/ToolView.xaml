@@ -210,18 +210,24 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate>
-                                                                    <TextBlock>
-                                                                <Run Text="後 A:"
-                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                <Run Text="{Binding RemainingCount}"
-                                                                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                                                <Run Text="S:"
-                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                <Run Text="{Binding RemainingCountTransportS}"
-                                                                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                                                                <Run Text="回"
-                                                                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                    </TextBlock>
+                                                                    <StackPanel>
+                                                                        <TextBlock>
+                                                                            <Run Text="後 A:"
+                                                                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                            <Run Text="{Binding RemainingCount}"
+                                                                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                            <Run Text="回"
+                                                                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                        </TextBlock>
+                                                                        <TextBlock>
+                                                                            <Run Text="後 S:"
+                                                                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                            <Run Text="{Binding RemainingCountTransportS}"
+                                                                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                            <Run Text="回"
+                                                                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                        </TextBlock>
+                                                                    </StackPanel>
                                                                 </ControlTemplate>
                                                             </Setter.Value>
                                                         </Setter>
@@ -265,17 +271,22 @@
                         Margin="5,15,5,0">
                 <TextBlock Text="輸送力"
                            Style="{DynamicResource EmphaticTextStyleKey}"/>
-                <TextBlock Text="(暫定)  A:"
-                           Style="{DynamicResource DefaultTextStyleKey}"
-                           VerticalAlignment="Bottom"/>
-                <TextBlock Text="{Binding TransportCapacity}"
-                           Style="{DynamicResource EmphaticTextStyleKey}"/>
-                <TextBlock Text="  S:"
-                           Style="{DynamicResource DefaultTextStyleKey}"
-                           VerticalAlignment="Bottom"/>
-                <TextBlock Text="{Binding TransportCapacityS}"
-                           Style="{DynamicResource EmphaticTextStyleKey}"/>
-                
+                <TextBlock Text=" (暫定)"
+                           Style="{DynamicResource DefaultTextStyleKey}"/>
+                <StackPanel Margin="8,0">
+                    <TextBlock>
+                        <Run Text="A:"
+                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                        <Run Text="{Binding TransportCapacity, Mode=OneWay}"
+                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                    </TextBlock>
+                    <TextBlock>
+                        <Run Text="S:"
+                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                        <Run Text="{Binding TransportCapacityS, Mode=OneWay}"
+                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                    </TextBlock>
+                </StackPanel>
             </StackPanel>
             
             <TextBlock Grid.Row="3"

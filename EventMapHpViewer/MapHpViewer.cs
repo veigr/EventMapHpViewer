@@ -10,7 +10,7 @@ namespace EventMapHpViewer
     [ExportMetadata("Guid", "101436F4-9308-4892-A88A-19EFBDF2ED5F")]
     [ExportMetadata("Title", "MapHPViewer")]
     [ExportMetadata("Description", "Map HPを表示します。")]
-    [ExportMetadata("Version", "2.5.0")]
+    [ExportMetadata("Version", "2.5.1")]
     [ExportMetadata("Author", "@veigr")]
     public class MapHpViewer : IPlugin, ITool
     {
