@@ -14,6 +14,8 @@
                                  IsCleared="False"
                                  IsRankSelected="False"
                                  IsSupported="True"
+                                 IsInfinity="False"
+                                 IsCountVisible="True"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -28,6 +30,8 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsInfinity="False"
+                                 IsCountVisible="True"
                                  GaugeType="Normal">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#FF2020"/>
@@ -42,6 +46,8 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsInfinity="False"
+                                 IsCountVisible="True"
                                  GaugeType="Extra">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#FF2020"/>
@@ -58,6 +64,8 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsInfinity="False"
+                                 IsCountVisible="True"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -74,6 +82,8 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="False"
+                                 IsInfinity="False"
+                                 IsCountVisible="False"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -91,6 +101,27 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsInfinity="False"
+                                 IsCountVisible="True"
+                                 GaugeType="Transport">
+            <viewModels:MapViewModel.GaugeColor>
+                <SolidColorBrush Color="#40C820"/>
+            </viewModels:MapViewModel.GaugeColor>
+        </viewModels:MapViewModel>
+        <viewModels:MapViewModel Current="333"
+                                 Max="444"
+                                 SelectedRank="乙"
+                                 SelectedRankVisibility="Visible"
+                                 RemainingCount="7"
+                                 RemainingCountTransportS="5"
+                                 MapNumber="30-5"
+                                 AreaName="イベント海域"
+                                 Name="無限輸送"
+                                 IsCleared="False"
+                                 IsRankSelected="True"
+                                 IsSupported="True"
+                                 IsInfinity="True"
+                                 IsCountVisible="False"
                                  GaugeType="Transport">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>

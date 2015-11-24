@@ -222,10 +222,31 @@ namespace EventMapHpViewer.ViewModels
                     return;
                 this._IsSupported = value;
                 this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(this.IsCountVisible));
             }
         }
         #endregion
 
+
+        #region IsInfinity変更通知プロパティ
+        private bool _IsInfinity;
+
+        public bool IsInfinity
+        {
+            get
+            { return this._IsInfinity; }
+            set
+            {
+                if (this._IsInfinity == value)
+                    return;
+                this._IsInfinity = value;
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(this.IsCountVisible));
+            }
+        }
+        #endregion
+
+        public bool IsCountVisible => this.IsSupported && !this.IsInfinity;
 
         #region GaugeType変更通知プロパティ
         private GaugeType _GaugeType;
@@ -267,13 +288,17 @@ namespace EventMapHpViewer.ViewModels
                 || info.Eventmap.SelectedRank != 0
                 || info.Eventmap.NowMapHp != 9999;
             this.IsSupported = 0 < info.RemainingCount;
+            this.IsInfinity = info.RemainingCount == int.MaxValue;
             this.GaugeType = info.GaugeType;
         }
 
         public void CalcTransportCapacityChanged()
         {
-            this.RemainingCount = this._source.RemainingCount.ToString();
+            var remainingCount = this._source.RemainingCount;
+            this.RemainingCount = remainingCount.ToString();
             this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
+            this.IsInfinity = remainingCount == int.MaxValue;
+
             var color = this._source.RemainingCount < 2
                 ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
                 : new SolidColorBrush(Color.FromRgb(64, 200, 32));

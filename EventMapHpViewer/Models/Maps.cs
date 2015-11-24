@@ -63,6 +63,7 @@ namespace EventMapHpViewer.Models
                 if (this.Eventmap.GaugeType == GaugeType.Transport)
                 {
                     var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+                    if (capacityA == 0) return int.MaxValue;  //ゲージ減らない
                     return (int)Math.Ceiling((double)this.Current / capacityA);
                 }
                 
@@ -89,6 +90,7 @@ namespace EventMapHpViewer.Models
             {
                 if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
                 var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
+                if (capacity == 0) return int.MaxValue;  //ゲージ減らない
                 return (int)Math.Ceiling((double)this.Current / capacity);
             }
         }

@@ -71,11 +71,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MetroTrilithon, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\KanColleViewer.Internal\source\packages\MetroTrilithon.0.1.1.0\lib\portable-net45+dnxcore50+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\MetroTrilithon.dll</HintPath>
+      <HintPath>..\packages\MetroTrilithon.0.1.1.0\lib\portable-net45+dnxcore50+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\MetroTrilithon.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MetroTrilithon.Desktop, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\KanColleViewer.Internal\source\packages\MetroTrilithon.Desktop.0.1.4.0\lib\net45\MetroTrilithon.Desktop.dll</HintPath>
+      <HintPath>..\packages\MetroTrilithon.Desktop.0.1.4.0\lib\net45\MetroTrilithon.Desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

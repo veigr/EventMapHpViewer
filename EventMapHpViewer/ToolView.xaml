@@ -188,7 +188,7 @@
                                              HorizontalAlignment="Right"
                                              VerticalAlignment="Center"
                                              Margin="3,0,7,0"
-                                             Visibility="{Binding IsSupported, Converter={StaticResource TrueToVisibleConverter}}">
+                                             Visibility="{Binding IsCountVisible, Converter={StaticResource TrueToVisibleConverter}}">
                                         <Control.Style>
                                             <Style TargetType="{x:Type Control}">
                                                 <Setter Property="Template">
@@ -244,7 +244,18 @@
                                                VerticalAlignment="Center"
                                                Margin="3,0,7,0"
                                                Visibility="{Binding IsSupported, Converter={StaticResource FalseToVisibleConverter}}"
+                                               Style="{DynamicResource DefaultTextStyleKey}"
                                                Text="未対応"/>
+
+                                    <TextBlock Grid.Column="4"
+                                               Grid.Row="0"
+                                               Grid.RowSpan="2"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Margin="3,0,7,0"
+                                               Visibility="{Binding IsInfinity, Converter={StaticResource TrueToVisibleConverter}}"
+                                               Style="{DynamicResource DefaultTextStyleKey}"
+                                               Text="無限"/>
 
 
                                     <Grid x:Name="UnselectedIndicator"
