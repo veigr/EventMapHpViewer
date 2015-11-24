@@ -6,6 +6,7 @@
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
@@ -277,33 +278,42 @@
                 </ItemsControl>
             </Grid>
 
-            <StackPanel Grid.Row="2"
-                        Orientation="Horizontal"
-                        Margin="5,15,5,0">
-                <TextBlock Text="輸送力"
-                           Style="{DynamicResource EmphaticTextStyleKey}"/>
-                <TextBlock Text=" (暫定)"
-                           Style="{DynamicResource DefaultTextStyleKey}"/>
-                <StackPanel Margin="8,0">
-                    <TextBlock>
-                        <Run Text="A:"
-                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                        <Run Text="{Binding TransportCapacity, Mode=OneWay}"
-                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                    </TextBlock>
-                    <TextBlock>
-                        <Run Text="S:"
-                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                        <Run Text="{Binding TransportCapacityS, Mode=OneWay}"
-                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                    </TextBlock>
+            <Border Grid.Row="2"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
+                <StackPanel Orientation="Horizontal"
+                            Margin="5">
+                    <TextBlock Text="第一艦隊の輸送力"
+                               Style="{DynamicResource EmphaticTextStyleKey}"
+                               FontSize="12"
+                               Visibility="{Binding Source={x:Static kanColleWrapper:KanColleClient.Current}, Path=Homeport.Organization.Combined, Converter={StaticResource FalseToVisibleConverter}}"/>
+                    <TextBlock Text="連合艦隊の輸送力"
+                               Style="{DynamicResource EmphaticTextStyleKey}"
+                               FontSize="12"
+                               Visibility="{Binding Source={x:Static kanColleWrapper:KanColleClient.Current}, Path=Homeport.Organization.Combined, Converter={StaticResource TrueToVisibleConverter}}"/>
+                    <TextBlock Text=" (暫定)"
+                               Style="{DynamicResource DefaultTextStyleKey}"/>
+                    <StackPanel Margin="8,0">
+                        <TextBlock>
+                            <Run Text="A:"
+                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                            <Run Text="{Binding TransportCapacity, Mode=OneWay}"
+                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="S:"
+                                    Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                            <Run Text="{Binding TransportCapacityS, Mode=OneWay}"
+                                    Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Border>
             
             <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
                        TextWrapping="WrapWithOverflow"
-                       Margin="5,15,5,0">
+                       Margin="5">
                 ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
             </TextBlock>

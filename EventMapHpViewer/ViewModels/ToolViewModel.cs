@@ -57,6 +57,7 @@ namespace EventMapHpViewer.ViewModels
                     return;
                 this._Maps = value;
                 this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(this.ExistsTransportGauge));
             }
         }
         #endregion
@@ -79,6 +80,7 @@ namespace EventMapHpViewer.ViewModels
         }
         #endregion
 
+        public bool ExistsTransportGauge => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
 
         public int TransportCapacity => KanColleClient.Current.Homeport.Organization.TransportationCapacity();
 
