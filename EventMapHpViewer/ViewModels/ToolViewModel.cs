@@ -38,9 +38,11 @@ namespace EventMapHpViewer.ViewModels
 
         public void Loaded()
         {
+            // 変更検知はあまり深く考えないでやってしまっているのでマズいところあるかも
             KanColleClient.Current.Homeport.Organization
                 .Subscribe(nameof(Organization.Fleets), this.FleetsUpdated)
                 .Subscribe(nameof(Organization.Combined), this.RaiseTransportCapacityChanged)
+                .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear())
                 .AddTo(this);
         }
 
@@ -86,7 +88,7 @@ namespace EventMapHpViewer.ViewModels
 
         public int TransportCapacityS => KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
 
-        private HashSet<Ship> handledShips = new HashSet<Ship>();
+        private readonly HashSet<Ship> handledShips = new HashSet<Ship>();
 
         private void FleetsUpdated()
         {
@@ -95,9 +97,9 @@ namespace EventMapHpViewer.ViewModels
                 fleet.Subscribe(nameof(fleet.Ships), this.RaiseTransportCapacityChanged);
                 foreach (var ship in fleet.Ships)
                 {
-                    if (handledShips.Contains(ship)) return;
+                    if (this.handledShips.Contains(ship)) return;
                     ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged);
-                    handledShips.Add(ship);
+                    this.handledShips.Add(ship);
                 }
             }
         }

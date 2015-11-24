@@ -12,7 +12,7 @@ namespace EventMapHpViewer.Models
     {
         public static int TransportationCapacity(this Organization org, bool isS = false)
         {
-            if (org == null || org.Fleets == null || org.Fleets.Count < 1)
+            if (org?.Fleets == null || org.Fleets.Count < 1)
                 return 0;
             var coefficient = isS ? 1.45 : 1;
             return (int)Math.Floor(org.BaseTransportationCapacity() * coefficient)
