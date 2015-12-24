@@ -111,7 +111,7 @@ namespace EventMapHpViewer.ViewModels
             if (this.Maps == null) return;
             foreach (var map in this.Maps)
             {
-                map.CalcTransportCapacityChanged();
+                map.UpdateTransportCapacity();
             }
         }
     }

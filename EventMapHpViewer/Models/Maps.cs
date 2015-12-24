@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Grabacr07.KanColleWrapper;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Nekoxy;
+using System.Net;
+using Codeplex.Data;
 
 namespace EventMapHpViewer.Models
 {
@@ -28,6 +33,8 @@ namespace EventMapHpViewer.Models
 
         public string AreaName => this.Master.MapArea.Name;
 
+        public GaugeType GaugeType => this.Eventmap?.GaugeType ?? GaugeType.Normal;
+
         public int Max
         {
             get
@@ -49,36 +56,42 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 残回数。輸送の場合はA勝利の残回数。
         /// </summary>
-        public int RemainingCount
+        public async Task<int> GetRemainingCount()
         {
-            get
+            if(this.IsCleared == 1) return 0;
+
+            if (this.IsExBoss == 1) return this.Current;    //ゲージ有り通常海域
+
+            if (this.Eventmap == null) return 1;    //ゲージ無し通常海域
+
+            if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
-                if (this.IsExBoss == 1)
-                {
-                    return this.Current;    //ゲージ有り通常海域
-                }
-
-                if (this.Eventmap == null) return 1;    //ゲージ無し通常海域
-
-                if (this.Eventmap.GaugeType == GaugeType.Transport)
-                {
-                    var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
-                    if (capacityA == 0) return int.MaxValue;  //ゲージ減らない
-                    return (int)Math.Ceiling((double)this.Current / capacityA);
-                }
-                
-                try
-                {
-                    var lastBossHp = EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id].Last();
-                    var normalBossHp = EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id].First();
-                    if (this.Current <= lastBossHp) return 1;   //最後の1回
-                    return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;   //イベント海域
-                }
-                catch (KeyNotFoundException)
-                {
-                    return -1;  //未対応
-                }
+                var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+                if (capacityA == 0) return int.MaxValue;  //ゲージ減らない
+                return (int)Math.Ceiling((double)this.Current / capacityA);
             }
+
+            var remoteBossHp = await this.GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+            if (remoteBossHp != null && remoteBossHp.Any())
+                return this.CalculateRemainingCount(remoteBossHp);   //イベント海域(リモートデータ)
+
+            try
+            {
+                // リモートデータがない場合、ローカルデータを使う
+                return this.CalculateRemainingCount(EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id]);   //イベント海域
+            }
+            catch (KeyNotFoundException)
+            {
+                return -1;  //未対応
+            }
+        }
+
+        private int CalculateRemainingCount(int[] bossHPs)
+        {
+            var lastBossHp = bossHPs.Last();
+            var normalBossHp = bossHPs.First();
+            if (this.Current <= lastBossHp) return 1;   //最後の1回
+            return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;
         }
 
         /// <summary>
@@ -95,7 +108,58 @@ namespace EventMapHpViewer.Models
             }
         }
 
-        public GaugeType GaugeType => this.Eventmap?.GaugeType ?? GaugeType.Normal;
+        private async Task<int[]> GetEventBossHp(int mapId, int rank)
+        {
+            using (var client = new HttpClient(GetProxyConfiguredHandler()))
+            {
+                try {
+                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/exboss/{mapId}/{rank}");
+                    if (!response.IsSuccessStatusCode) return null;
+                    var json = await response.Content.ReadAsStringAsync();
+                    Raw.map_exboss[] parsed = DynamicJson.Parse(json);
+                    if (parsed == null || !parsed.Any()) return null;
+                    return parsed.OrderBy(x => x.isLast)
+                        .Select(x => x.ship.maxhp)
+                        .ToArray();
+                }
+                catch (HttpRequestException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        private static HttpClientHandler GetProxyConfiguredHandler()
+        {
+            switch (HttpProxy.UpstreamProxyConfig.Type)
+            {
+                case ProxyConfigType.DirectAccess:
+                    return new HttpClientHandler
+                    {
+                        UseProxy = false
+                    };
+                case ProxyConfigType.SpecificProxy:
+                    var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
+                    var host = settings.IsUseHttpProxyForAllProtocols ? settings.HttpHost : settings.HttpsHost;
+                    var port = settings.IsUseHttpProxyForAllProtocols ? settings.HttpPort : settings.HttpsPort;
+                    if (string.IsNullOrWhiteSpace(host))
+                    {
+                        return new HttpClientHandler { UseProxy = false };
+                    }
+                    else
+                    {
+                        return new HttpClientHandler
+                        {
+                            UseProxy = true,
+                            Proxy = new WebProxy($"{host}:{port}"),
+                        };
+                    }
+                case ProxyConfigType.SystemProxy:
+                    return new HttpClientHandler();
+                default:
+                    return new HttpClientHandler();
+            }
+        }
 
         public static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossHpDictionary
             = new Dictionary<int, IReadOnlyDictionary<int, int[]>>

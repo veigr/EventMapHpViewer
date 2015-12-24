@@ -4,6 +4,9 @@ using EventMapHpViewer.Models;
 using Livet;
 using Grabacr07.KanColleWrapper;
 using MetroTrilithon.Mvvm;
+using System.Threading.Tasks;
+using System.Reactive.Linq;
+using System.Threading;
 
 namespace EventMapHpViewer.ViewModels
 {
@@ -276,34 +279,41 @@ namespace EventMapHpViewer.ViewModels
             this.Current = info.Current;
             this.Max = info.Max;
             this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
-            this.RemainingCount = info.RemainingCount.ToString();
             this.RemainingCountTransportS = info.RemainingCountTransportS.ToString();
             this.IsCleared = info.IsCleared == 1;
-            var color = info.RemainingCount < 2
-                ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
-                : new SolidColorBrush(Color.FromRgb(64, 200, 32));
-            color.Freeze();
-            this.GaugeColor = color;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
                 || info.Eventmap.NowMapHp != 9999;
-            this.IsSupported = 0 < info.RemainingCount;
-            this.IsInfinity = info.RemainingCount == int.MaxValue;
             this.GaugeType = info.GaugeType;
+
+            this.UpdateRemainingCount(info);
         }
 
-        public void CalcTransportCapacityChanged()
+        public void UpdateTransportCapacity()
         {
-            var remainingCount = this._source.RemainingCount;
-            this.RemainingCount = remainingCount.ToString();
-            this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
-            this.IsInfinity = remainingCount == int.MaxValue;
+            this.UpdateRemainingCount(this._source);
+        }
 
-            var color = this._source.RemainingCount < 2
-                ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
-                : new SolidColorBrush(Color.FromRgb(64, 200, 32));
-            color.Freeze();
-            this.GaugeColor = color;
+        private void UpdateRemainingCount(MapData info)
+        {
+            info.GetRemainingCount()
+                .ContinueWith(t =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        var remainingCount = t.Result;
+                        this.RemainingCount = remainingCount.ToString();
+                        this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
+                        this.IsInfinity = remainingCount == int.MaxValue;
+                        var color = remainingCount < 2
+                            ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
+                            : new SolidColorBrush(Color.FromRgb(64, 200, 32));
+                        color.Freeze();
+                        this.GaugeColor = color;
+                        this.IsSupported = 0 < remainingCount;
+                        this.IsInfinity = remainingCount == int.MaxValue;
+                    });
+                });
         }
     }
 }
