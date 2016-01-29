@@ -71,7 +71,7 @@ namespace EventMapHpViewer.Models
                 return (int)Math.Ceiling((double)this.Current / capacityA);
             }
 
-            var remoteBossHp = await this.GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+            var remoteBossHp = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
             if (remoteBossHp != null && remoteBossHp.Any())
                 return this.CalculateRemainingCount(remoteBossHp);   //イベント海域(リモートデータ)
 
@@ -108,27 +108,52 @@ namespace EventMapHpViewer.Models
             }
         }
 
-        private async Task<int[]> GetEventBossHp(int mapId, int rank)
+        /// <summary>
+        /// 艦これ戦術データ・リンクからボス情報を取得する。
+        /// 取得できなかった場合は null を返す。
+        /// </summary>
+        /// <param name="mapId"></param>
+        /// <param name="rank"></param>
+        /// <returns></returns>
+        private static async Task<int[]> GetEventBossHp(int mapId, int rank)
         {
             using (var client = new HttpClient(GetProxyConfiguredHandler()))
             {
                 try {
-                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/exboss/{mapId}/{rank}");
-                    if (!response.IsSuccessStatusCode) return null;
+                    // rank の後ろの"1"はサーバー上手動メンテデータを加味するかどうかのフラグ
+                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/exboss/{mapId}/{rank}/1");
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        // 200 じゃなかった
+                        return null;
+                    }
+
                     var json = await response.Content.ReadAsStringAsync();
                     Raw.map_exboss[] parsed = DynamicJson.Parse(json);
-                    if (parsed == null || !parsed.Any()) return null;
-                    return parsed.OrderBy(x => x.isLast)
+                    if (parsed == null
+                    || !parsed.Any(x => x.isLast)
+                    || !parsed.Any(x => !x.isLast))
+                    {
+                        // データが揃っていない
+                        return null;
+                    }
+                    return parsed
+                        .OrderBy(x => x.isLast) // 最終編成が後ろに来るようにする
                         .Select(x => x.ship.maxhp)
                         .ToArray();
                 }
                 catch (HttpRequestException)
                 {
+                    // HTTP リクエストに失敗した
                     return null;
                 }
             }
         }
 
+        /// <summary>
+        /// 本体のプロキシ設定を組み込んだHttpClientHandlerを返す。
+        /// </summary>
+        /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
         {
             switch (HttpProxy.UpstreamProxyConfig.Type)
@@ -161,7 +186,11 @@ namespace EventMapHpViewer.Models
             }
         }
 
-        public static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossHpDictionary
+        /// <summary>
+        /// 手動メンテデータ用。
+        /// いずれ削除される見込み。
+        /// </summary>
+        private static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossHpDictionary
             = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
             {
                 { //難易度未選択
