@@ -14,7 +14,7 @@ namespace EventMapHpViewer.Models
         {
             if (org?.Fleets == null || org.Fleets.Count < 1)
                 return 0;
-            var coefficient = isS ? 1.45 : 1;
+            var coefficient = isS ? 1.44 : 1;
             return (int)Math.Floor(org.BaseTransportationCapacity() * coefficient)
                 + (int)Math.Floor(org.DrumTransportationCapacity() * coefficient)
                 + (int)Math.Floor(org.DaihatsuTransportationCapacity() * coefficient)
@@ -45,17 +45,19 @@ namespace EventMapHpViewer.Models
         {
             switch (type.Id)
             {
-                case 2:
+                case 2:     // 駆逐艦
                     return 3.5;
-                case 3:
+                case 3:     // 軽巡
                     return 1.2;
-                case 6:
+                case 6:     // 航空巡洋艦
                     return 3;
-                case 16:
+                case 10:    // 航空戦艦
+                    return 5.2;
+                case 16:    // 水上機母艦
                     return 6.4;
-                case 17:
+                case 17:    // 揚陸艦
                     return 8.5;
-                case 22:
+                case 22:    // 補給艦
                     return 10.5;
                 default:
                     return 0;   //わからないのは0
