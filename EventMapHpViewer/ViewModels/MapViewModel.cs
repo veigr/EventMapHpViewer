@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
 using Livet;
@@ -12,6 +14,17 @@ namespace EventMapHpViewer.ViewModels
 {
     public class MapViewModel : ViewModel
     {
+
+        private static readonly SolidColorBrush red;
+        private static readonly SolidColorBrush green;
+
+        static MapViewModel()
+        {
+            red = new SolidColorBrush(Color.FromRgb(255, 32, 32));
+            red.Freeze();
+            green = new SolidColorBrush(Color.FromRgb(64, 200, 32));
+            green.Freeze();
+        }
 
         #region MapNumber変更通知プロパティ
         private string _MapNumber;
@@ -212,6 +225,25 @@ namespace EventMapHpViewer.ViewModels
         #endregion
 
 
+        #region IsLoading変更通知プロパティ
+        private bool _IsLoading;
+
+        public bool IsLoading
+        {
+            get
+            { return this._IsLoading; }
+            set
+            {
+                if (this._IsLoading == value)
+                    return;
+                this._IsLoading = value;
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(this.IsCountVisible));
+            }
+        }
+        #endregion
+
+        
         #region IsSupported変更通知プロパティ
         private bool _IsSupported;
 
@@ -249,7 +281,7 @@ namespace EventMapHpViewer.ViewModels
         }
         #endregion
 
-        public bool IsCountVisible => this.IsSupported && !this.IsInfinity;
+        public bool IsCountVisible => !this.IsLoading && this.IsSupported && !this.IsInfinity;
 
         #region GaugeType変更通知プロパティ
         private GaugeType _GaugeType;
@@ -286,6 +318,12 @@ namespace EventMapHpViewer.ViewModels
                 || info.Eventmap.NowMapHp != 9999;
             this.GaugeType = info.GaugeType;
 
+            this.GaugeColor = green;
+            this.IsSupported = true;
+            this.IsInfinity = false;
+            this.IsLoading = true;
+
+            
             this.UpdateRemainingCount(info);
         }
 
@@ -296,24 +334,28 @@ namespace EventMapHpViewer.ViewModels
 
         private void UpdateRemainingCount(MapData info)
         {
-            info.GetRemainingCount()
-                .ContinueWith(t =>
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
+            try
+            {
+                info.GetRemainingCount()
+                    .ContinueWith(t =>
                     {
-                        var remainingCount = t.Result;
-                        this.RemainingCount = remainingCount.ToString();
-                        this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
-                        this.IsInfinity = remainingCount == int.MaxValue;
-                        var color = remainingCount < 2
-                            ? new SolidColorBrush(Color.FromRgb(255, 32, 32))
-                            : new SolidColorBrush(Color.FromRgb(64, 200, 32));
-                        color.Freeze();
-                        this.GaugeColor = color;
-                        this.IsSupported = 0 < remainingCount;
-                        this.IsInfinity = remainingCount == int.MaxValue;
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            var remainingCount = t.Result;
+                            this.RemainingCount = remainingCount.ToString();
+                            this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
+                            this.IsInfinity = remainingCount == int.MaxValue;
+                            this.GaugeColor = remainingCount < 2 ? red : green;
+                            this.IsSupported = 0 < remainingCount;
+                            this.IsInfinity = remainingCount == int.MaxValue;
+                            this.IsLoading = false;
+                        });
                     });
-                });
+            }
+            catch (AggregateException e)
+            {
+                Debug.WriteLine(e);
+            }
         }
     }
 }
