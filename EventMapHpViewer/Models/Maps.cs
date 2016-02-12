@@ -73,6 +73,8 @@ namespace EventMapHpViewer.Models
                 return (int)Math.Ceiling((double)this.Current / capacityA);
             }
 
+            if (this.Eventmap.SelectedRank == 0) return -1; //難易度未選択
+
             if (!useCache)
                 this.remoteBossHpCache = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
 
