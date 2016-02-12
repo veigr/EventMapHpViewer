@@ -322,40 +322,52 @@ namespace EventMapHpViewer.ViewModels
             this.IsSupported = true;
             this.IsInfinity = false;
             this.IsLoading = true;
-
             
             this.UpdateRemainingCount(info);
         }
 
         public void UpdateTransportCapacity()
         {
-            this.UpdateRemainingCount(this._source);
+            this.UpdateRemainingCount(this._source, true);
         }
 
-        private void UpdateRemainingCount(MapData info)
+        private int remainingCountCache = int.MaxValue;
+
+        private void UpdateRemainingCount(MapData info, bool useCache = false)
         {
             try
             {
-                info.GetRemainingCount()
-                    .ContinueWith(t =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            var remainingCount = t.Result;
-                            this.RemainingCount = remainingCount.ToString();
-                            this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
-                            this.IsInfinity = remainingCount == int.MaxValue;
-                            this.GaugeColor = remainingCount < 2 ? red : green;
-                            this.IsSupported = 0 < remainingCount;
-                            this.IsInfinity = remainingCount == int.MaxValue;
-                            this.IsLoading = false;
-                        });
-                    });
+                if (!useCache)
+                {
+                    info.GetRemainingCount()
+                        .ContinueWith(t => this.Update(t.Result, useCache));
+                }
+                else
+                {
+                    this.Update(this.remainingCountCache, useCache);
+                }
             }
             catch (AggregateException e)
             {
                 Debug.WriteLine(e);
             }
+        }
+
+        private void Update(int remainingCount, bool useCache)
+        {
+            this.remainingCountCache = remainingCount;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (!useCache)
+                {
+                    this.IsLoading = false;
+                    this.IsSupported = 0 < remainingCount;
+                }
+                this.RemainingCount = remainingCount.ToString();
+                this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
+                this.IsInfinity = !this.IsLoading && remainingCount == int.MaxValue;
+                this.GaugeColor = remainingCount < 2 ? red : green;
+            });
         }
     }
 }
