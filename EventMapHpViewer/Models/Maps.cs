@@ -48,17 +48,19 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.IsExBoss == 1)　return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
+                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
                 return this.Eventmap?.NowMapHp /*イベント海域*/?? 1 /*ゲージ無し通常海域*/;
             }
         }
 
+        private int[] remoteBossHpCache;
+
         /// <summary>
         /// 残回数。輸送の場合はA勝利の残回数。
         /// </summary>
-        public async Task<int> GetRemainingCount()
+        public async Task<int> GetRemainingCount(bool useCache = false)
         {
-            if(this.IsCleared == 1) return 0;
+            if (this.IsCleared == 1) return 0;
 
             if (this.IsExBoss == 1) return this.Current;    //ゲージ有り通常海域
 
@@ -71,14 +73,17 @@ namespace EventMapHpViewer.Models
                 return (int)Math.Ceiling((double)this.Current / capacityA);
             }
 
-            var remoteBossHp = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+            if (!useCache)
+                this.remoteBossHpCache = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+
+            var remoteBossHp = this.remoteBossHpCache;
             if (remoteBossHp != null && remoteBossHp.Any())
                 return this.CalculateRemainingCount(remoteBossHp);   //イベント海域(リモートデータ)
 
             try
             {
                 // リモートデータがない場合、ローカルデータを使う
-                return this.CalculateRemainingCount(EventBossHpDictionary[this.Eventmap.SelectedRank][this.Id]);   //イベント海域
+                return this.CalculateRemainingCount(eventBossHpDictionary[this.Eventmap.SelectedRank][this.Id]);   //イベント海域
             }
             catch (KeyNotFoundException)
             {
@@ -190,7 +195,7 @@ namespace EventMapHpViewer.Models
         /// 手動メンテデータ用。
         /// いずれ削除される見込み。
         /// </summary>
-        private static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> EventBossHpDictionary
+        private static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> eventBossHpDictionary
             = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
             {
                 { //難易度未選択

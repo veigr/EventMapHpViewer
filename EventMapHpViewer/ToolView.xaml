@@ -189,7 +189,7 @@
                                              HorizontalAlignment="Right"
                                              VerticalAlignment="Center"
                                              Margin="3,0,7,0"
-                                             Visibility="{Binding IsCountVisible, Converter={StaticResource TrueToVisibleConverter}}">
+                                             Visibility="{Binding IsCountVisibility}">
                                         <Control.Style>
                                             <Style TargetType="{x:Type Control}">
                                                 <Setter Property="Template">
@@ -254,7 +254,7 @@
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
                                                Margin="3,0,7,0"
-                                               Visibility="{Binding IsSupported, Converter={StaticResource FalseToVisibleConverter}}"
+                                               Visibility="{Binding IsUnSupportedVisibility}"
                                                Style="{DynamicResource DefaultTextStyleKey}"
                                                Text="未対応"/>
 
@@ -264,7 +264,7 @@
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
                                                Margin="3,0,7,0"
-                                               Visibility="{Binding IsInfinity, Converter={StaticResource TrueToVisibleConverter}}"
+                                               Visibility="{Binding IsInfinityVisibility}"
                                                Style="{DynamicResource DefaultTextStyleKey}"
                                                Text="無限"/>
 

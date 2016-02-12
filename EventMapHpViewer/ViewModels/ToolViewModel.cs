@@ -6,6 +6,7 @@ using Grabacr07.KanColleWrapper;
 using MetroTrilithon.Mvvm;
 using System.Collections.Generic;
 using Grabacr07.KanColleWrapper.Models;
+using System;
 
 namespace EventMapHpViewer.ViewModels
 {
@@ -82,23 +83,33 @@ namespace EventMapHpViewer.ViewModels
         }
         #endregion
 
-        public bool ExistsTransportGauge => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
+        public bool ExistsTransportGauge
+            => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
 
-        public int TransportCapacity => KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+        public int TransportCapacity
+            => KanColleClient.Current.Homeport.Organization.TransportationCapacity();
 
-        public int TransportCapacityS => KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
+        public int TransportCapacityS
+            => KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
 
         private readonly HashSet<Ship> handledShips = new HashSet<Ship>();
 
+        private readonly List<IDisposable> fleetHandlers = new List<IDisposable>();
+
         private void FleetsUpdated()
         {
+            foreach (var handler in fleetHandlers)
+            {
+                handler.Dispose();
+            }
+            this.fleetHandlers.Clear();
             foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets.Values)
             {
-                fleet.Subscribe(nameof(fleet.Ships), this.RaiseTransportCapacityChanged);
+                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.RaiseTransportCapacityChanged));
                 foreach (var ship in fleet.Ships)
                 {
                     if (this.handledShips.Contains(ship)) return;
-                    ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged);
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged));
                     this.handledShips.Add(ship);
                 }
             }

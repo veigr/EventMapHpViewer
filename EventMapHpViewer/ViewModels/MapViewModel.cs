@@ -4,11 +4,6 @@ using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
 using Livet;
-using Grabacr07.KanColleWrapper;
-using MetroTrilithon.Mvvm;
-using System.Threading.Tasks;
-using System.Reactive.Linq;
-using System.Threading;
 
 namespace EventMapHpViewer.ViewModels
 {
@@ -52,7 +47,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._Name; }
             set
-            { 
+            {
                 if (this._Name == value)
                     return;
                 this._Name = value;
@@ -70,7 +65,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._AreaName; }
             set
-            { 
+            {
                 if (this._AreaName == value)
                     return;
                 this._AreaName = value;
@@ -88,7 +83,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._Current; }
             set
-            { 
+            {
                 if (this._Current == value)
                     return;
                 this._Current = value;
@@ -106,7 +101,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._Max; }
             set
-            { 
+            {
                 if (this._Max == value)
                     return;
                 this._Max = value;
@@ -144,7 +139,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._RemainingCount; }
             set
-            { 
+            {
                 if (this._RemainingCount == value)
                     return;
                 this._RemainingCount = value;
@@ -152,6 +147,7 @@ namespace EventMapHpViewer.ViewModels
             }
         }
         #endregion
+
 
         #region RemainingCountTransportS変更通知プロパティ
         private string _RemainingCountTransportS;
@@ -179,7 +175,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._IsCleared; }
             set
-            { 
+            {
                 if (this._IsCleared == value)
                     return;
                 this._IsCleared = value;
@@ -197,7 +193,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._GaugeColor; }
             set
-            { 
+            {
                 if (Equals(this._GaugeColor, value))
                     return;
                 this._GaugeColor = value;
@@ -215,7 +211,7 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._IsRankSelected; }
             set
-            { 
+            {
                 if (this._IsRankSelected == value)
                     return;
                 this._IsRankSelected = value;
@@ -238,12 +234,12 @@ namespace EventMapHpViewer.ViewModels
                     return;
                 this._IsLoading = value;
                 this.RaisePropertyChanged();
-                this.RaisePropertyChanged(nameof(this.IsCountVisible));
+                this.RaiseVisibilityChanged();
             }
         }
         #endregion
 
-        
+
         #region IsSupported変更通知プロパティ
         private bool _IsSupported;
 
@@ -252,16 +248,18 @@ namespace EventMapHpViewer.ViewModels
             get
             { return this._IsSupported; }
             set
-            { 
+            {
                 if (this._IsSupported == value)
                     return;
                 this._IsSupported = value;
                 this.RaisePropertyChanged();
-                this.RaisePropertyChanged(nameof(this.IsCountVisible));
+                this.RaiseVisibilityChanged();
             }
         }
         #endregion
 
+        public Visibility IsUnSupportedVisibility
+            => !this.IsLoading && !this.IsSupported ? Visibility.Visible : Visibility.Collapsed;
 
         #region IsInfinity変更通知プロパティ
         private bool _IsInfinity;
@@ -276,12 +274,16 @@ namespace EventMapHpViewer.ViewModels
                     return;
                 this._IsInfinity = value;
                 this.RaisePropertyChanged();
-                this.RaisePropertyChanged(nameof(this.IsCountVisible));
+                this.RaiseVisibilityChanged();
             }
         }
         #endregion
 
-        public bool IsCountVisible => !this.IsLoading && this.IsSupported && !this.IsInfinity;
+        public Visibility IsInfinityVisibility
+            => !this.IsLoading && this.IsInfinity ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility IsCountVisibility
+            => !this.IsLoading && this.IsSupported && !this.IsInfinity ? Visibility.Visible : Visibility.Collapsed;
 
         #region GaugeType変更通知プロパティ
         private GaugeType _GaugeType;
@@ -331,21 +333,13 @@ namespace EventMapHpViewer.ViewModels
             this.UpdateRemainingCount(this._source, true);
         }
 
-        private int remainingCountCache = int.MaxValue;
 
         private void UpdateRemainingCount(MapData info, bool useCache = false)
         {
             try
             {
-                if (!useCache)
-                {
-                    info.GetRemainingCount()
-                        .ContinueWith(t => this.Update(t.Result, useCache));
-                }
-                else
-                {
-                    this.Update(this.remainingCountCache, useCache);
-                }
+                info.GetRemainingCount(useCache)
+                    .ContinueWith(t => this.Update(t.Result, useCache));
             }
             catch (AggregateException e)
             {
@@ -355,19 +349,25 @@ namespace EventMapHpViewer.ViewModels
 
         private void Update(int remainingCount, bool useCache)
         {
-            this.remainingCountCache = remainingCount;
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (!useCache)
                 {
                     this.IsLoading = false;
-                    this.IsSupported = 0 < remainingCount;
                 }
                 this.RemainingCount = remainingCount.ToString();
                 this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
-                this.IsInfinity = !this.IsLoading && remainingCount == int.MaxValue;
+                this.IsSupported = 0 < remainingCount;
+                this.IsInfinity = remainingCount == int.MaxValue;
                 this.GaugeColor = remainingCount < 2 ? red : green;
             });
+        }
+
+        private void RaiseVisibilityChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.IsCountVisibility));
+            this.RaisePropertyChanged(nameof(this.IsUnSupportedVisibility));
+            this.RaisePropertyChanged(nameof(this.IsInfinityVisibility));
         }
     }
 }
