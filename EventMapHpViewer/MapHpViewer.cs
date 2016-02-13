@@ -8,12 +8,14 @@ namespace EventMapHpViewer
     [Export(typeof(IPlugin))]
     [Export(typeof(ITool))]
     [ExportMetadata("Guid", "101436F4-9308-4892-A88A-19EFBDF2ED5F")]
-    [ExportMetadata("Title", "MapHPViewer")]
+    [ExportMetadata("Title", title)]
     [ExportMetadata("Description", "Map HPを表示します。")]
-    [ExportMetadata("Version", "3.0.4")]
+    [ExportMetadata("Version", version)]
     [ExportMetadata("Author", "@veigr")]
     public class MapHpViewer : IPlugin, ITool
     {
+        internal const string title = "MapHPViewer";
+        internal const string version = "3.0.5";
         private ToolViewModel vm;
 
         public void Initialize()

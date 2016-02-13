@@ -7,6 +7,7 @@ using System.Net.Http;
 using Nekoxy;
 using System.Net;
 using Codeplex.Data;
+using System.Reflection;
 
 namespace EventMapHpViewer.Models
 {
@@ -126,6 +127,8 @@ namespace EventMapHpViewer.Models
         {
             using (var client = new HttpClient(GetProxyConfiguredHandler()))
             {
+                client.DefaultRequestHeaders
+                    .TryAddWithoutValidation("User-Agent", $"{MapHpViewer.title}/{MapHpViewer.version}");
                 try {
                     // rank の後ろの"1"はサーバー上手動メンテデータを加味するかどうかのフラグ
                     var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/exboss/{mapId}/{rank}/1");
