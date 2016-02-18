@@ -14,11 +14,11 @@ namespace EventMapHpViewer.Models
         {
             if (org?.Fleets == null || org.Fleets.Count < 1)
                 return 0;
-            var coefficient = isS ? 1.44 : 1;
-            return (int)Math.Floor(org.BaseTransportationCapacity() * coefficient)
-                + (int)Math.Floor(org.DrumTransportationCapacity() * coefficient)
-                + (int)Math.Floor(org.DaihatsuTransportationCapacity() * coefficient)
-                ;
+            var coefficient = isS ? 1.0 : 0.7;
+            var tp = org.BaseTransportationCapacity()
+                     + org.DrumTransportationCapacity()
+                     + org.DaihatsuTransportationCapacity();
+            return (int) Math.Floor(tp * coefficient);
         }
 
         private static double BaseTransportationCapacity(this Organization org)
@@ -28,17 +28,15 @@ namespace EventMapHpViewer.Models
         }
 
         private static double DrumTransportationCapacity(this Organization org)
-        {
-            var ships = org.Combined ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships) : org.Fleets[1].Ships;
-            var countDrum = ships.Sum(x => x.Slots.Count(y => y.Item.Info.Id == 75));
-            return countDrum * 3.5;
-        }
+            => org.CountSlotitem(75) * 5.0;
 
         private static double DaihatsuTransportationCapacity(this Organization org)
+            => org.CountSlotitem(68) * 8.0;
+
+        private static int CountSlotitem(this Organization org, int slotitemId)
         {
             var ships = org.Combined ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships) : org.Fleets[1].Ships;
-            var countDaihatsu = ships.Sum(x => x.Slots.Count(y => y.Item.Info.Id == 68));
-            return countDaihatsu * 5.5;
+            return ships.Sum(x => x.Slots.Count(y => y.Item.Info.Id == slotitemId));
         }
 
         private static double TransportationCapacity(this ShipType type)
@@ -46,21 +44,25 @@ namespace EventMapHpViewer.Models
             switch (type.Id)
             {
                 case 2:     // 駆逐艦
-                    return 3.5;
+                    return 5.0;
                 case 3:     // 軽巡
-                    return 1.2;
+                    return 2.0;
                 case 6:     // 航空巡洋艦
-                    return 3;
+                    return 4.0;
                 case 10:    // 航空戦艦
-                    return 5.2;
+                    return 7.0;
                 case 16:    // 水上機母艦
-                    return 6.4;
+                    return 9.0;
                 case 17:    // 揚陸艦
-                    return 8.5;
+                    return 12.0;
+                case 20:    // 潜水母艦
+                    return 7.0;
+                case 21:    // 練習巡洋艦
+                    return 6.0;
                 case 22:    // 補給艦
-                    return 10.5;
+                    return 15.0;
                 default:
-                    return 0;   //わからないのは0
+                    return 0;   // その他は0
             }
         }
     }
