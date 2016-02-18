@@ -131,8 +131,10 @@
     <Compile Include="Annotations\ElementalAttribute.cs" />
     <Compile Include="Annotations\LightAttribute.cs" />
     <Compile Include="MapHpViewer.cs" />
+    <Compile Include="Models\Eventmap.cs" />
     <Compile Include="Models\GaugeType.cs" />
     <Compile Include="Models\MapArea.cs" />
+    <Compile Include="Models\MapData.cs" />
     <Compile Include="Models\MapInfo.cs" />
     <Compile Include="Models\Maps.cs" />
     <Compile Include="Models\MapInfoProxy.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Models\Raw\kcsapi_mst_mapinfo.cs" />
     <Compile Include="Models\Raw\kcsapi_start2.cs" />
     <Compile Include="Models\Raw\map_exboss.cs" />
+    <Compile Include="Models\Raw\map_select_eventmap_rank.cs" />
     <Compile Include="Models\Raw\member_mapinfo.cs" />
     <Compile Include="Models\Raw\map_start_next.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

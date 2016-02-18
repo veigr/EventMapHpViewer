@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
+using Grabacr07.KanColleWrapper.Models;
 using Livet;
 
 namespace EventMapHpViewer.Models
@@ -42,30 +44,26 @@ namespace EventMapHpViewer.Models
                     Maps.MapInfos = new MasterTable<MapInfo>(x.Data.api_mst_mapinfo.Select(m => new MapInfo(m, Maps.MapAreas)));
                 });
 
-            proxy.ApiSessionSource.Where(s => s.Request.PathAndQuery.StartsWith("/kcsapi/api_get_member/mapinfo"))
+            proxy.ApiSessionSource
+                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_get_member/mapinfo")
                 .TryParse<member_mapinfo[]>()
                 .Subscribe(m =>
                 {
                     Debug.WriteLine("MapInfoProxy - member_mapinfo");
-                    this.Maps.MapList = m.Data.Select(x => new MapData
-                    {
-                        IsCleared = x.api_cleared,
-                        DefeatCount = x.api_defeat_count,
-                        IsExBoss = x.api_exboss_flag,
-                        Id = x.api_id,
-                        Eventmap = x.api_eventmap != null
-                            ? new Eventmap
-                            {
-                                MaxMapHp = x.api_eventmap.api_max_maphp,
-                                NowMapHp = x.api_eventmap.api_now_maphp,
-                                SelectedRank = x.api_eventmap.api_selected_rank,
-                                State = x.api_eventmap.api_state,
-                                GaugeType = (GaugeType)x.api_eventmap.api_gauge_type,
-                            }
-                            : null,
-                    }).ToArray();
+                    this.Maps.MapList = this.CreateMapList(m.Data);
                     this.RaisePropertyChanged(() => this.Maps);
                 });
+
+            proxy.ApiSessionSource
+                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/select_eventmap_rank")
+                .TryParse<map_select_eventmap_rank>()
+                .Subscribe(x =>
+                {
+                    Debug.WriteLine("MapInfoProxy - member_mapinfo");
+                    this.Maps.MapList = this.UpdateRank(x);
+                    this.RaisePropertyChanged(() => this.Maps);
+                });
+
 
             //// 難易度選択→即出撃時にゲージを更新するなら…
             //proxy.ApiSessionSource.Where(x => x.PathAndQuery == "/kcsapi/api_req_map/start")
@@ -81,6 +79,47 @@ namespace EventMapHpViewer.Models
             //        eventMap.Eventmap.MaxMapHp = m.Data.api_eventmap.MaxMapHp;
             //        this.RaisePropertyChanged(() => this.Maps);
             //    });
+        }
+
+        private MapData[] CreateMapList(IEnumerable<member_mapinfo> maps)
+        {
+            return maps
+                .Select(x => new MapData
+                {
+                    IsCleared = x.api_cleared,
+                    DefeatCount = x.api_defeat_count,
+                    IsExBoss = x.api_exboss_flag,
+                    Id = x.api_id,
+                    Eventmap = x.api_eventmap != null
+                        ? new Eventmap
+                        {
+                            MaxMapHp = x.api_eventmap.api_max_maphp,
+                            NowMapHp = x.api_eventmap.api_now_maphp,
+                            SelectedRank = x.api_eventmap.api_selected_rank,
+                            State = x.api_eventmap.api_state,
+                            GaugeType = (GaugeType) x.api_eventmap.api_gauge_type,
+                        }
+                        : null,
+                }).ToArray();
+        }
+
+        private MapData[] UpdateRank(SvData<map_select_eventmap_rank> data)
+        {
+            var rank = 0;
+            int.TryParse(data.Request["api_rank"], out rank);
+            var areaId = data.Request["api_maparea_id"];
+            var mapNo = data.Request["api_map_no"];
+            var hp = data.Data.api_max_maphp;
+
+
+            var list = this.Maps.MapList;
+            var targetMap = list.FirstOrDefault(m => m.Id.ToString() == areaId + mapNo);
+            if (targetMap?.Eventmap == null) return list;
+
+            targetMap.Eventmap.SelectedRank = rank;
+            targetMap.Eventmap.MaxMapHp = hp;
+            targetMap.Eventmap.NowMapHp = hp;
+            return list;
         }
     }
 }

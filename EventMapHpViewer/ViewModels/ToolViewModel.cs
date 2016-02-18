@@ -25,6 +25,7 @@ namespace EventMapHpViewer.ViewModels
                 {
                     () => this.mapInfoProxy.Maps, (sender, args) =>
                     {
+                        // M の中身は殆ど変更通知してくれないし全部一括作りなおししかしないひどい実装
                         this.Maps = this.mapInfoProxy.Maps.MapList
                             .OrderBy(x => x.Id)
                             .Select(x => new MapViewModel(x))
