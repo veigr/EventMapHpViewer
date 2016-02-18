@@ -301,7 +301,7 @@
                                Style="{DynamicResource EmphaticTextStyleKey}"
                                FontSize="12"
                                Visibility="{Binding Source={x:Static kanColleWrapper:KanColleClient.Current}, Path=Homeport.Organization.Combined, Converter={StaticResource TrueToVisibleConverter}}"/>
-                    <TextBlock Text=" (目安)"
+                    <TextBlock Text=" (揚陸地点到達時に確定)"
                                Style="{DynamicResource DefaultTextStyleKey}"/>
                     <StackPanel Margin="8,0">
                         <TextBlock>

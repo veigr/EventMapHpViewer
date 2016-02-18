@@ -7,6 +7,9 @@ using MetroTrilithon.Mvvm;
 using System.Collections.Generic;
 using Grabacr07.KanColleWrapper.Models;
 using System;
+using System.Reactive.Linq;
+using EventMapHpViewer.Models.Raw;
+using System.Diagnostics;
 
 namespace EventMapHpViewer.ViewModels
 {
@@ -40,11 +43,23 @@ namespace EventMapHpViewer.ViewModels
 
         public void Loaded()
         {
-            // 変更検知はあまり深く考えないでやってしまっているのでマズいところあるかも
+            // 変更検知はあまり深く考えないでやってしまっているのでマズいところあるかも (そもそもVMでやることではない)
             KanColleClient.Current.Homeport.Organization
                 .Subscribe(nameof(Organization.Fleets), this.FleetsUpdated)
                 .Subscribe(nameof(Organization.Combined), this.RaiseTransportCapacityChanged)
                 .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear())
+                .AddTo(this);
+            KanColleClient.Current.Proxy.ApiSessionSource
+                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/next")
+                .TryParse<map_start_next>()
+                .Subscribe(x =>
+                {
+                    if (x.Data.api_event_id == 9)
+                        this.fixedTransportCapacity = true;
+                })
+                .AddTo(this);
+            KanColleClient.Current.Proxy.api_port
+                .Subscribe(_ => this.fixedTransportCapacity = false)
                 .AddTo(this);
         }
 
@@ -97,6 +112,8 @@ namespace EventMapHpViewer.ViewModels
 
         private readonly List<IDisposable> fleetHandlers = new List<IDisposable>();
 
+        private bool fixedTransportCapacity;
+
         private void FleetsUpdated()
         {
             foreach (var handler in fleetHandlers)
@@ -111,6 +128,7 @@ namespace EventMapHpViewer.ViewModels
                 {
                     if (this.handledShips.Contains(ship)) return;
                     this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged));
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Situation), this.RaiseTransportCapacityChanged));
                     this.handledShips.Add(ship);
                 }
             }
@@ -118,6 +136,9 @@ namespace EventMapHpViewer.ViewModels
 
         private void RaiseTransportCapacityChanged()
         {
+            if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
+
+            Debug.WriteLine(nameof(this.RaiseTransportCapacityChanged));
             this.RaisePropertyChanged(nameof(this.TransportCapacity));
             this.RaisePropertyChanged(nameof(this.TransportCapacityS));
             if (this.Maps == null) return;

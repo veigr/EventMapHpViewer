@@ -23,8 +23,8 @@ namespace EventMapHpViewer.Models
 
         private static double BaseTransportationCapacity(this Organization org)
         {
-            var ships = org.Combined ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships) : org.Fleets[1].Ships;
-            return ships.Sum(x => x.Info.ShipType.TransportationCapacity());
+            return org.TransportingShips()
+                .Sum(x => x.Info.ShipType.TransportationCapacity());
         }
 
         private static double DrumTransportationCapacity(this Organization org)
@@ -35,8 +35,8 @@ namespace EventMapHpViewer.Models
 
         private static int CountSlotitem(this Organization org, int slotitemId)
         {
-            var ships = org.Combined ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships) : org.Fleets[1].Ships;
-            return ships.Sum(x => x.Slots.Count(y => y.Item.Info.Id == slotitemId));
+            return org.TransportingShips()
+                .Sum(x => x.Slots.Count(y => y.Item.Info.Id == slotitemId));
         }
 
         private static double TransportationCapacity(this ShipType type)
@@ -64,6 +64,22 @@ namespace EventMapHpViewer.Models
                 default:
                     return 0;   // その他は0
             }
+        }
+
+        private static IEnumerable<Ship> TransportingShips(this Organization org)
+        {
+            var ships = org.Combined
+                ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships)
+                : org.Fleets[1].Ships;
+            return ships.PossibleTransport();
+        }
+
+        private static IEnumerable<Ship> PossibleTransport(this IEnumerable<Ship> ships)
+        {
+            return ships
+                .Where(ship => !ship.Situation.HasFlag(ShipSituation.Evacuation))
+                .Where(ship => !ship.Situation.HasFlag(ShipSituation.Tow))
+                .Where(ship => !ship.Situation.HasFlag(ShipSituation.HeavilyDamaged));
         }
     }
 }
