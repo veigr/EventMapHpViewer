@@ -18,6 +18,7 @@ namespace EventMapHpViewer.Models
             var tp = org.BaseTransportationCapacity()
                      + org.DrumTransportationCapacity()
                      + org.DaihatsuTransportationCapacity()
+                     + org.LaunchransportationCapacity()
                      + org.RationsTransportationCapacity();
             return (int) Math.Floor(tp * coefficient);
         }
