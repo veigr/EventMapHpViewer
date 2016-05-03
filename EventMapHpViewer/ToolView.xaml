@@ -198,7 +198,7 @@
                                                             <TextBlock>
                                                                 <Run Text="後"
                                                                      Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                <Run Text="{Binding RemainingCount}"
+                                                                <Run Text="{Binding RemainingCountMin}"
                                                                      Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                                                 <Run Text="回"
                                                                      Style="{DynamicResource DefaultTextElementStyleKey}"/>
@@ -207,6 +207,26 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSingleRemainingCount}" Value="False">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate>
+                                                                    <TextBlock>
+                                                                        <Run Text="後"
+                                                                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                        <Run Text="{Binding RemainingCountMin}"
+                                                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                        <Run Text="-"
+                                                                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                        <Run Text="{Binding RemainingCountMax}"
+                                                                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                                                                        <Run Text="回"
+                                                                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                                                                    </TextBlock>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding GaugeType}" Value="Transport">
                                                         <Setter Property="Template">
                                                             <Setter.Value>
@@ -215,7 +235,7 @@
                                                                         <TextBlock>
                                                                             <Run Text="後 A:"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                            <Run Text="{Binding RemainingCount}"
+                                                                            <Run Text="{Binding RemainingCountMin}"
                                                                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                                                             <Run Text="回"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>

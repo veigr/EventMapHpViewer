@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -41,61 +41,63 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ƒQ[ƒW—L‚è’ÊíŠCˆæ
-                return this.Eventmap?.NowMapHp /*ƒCƒxƒ“ƒgŠCˆæ*/?? 1 /*ƒQ[ƒW–³‚µ’ÊíŠCˆæ*/;
+                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ã‚²ãƒ¼ã‚¸æœ‰ã‚Šé€šå¸¸æµ·åŸŸ
+                return this.Eventmap?.NowMapHp /*ã‚¤ãƒ™ãƒ³ãƒˆæµ·åŸŸ*/?? 1 /*ã‚²ãƒ¼ã‚¸ç„¡ã—é€šå¸¸æµ·åŸŸ*/;
             }
         }
 
-        private int[] remoteBossHpCache;
+        private Raw.map_exboss[] remoteBossDataCache;
 
         /// <summary>
-        /// c‰ñ”B—A‘—‚Ìê‡‚ÍAŸ—˜‚Ìc‰ñ”B
+        /// æ®‹å›æ•°ã€‚è¼¸é€ã®å ´åˆã¯Aå‹åˆ©ã®æ®‹å›æ•°ã€‚
         /// </summary>
-        public async Task<int> GetRemainingCount(bool useCache = false)
+        public async Task<RemainingCount> GetRemainingCount(bool useCache = false)
         {
-            if (this.IsCleared == 1) return 0;
+            if (this.IsCleared == 1) return RemainingCount.Zero;
 
-            if (this.IsExBoss == 1) return this.Current;    //ƒQ[ƒW—L‚è’ÊíŠCˆæ
+            if (this.IsExBoss == 1) return new RemainingCount(this.Current);    //ã‚²ãƒ¼ã‚¸æœ‰ã‚Šé€šå¸¸æµ·åŸŸ
 
-            if (this.Eventmap == null) return 1;    //ƒQ[ƒW–³‚µ’ÊíŠCˆæ
+            if (this.Eventmap == null) return new RemainingCount(1);    //ã‚²ãƒ¼ã‚¸ç„¡ã—é€šå¸¸æµ·åŸŸ
 
             if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
                 var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
-                if (capacityA == 0) return int.MaxValue;  //ƒQ[ƒWŒ¸‚ç‚È‚¢
-                return (int)Math.Ceiling((double)this.Current / capacityA);
+                if (capacityA == 0) return RemainingCount.MaxValue;  //ã‚²ãƒ¼ã‚¸æ¸›ã‚‰ãªã„
+                return new RemainingCount((int)Math.Ceiling((double)this.Current / capacityA));
             }
 
-            if (this.Eventmap.SelectedRank == 0) return -1; //“ïˆÕ“x–¢‘I‘ğ
+            if (this.Eventmap.SelectedRank == 0) return null; //é›£æ˜“åº¦æœªé¸æŠ
 
             if (!useCache)
-                this.remoteBossHpCache = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+                this.remoteBossDataCache = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+            
+            if (this.remoteBossDataCache != null && this.remoteBossDataCache.Any())
+                return this.CalculateRemainingCount(this.remoteBossDataCache);   //ã‚¤ãƒ™ãƒ³ãƒˆæµ·åŸŸ(ãƒªãƒ¢ãƒ¼ãƒˆãƒ‡ãƒ¼ã‚¿)
 
-            var remoteBossHp = this.remoteBossHpCache;
-            if (remoteBossHp != null && remoteBossHp.Any())
-                return this.CalculateRemainingCount(remoteBossHp);   //ƒCƒxƒ“ƒgŠCˆæ(ƒŠƒ‚[ƒgƒf[ƒ^)
-
-            try
-            {
-                // ƒŠƒ‚[ƒgƒf[ƒ^‚ª‚È‚¢ê‡Aƒ[ƒJƒ‹ƒf[ƒ^‚ğg‚¤
-                return this.CalculateRemainingCount(eventBossHpDictionary[this.Eventmap.SelectedRank][this.Id]);   //ƒCƒxƒ“ƒgŠCˆæ
-            }
-            catch (KeyNotFoundException)
-            {
-                return -1;  //–¢‘Î‰
-            }
+            return null;  //æœªå¯¾å¿œ
         }
 
-        private int CalculateRemainingCount(int[] bossHPs)
+        private RemainingCount CalculateRemainingCount(Raw.map_exboss[] data)
         {
-            var lastBossHp = bossHPs.Last();
-            var normalBossHp = bossHPs.First();
-            if (this.Current <= lastBossHp) return 1;   //ÅŒã‚Ì1‰ñ
+            return new RemainingCount(
+                CalculateRemainingCount(
+                    data.Where(x => !x.isLast).Min(x => x.ship.maxhp),
+                    data.Where(x => x.isLast).Min(x => x.ship.maxhp)
+                ),
+                CalculateRemainingCount(
+                    data.Where(x => !x.isLast).Max(x => x.ship.maxhp),
+                    data.Where(x => x.isLast).Max(x => x.ship.maxhp)
+                ));
+        }
+
+        private int CalculateRemainingCount(int normalBossHp, int lastBossHp)
+        {
+            if (this.Current <= lastBossHp) return 1;   //æœ€å¾Œã®1å›
             return (int)Math.Ceiling((double)(this.Current - lastBossHp) / normalBossHp) + 1;
         }
 
         /// <summary>
-        /// —A‘—ƒQ[ƒW‚ÌSŸ—˜‚Ìc‰ñ”
+        /// è¼¸é€ã‚²ãƒ¼ã‚¸ã®Så‹åˆ©æ™‚ã®æ®‹å›æ•°
         /// </summary>
         public int RemainingCountTransportS
         {
@@ -103,30 +105,30 @@ namespace EventMapHpViewer.Models
             {
                 if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
                 var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
-                if (capacity == 0) return int.MaxValue;  //ƒQ[ƒWŒ¸‚ç‚È‚¢
+                if (capacity == 0) return int.MaxValue;  //ã‚²ãƒ¼ã‚¸æ¸›ã‚‰ãªã„
                 return (int)Math.Ceiling((double)this.Current / capacity);
             }
         }
 
         /// <summary>
-        /// ŠÍ‚±‚êípƒf[ƒ^EƒŠƒ“ƒN‚©‚çƒ{ƒXî•ñ‚ğæ“¾‚·‚éB
-        /// æ“¾‚Å‚«‚È‚©‚Á‚½ê‡‚Í null ‚ğ•Ô‚·B
+        /// è‰¦ã“ã‚Œæˆ¦è¡“ãƒ‡ãƒ¼ã‚¿ãƒ»ãƒªãƒ³ã‚¯ã‹ã‚‰ãƒœã‚¹æƒ…å ±ã‚’å–å¾—ã™ã‚‹ã€‚
+        /// å–å¾—ã§ããªã‹ã£ãŸå ´åˆã¯ null ã‚’è¿”ã™ã€‚
         /// </summary>
         /// <param name="mapId"></param>
         /// <param name="rank"></param>
         /// <returns></returns>
-        private static async Task<int[]> GetEventBossHp(int mapId, int rank)
+        private static async Task<Raw.map_exboss[]> GetEventBossHp(int mapId, int rank)
         {
             using (var client = new HttpClient(GetProxyConfiguredHandler()))
             {
                 client.DefaultRequestHeaders
                     .TryAddWithoutValidation("User-Agent", $"{MapHpViewer.title}/{MapHpViewer.version}");
                 try {
-                    // rank ‚ÌŒã‚ë‚Ì"1"‚ÍƒT[ƒo[ãè“®ƒƒ“ƒeƒf[ƒ^‚ğ‰Á–¡‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
-                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/exboss/{mapId}/{rank}/1");
+                    // rank ã®å¾Œã‚ã®"1"ã¯ã‚µãƒ¼ãƒãƒ¼ä¸Šæ‰‹å‹•ãƒ¡ãƒ³ãƒ†ãƒ‡ãƒ¼ã‚¿ã‚’åŠ å‘³ã™ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°
+                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{mapId}/{rank}");
                     if (!response.IsSuccessStatusCode)
                     {
-                        // 200 ‚¶‚á‚È‚©‚Á‚½
+                        // 200 ã˜ã‚ƒãªã‹ã£ãŸ
                         return null;
                     }
 
@@ -136,24 +138,21 @@ namespace EventMapHpViewer.Models
                         || !parsed.Any(x => x.isLast)
                         || !parsed.Any(x => !x.isLast))
                     {
-                        // ƒf[ƒ^‚ª‘µ‚Á‚Ä‚¢‚È‚¢
+                        // ãƒ‡ãƒ¼ã‚¿ãŒæƒã£ã¦ã„ãªã„
                         return null;
                     }
-                    return parsed
-                        .OrderBy(x => x.isLast) // ÅI•Ò¬‚ªŒã‚ë‚É—ˆ‚é‚æ‚¤‚É‚·‚é
-                        .Select(x => x.ship.maxhp)
-                        .ToArray();
+                    return parsed;
                 }
                 catch (HttpRequestException)
                 {
-                    // HTTP ƒŠƒNƒGƒXƒg‚É¸”s‚µ‚½
+                    // HTTP ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«å¤±æ•—ã—ãŸ
                     return null;
                 }
             }
         }
 
         /// <summary>
-        /// –{‘Ì‚ÌƒvƒƒLƒVİ’è‚ğ‘g‚İ‚ñ‚¾HttpClientHandler‚ğ•Ô‚·B
+        /// æœ¬ä½“ã®ãƒ—ãƒ­ã‚­ã‚·è¨­å®šã‚’çµ„ã¿è¾¼ã‚“ã HttpClientHandlerã‚’è¿”ã™ã€‚
         /// </summary>
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
@@ -187,43 +186,5 @@ namespace EventMapHpViewer.Models
                     return new HttpClientHandler();
             }
         }
-
-        /// <summary>
-        /// è“®ƒƒ“ƒeƒf[ƒ^—pB
-        /// ‚¢‚¸‚êíœ‚³‚ê‚éŒ©‚İB
-        /// </summary>
-        private static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, int[]>> eventBossHpDictionary
-            = new Dictionary<int, IReadOnlyDictionary<int, int[]>>
-            {
-                { //“ïˆÕ“x–¢‘I‘ğ
-                    0, new Dictionary<int, int[]>
-                    {
-                    }
-                },
-                { //•¸
-                    1, new Dictionary<int, int[]>
-                    {
-                        { 331, new[] { 110 } },
-                        { 332, new[] { 600, 380 } },
-                        { 333, new[] { 350, 370 } },
-                    }
-                },
-                { //‰³
-                    2, new Dictionary<int, int[]>
-                    {
-                        { 331, new[] { 110, 130 } },
-                        { 332, new[] { 600, 430 } },
-                        { 333, new[] { 350, 380 } },
-                    }
-                },
-                { //b
-                    3, new Dictionary<int, int[]>
-                    {
-                        { 331, new[] { 130, 160 } },
-                        { 332, new[] { 600, 480 } },
-                        { 333, new[] { 350, 390 } },
-                    }
-                },
-            };
     }
 }

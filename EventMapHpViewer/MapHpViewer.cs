@@ -15,7 +15,7 @@ namespace EventMapHpViewer
     public class MapHpViewer : IPlugin, ITool
     {
         internal const string title = "MapHPViewer";
-        internal const string version = "3.1.2";
+        internal const string version = "3.2.0";
         private ToolViewModel vm;
 
         public void Initialize()

@@ -8,15 +8,19 @@
     <viewModels:ToolViewModel.Maps>
         <viewModels:MapViewModel Current="1000"
                                  Max="9999"
-                                 RemainingCount="9"
+                                 SelectedRank=""
+                                 RemainingCountMin="9"
+                                 RemainingCountMax="9"
+                                 IsSingleRemainingCount="True"
                                  MapNumber="30-5"
                                  AreaName="イベント海域"
                                  Name="サーモン海域北方"
                                  IsCleared="False"
                                  IsRankSelected="False"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="False"
-                                 IsCountVisible="True"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -24,15 +28,19 @@
         </viewModels:MapViewModel>
         <viewModels:MapViewModel Current="1"
                                  Max="1"
-                                 RemainingCount="1"
+                                 SelectedRank=""
+                                 RemainingCountMin="1"
+                                 RemainingCountMax="1"
+                                 IsSingleRemainingCount="True"
                                  MapNumber="xx-x"
                                  AreaName="ふつう海域"
                                  Name="ふつうマップ"
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="False"
-                                 IsCountVisible="True"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Normal">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#FF2020"/>
@@ -40,15 +48,19 @@
         </viewModels:MapViewModel>
         <viewModels:MapViewModel Current="1"
                                  Max="5"
-                                 RemainingCount="1"
+                                 SelectedRank=""
+                                 RemainingCountMin="1"
+                                 RemainingCountMax="1"
+                                 IsSingleRemainingCount="True"
                                  MapNumber="2-5"
                                  AreaName="アルフォンしーの方面"
                                  Name="あるフォンシーの方面進出"
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="False"
-                                 IsCountVisible="True"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Extra">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#FF2020"/>
@@ -58,15 +70,18 @@
                                  Max="444"
                                  SelectedRank="甲"
                                  SelectedRankVisibility="Visible"
-                                 RemainingCount="7"
+                                 RemainingCountMin="7"
+                                 RemainingCountMax="7"
+                                 IsSingleRemainingCount="True"
                                  MapNumber="30-5"
                                  AreaName="イベント海域"
                                  Name="未対応海域"
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="False"
-                                 IsCountVisible="True"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -76,15 +91,18 @@
                                  Max="444"
                                  SelectedRank="乙"
                                  SelectedRankVisibility="Visible"
-                                 RemainingCount="7"
+                                 RemainingCountMin="7"
+                                 RemainingCountMax="7"
+                                 IsSingleRemainingCount="True"
                                  MapNumber="30-5"
                                  AreaName="イベント海域"
                                  Name="未対応海域"
+                                 IsCountVisibility="Collapsed"
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="False"
                                  IsInfinity="False"
-                                 IsCountVisible="False"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -94,7 +112,9 @@
                                  Max="444"
                                  SelectedRank="乙"
                                  SelectedRankVisibility="Visible"
-                                 RemainingCount="7"
+                                 RemainingCountMin="7"
+                                 RemainingCountMax="7"
+                                 IsSingleRemainingCount="True"
                                  RemainingCountTransportS="5"
                                  MapNumber="30-5"
                                  AreaName="イベント海域"
@@ -102,8 +122,9 @@
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="False"
-                                 IsCountVisible="True"
+                                 IsInfinityVisibility="Collapsed"
                                  GaugeType="Transport">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
@@ -113,17 +134,40 @@
                                  Max="444"
                                  SelectedRank="乙"
                                  SelectedRankVisibility="Visible"
-                                 RemainingCount="7"
+                                 RemainingCountMin="7"
+                                 RemainingCountMax="7"
+                                 IsSingleRemainingCount="True"
                                  RemainingCountTransportS="5"
                                  MapNumber="30-5"
                                  AreaName="イベント海域"
                                  Name="無限輸送"
+                                 IsCountVisibility="Collapsed"
                                  IsCleared="False"
                                  IsRankSelected="True"
                                  IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
                                  IsInfinity="True"
-                                 IsCountVisible="False"
                                  GaugeType="Transport">
+            <viewModels:MapViewModel.GaugeColor>
+                <SolidColorBrush Color="#40C820"/>
+            </viewModels:MapViewModel.GaugeColor>
+        </viewModels:MapViewModel>
+        <viewModels:MapViewModel Current="1000"
+                                 Max="9999"
+                                 SelectedRank="乙"
+                                 RemainingCountMin="3"
+                                 RemainingCountMax="9"
+                                 IsSingleRemainingCount="False"
+                                 MapNumber="34-2"
+                                 AreaName="イベント海域"
+                                 Name="ランダムな奴"
+                                 IsCleared="False"
+                                 IsRankSelected="True"
+                                 IsSupported="True"
+                                 IsUnSupportedVisibility="Collapsed"
+                                 IsInfinity="False"
+                                 IsInfinityVisibility="Collapsed"
+                                 GaugeType="Event">
             <viewModels:MapViewModel.GaugeColor>
                 <SolidColorBrush Color="#40C820"/>
             </viewModels:MapViewModel.GaugeColor>

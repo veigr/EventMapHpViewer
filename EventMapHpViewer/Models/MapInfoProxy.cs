@@ -59,7 +59,7 @@ namespace EventMapHpViewer.Models
                 .TryParse<map_select_eventmap_rank>()
                 .Subscribe(x =>
                 {
-                    Debug.WriteLine("MapInfoProxy - member_mapinfo");
+                    Debug.WriteLine("MapInfoProxy - select_eventmap_rank");
                     this.Maps.MapList = this.UpdateRank(x);
                     this.RaisePropertyChanged(() => this.Maps);
                 });

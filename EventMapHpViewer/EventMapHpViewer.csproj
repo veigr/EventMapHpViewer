@@ -147,6 +147,7 @@
     <Compile Include="Models\Raw\map_select_eventmap_rank.cs" />
     <Compile Include="Models\Raw\member_mapinfo.cs" />
     <Compile Include="Models\Raw\map_start_next.cs" />
+    <Compile Include="Models\RemainingCount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolView.xaml.cs">
       <DependentUpon>ToolView.xaml</DependentUpon>
