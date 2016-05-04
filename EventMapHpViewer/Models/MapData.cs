@@ -81,12 +81,12 @@ namespace EventMapHpViewer.Models
         {
             return new RemainingCount(
                 CalculateRemainingCount(
-                    data.Where(x => !x.isLast).Min(x => x.ship.maxhp),
-                    data.Where(x => x.isLast).Min(x => x.ship.maxhp)
-                ),
-                CalculateRemainingCount(
                     data.Where(x => !x.isLast).Max(x => x.ship.maxhp),
                     data.Where(x => x.isLast).Max(x => x.ship.maxhp)
+                ),
+                CalculateRemainingCount(
+                    data.Where(x => !x.isLast).Min(x => x.ship.maxhp),
+                    data.Where(x => x.isLast).Min(x => x.ship.maxhp)
                 ));
         }
 
