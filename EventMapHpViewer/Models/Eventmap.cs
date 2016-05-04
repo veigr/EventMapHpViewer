@@ -2,8 +2,8 @@ namespace EventMapHpViewer.Models
 {
     public class Eventmap
     {
-        public int NowMapHp { get; set; }
-        public int MaxMapHp { get; set; }
+        public int? NowMapHp { get; set; }
+        public int? MaxMapHp { get; set; }
         public int State { get; set; }
         public int SelectedRank { get; set; }
         public GaugeType GaugeType { get; set; }

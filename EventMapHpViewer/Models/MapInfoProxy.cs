@@ -65,20 +65,25 @@ namespace EventMapHpViewer.Models
                 });
 
 
-            //// 難易度選択→即出撃時にゲージを更新するなら…
-            //proxy.ApiSessionSource.Where(x => x.PathAndQuery == "/kcsapi/api_req_map/start")
-            //    .TryParse<map_start_next>()
-            //    .Subscribe(m =>
-            //    {
-            //        if (m.Data.api_eventmap == null) return;
-            //        var eventMap = this.Maps.MapList.LastOrDefault(x => x.Eventmap != null);
-            //        if (eventMap == null) return;
-            //        if (eventMap.Eventmap.MaxMapHp != 9999) return;
-            //        Debug.WriteLine("MapInfoProxy - map_start_next");
-            //        eventMap.Eventmap.NowMapHp = m.Data.api_eventmap.NowMapHp;    //常にMAXなので普段は読んではいけない
-            //        eventMap.Eventmap.MaxMapHp = m.Data.api_eventmap.MaxMapHp;
-            //        this.RaisePropertyChanged(() => this.Maps);
-            //    });
+            proxy.ApiSessionSource
+                .Where(x => x.Request.PathAndQuery == "/kcsapi/api_req_map/start")
+                .TryParse<map_start_next>()
+                .Subscribe(x =>
+                {
+                    if (x.Data.api_eventmap == null) return;
+                    var targetMap = this.Maps.MapList
+                                        .FirstOrDefault(m => m.Id.ToString() == x.Data.api_maparea_id.ToString() + x.Data.api_mapinfo_no.ToString());
+                    if (targetMap?.Eventmap == null) return;
+
+                    if (targetMap.Eventmap.MaxMapHp.HasValue
+                    && targetMap.Eventmap.MaxMapHp != 9999)
+                        return;
+
+                    Debug.WriteLine("MapInfoProxy - map_start_next");
+                    targetMap.Eventmap.NowMapHp = x.Data.api_eventmap.api_now_maphp;
+                    targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
+                    this.RaisePropertyChanged(() => this.Maps);
+                });
         }
 
         private MapData[] CreateMapList(IEnumerable<member_mapinfo> maps)
@@ -109,7 +114,6 @@ namespace EventMapHpViewer.Models
             int.TryParse(data.Request["api_rank"], out rank);
             var areaId = data.Request["api_maparea_id"];
             var mapNo = data.Request["api_map_no"];
-            var hp = data.Data.api_max_maphp;
 
 
             var list = this.Maps.MapList;
@@ -117,8 +121,8 @@ namespace EventMapHpViewer.Models
             if (targetMap?.Eventmap == null) return list;
 
             targetMap.Eventmap.SelectedRank = rank;
-            targetMap.Eventmap.MaxMapHp = hp;
-            targetMap.Eventmap.NowMapHp = hp;
+            targetMap.Eventmap.MaxMapHp = null;
+            targetMap.Eventmap.NowMapHp = null;
             return list;
         }
     }

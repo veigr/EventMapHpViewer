@@ -76,9 +76,9 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region Current変更通知プロパティ
-        private int _Current;
+        private string _Current;
 
-        public int Current
+        public string Current
         {
             get
             { return this._Current; }
@@ -94,9 +94,9 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region Max変更通知プロパティ
-        private int _Max;
+        private string _Max;
 
-        public int Max
+        public string Max
         {
             get
             { return this._Max; }
@@ -332,8 +332,8 @@ namespace EventMapHpViewer.ViewModels
             this.MapNumber = info.MapNumber;
             this.Name = info.Name;
             this.AreaName = info.AreaName;
-            this.Current = info.Current;
-            this.Max = info.Max;
+            this.Current = info.Current?.ToString() ?? "???";
+            this.Max = info.Max?.ToString() ?? "???";
             this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
             this.RemainingCountTransportS = info.RemainingCountTransportS.ToString();
             this.IsCleared = info.IsCleared == 1;

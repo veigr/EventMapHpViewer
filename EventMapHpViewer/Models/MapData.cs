@@ -28,21 +28,25 @@ namespace EventMapHpViewer.Models
 
         public GaugeType GaugeType => this.Eventmap?.GaugeType ?? GaugeType.Normal;
 
-        public int Max
+        public int? Max
         {
             get
             {
                 if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount;
-                return this.Eventmap?.MaxMapHp ?? 1;
+                return this.Eventmap != null
+                    ? this.Eventmap.MaxMapHp
+                    : 1;
             }
         }
 
-        public int Current
+        public int? Current
         {
             get
             {
                 if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
-                return this.Eventmap?.NowMapHp /*イベント海域*/?? 1 /*ゲージ無し通常海域*/;
+                return this.Eventmap != null
+                    ? this.Eventmap.NowMapHp   // イベント海域
+                    : 1;    // ゲージ無し通常海域
             }
         }
 
@@ -55,7 +59,9 @@ namespace EventMapHpViewer.Models
         {
             if (this.IsCleared == 1) return RemainingCount.Zero;
 
-            if (this.IsExBoss == 1) return new RemainingCount(this.Current);    //ゲージ有り通常海域
+            if (!this.Current.HasValue) return null;    //難易度切り替え直後
+
+            if (this.IsExBoss == 1) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
 
             if (this.Eventmap == null) return new RemainingCount(1);    //ゲージ無し通常海域
 
