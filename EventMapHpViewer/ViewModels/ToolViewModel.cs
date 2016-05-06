@@ -23,31 +23,33 @@ namespace EventMapHpViewer.ViewModels
 
             if (this.mapInfoProxy == null) return;
 
-            this.CompositeDisposable.Add(new PropertyChangedEventListener(this.mapInfoProxy)
-            {
+            this.mapInfoProxy.Subscribe(
+                nameof(MapInfoProxy.Maps),
+                () =>
                 {
-                    () => this.mapInfoProxy.Maps, (sender, args) =>
-                    {
-                        // M の中身は殆ど変更通知してくれないし全部一括作りなおししかしないひどい実装
-                        this.Maps = this.mapInfoProxy.Maps.MapList
-                            .OrderBy(x => x.Id)
-                            .Select(x => new MapViewModel(x))
-                            .Where(x => !x.IsCleared)
-                            .ToArray();
-                        this.IsNoMap = !this.Maps.Any();
-                        this.FleetsUpdated();
-                    }
-                }
-            });
+                    if (this.mapInfoProxy?.Maps?.MapList == null) return;
+                    // M の中身は殆ど変更通知してくれないし全部一括作りなおししかしないひどい実装
+                    this.Maps = this.mapInfoProxy.Maps.MapList
+                        .OrderBy(x => x.Id)
+                        .Select(x => new MapViewModel(x))
+                        .Where(x => !x.IsCleared)
+                        .ToArray();
+                    this.IsNoMap = !this.Maps.Any();
+                    this.FleetsUpdated();
+                }, false);
+
+            KanColleClient.Current
+                .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false);
         }
 
-        public void Loaded()
+        public void Initialize()
         {
+            Debug.WriteLine("ToolViewModel: Initialize()");
             // 変更検知はあまり深く考えないでやってしまっているのでマズいところあるかも (そもそもVMでやることではない)
             KanColleClient.Current.Homeport.Organization
-                .Subscribe(nameof(Organization.Fleets), this.FleetsUpdated)
-                .Subscribe(nameof(Organization.Combined), this.RaiseTransportCapacityChanged)
-                .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear())
+                .Subscribe(nameof(Organization.Fleets), this.FleetsUpdated, false)
+                .Subscribe(nameof(Organization.Combined), this.RaiseTransportCapacityChanged, false)
+                .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear(), false)
                 .AddTo(this);
             KanColleClient.Current.Proxy.ApiSessionSource
                 .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/next")
@@ -55,11 +57,21 @@ namespace EventMapHpViewer.ViewModels
                 .Subscribe(x =>
                 {
                     if (x.Data.api_event_id == 9)
+                    {
+                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = true");
                         this.fixedTransportCapacity = true;
+                    }
                 })
                 .AddTo(this);
             KanColleClient.Current.Proxy.api_port
-                .Subscribe(_ => this.fixedTransportCapacity = false)
+                .Subscribe(_ =>
+                {
+                    if (!fixedTransportCapacity) return;
+
+                    Debug.WriteLine("ToolViewModel: fixedTransportCapacity = false");
+                    this.fixedTransportCapacity = false;
+                    this.RaiseTransportCapacityChanged();
+                })
                 .AddTo(this);
         }
 
@@ -123,12 +135,12 @@ namespace EventMapHpViewer.ViewModels
             this.fleetHandlers.Clear();
             foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets.Values)
             {
-                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.RaiseTransportCapacityChanged));
+                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.RaiseTransportCapacityChanged, false));
                 foreach (var ship in fleet.Ships)
                 {
                     if (this.handledShips.Contains(ship)) return;
-                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged));
-                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Situation), this.RaiseTransportCapacityChanged));
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.RaiseTransportCapacityChanged, false));
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Situation), this.RaiseTransportCapacityChanged, false));
                     this.handledShips.Add(ship);
                 }
             }

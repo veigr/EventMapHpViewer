@@ -13,7 +13,7 @@
              d:DesignHeight="500"
              d:DesignWidth="500"
              d:DataContext="{d:DesignData /SampleData/ToolViewModelSampleData.xaml}">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,7 +28,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Scrollbar.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Controls.Tooltip.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Styles/Icons.xaml" />
-                
+
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Themes/Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MetroRadiance;component/Themes/Accents/Purple.xaml" />
 
@@ -40,7 +40,7 @@
                 <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.TabControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/KanColleViewer.Controls;component/Styles/Controls.Text.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <l:VisibilityAndBooleanConverter x:Key="TrueToVisibleConverter"
                                              ConvertWhenTrue="Visible"
                                              ConvertWhenFalse="Collapsed"/>
@@ -49,13 +49,6 @@
                                              ConvertWhenFalse="Visible"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <l:LivetCallMethodAction MethodTarget="{Binding}"
-                                     MethodName="Loaded" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled"
