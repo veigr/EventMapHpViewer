@@ -18,7 +18,8 @@ namespace EventMapHpViewer.Models
             var tp = org.BaseTransportationCapacity()
                      + org.DrumTransportationCapacity()
                      + org.DaihatsuTransportationCapacity()
-                     + org.LaunchransportationCapacity()
+                     + org.Type89TransportationCapacity()
+                     + org.LaunchTransportationCapacity()
                      + org.RationsTransportationCapacity();
             return (int) Math.Floor(tp * coefficient);
         }
@@ -35,8 +36,11 @@ namespace EventMapHpViewer.Models
         private static double DaihatsuTransportationCapacity(this Organization org)
             => org.CountSlotitem(68) * 8.0 + org.CountSlotitem(166) * 8.0;
 
-        private static double LaunchransportationCapacity(this Organization org)
-            => org.CountSlotitem(167) * 2.0;
+        private static double Type89TransportationCapacity(this Organization org)
+            => org.CountSlotitem(166) * 13.0;
+
+        private static double LaunchTransportationCapacity(this Organization org)
+            => org.CountSlotitem(167) * 7.0;
 
         private static double RationsTransportationCapacity(this Organization org)
             => org.CountExSlotitem(145) * 1.0;
