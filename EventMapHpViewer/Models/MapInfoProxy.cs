@@ -46,11 +46,11 @@ namespace EventMapHpViewer.Models
 
             proxy.ApiSessionSource
                 .Where(s => s.Request.PathAndQuery == "/kcsapi/api_get_member/mapinfo")
-                .TryParse<member_mapinfo[]>()
+                .TryParse<mapinfo>()
                 .Subscribe(m =>
                 {
                     Debug.WriteLine("MapInfoProxy - member_mapinfo");
-                    this.Maps.MapList = this.CreateMapList(m.Data);
+                    this.Maps.MapList = this.CreateMapList(m.Data.api_map_info);
                     this.RaisePropertyChanged(() => this.Maps);
                 });
 
