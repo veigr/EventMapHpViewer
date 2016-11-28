@@ -8,7 +8,7 @@ using Grabacr07.KanColleWrapper.Models;
 
 namespace EventMapHpViewer.Models
 {
-    public static class OrganizationExtensions
+    static class OrganizationExtensions
     {
         public static int TransportationCapacity(this Organization org, bool isS = false)
         {

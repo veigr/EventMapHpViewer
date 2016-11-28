@@ -75,7 +75,16 @@ namespace EventMapHpViewer.Models
             if (this.Eventmap.SelectedRank == 0) return null; //難易度未選択
 
             if (!useCache)
-                this.remoteBossDataCache = await GetEventBossHp(this.Id, this.Eventmap.SelectedRank);
+            {
+                var client = new RemoteSettingsClient();
+                this.remoteBossDataCache = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
+
+                if (!this.remoteBossDataCache.Any(x => x.isLast)
+                || !this.remoteBossDataCache.Any(x => !x.isLast))
+                {
+                    this.remoteBossDataCache = null;
+                }
+            }
             
             if (this.remoteBossDataCache != null && this.remoteBossDataCache.Any())
                 return this.CalculateRemainingCount(this.remoteBossDataCache);   //イベント海域(リモートデータ)
@@ -113,83 +122,6 @@ namespace EventMapHpViewer.Models
                 var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
                 if (capacity == 0) return int.MaxValue;  //ゲージ減らない
                 return (int)Math.Ceiling((double)this.Current / capacity);
-            }
-        }
-
-        /// <summary>
-        /// 艦これ戦術データ・リンクからボス情報を取得する。
-        /// 取得できなかった場合は null を返す。
-        /// </summary>
-        /// <param name="mapId"></param>
-        /// <param name="rank"></param>
-        /// <returns></returns>
-        private static async Task<Raw.map_exboss[]> GetEventBossHp(int mapId, int rank)
-        {
-            using (var client = new HttpClient(GetProxyConfiguredHandler()))
-            {
-                client.DefaultRequestHeaders
-                    .TryAddWithoutValidation("User-Agent", $"{MapHpViewer.title}/{MapHpViewer.version}");
-                try {
-                    // rank の後ろの"1"はサーバー上手動メンテデータを加味するかどうかのフラグ
-                    var response = await client.GetAsync($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{mapId}/{rank}");
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        // 200 じゃなかった
-                        return null;
-                    }
-
-                    var json = await response.Content.ReadAsStringAsync();
-                    Raw.map_exboss[] parsed = DynamicJson.Parse(json);
-                    if (parsed == null
-                        || !parsed.Any(x => x.isLast)
-                        || !parsed.Any(x => !x.isLast))
-                    {
-                        // データが揃っていない
-                        return null;
-                    }
-                    return parsed;
-                }
-                catch (HttpRequestException)
-                {
-                    // HTTP リクエストに失敗した
-                    return null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 本体のプロキシ設定を組み込んだHttpClientHandlerを返す。
-        /// </summary>
-        /// <returns></returns>
-        private static HttpClientHandler GetProxyConfiguredHandler()
-        {
-            switch (HttpProxy.UpstreamProxyConfig.Type)
-            {
-                case ProxyConfigType.DirectAccess:
-                    return new HttpClientHandler
-                    {
-                        UseProxy = false
-                    };
-                case ProxyConfigType.SpecificProxy:
-                    var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
-                    var host = settings.IsUseHttpProxyForAllProtocols ? settings.HttpHost : settings.HttpsHost;
-                    var port = settings.IsUseHttpProxyForAllProtocols ? settings.HttpPort : settings.HttpsPort;
-                    if (string.IsNullOrWhiteSpace(host))
-                    {
-                        return new HttpClientHandler { UseProxy = false };
-                    }
-                    else
-                    {
-                        return new HttpClientHandler
-                        {
-                            UseProxy = true,
-                            Proxy = new WebProxy($"{host}:{port}"),
-                        };
-                    }
-                case ProxyConfigType.SystemProxy:
-                    return new HttpClientHandler();
-                default:
-                    return new HttpClientHandler();
             }
         }
     }
