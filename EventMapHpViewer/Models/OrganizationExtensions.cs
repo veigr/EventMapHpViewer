@@ -18,7 +18,6 @@ namespace EventMapHpViewer.Models
             var tp = org.BaseTransportationCapacity()
                      + org.DrumTransportationCapacity()
                      + org.DaihatsuTransportationCapacity()
-                     + org.Type89TransportationCapacity()
                      + org.LaunchTransportationCapacity()
                      + org.RationsTransportationCapacity();
             return (int) Math.Floor(tp * coefficient);
@@ -34,27 +33,21 @@ namespace EventMapHpViewer.Models
             => org.CountSlotitem(75) * 5.0;
 
         private static double DaihatsuTransportationCapacity(this Organization org)
-            => org.CountSlotitem(68) * 8.0 + org.CountSlotitem(166) * 8.0;
-
-        private static double Type89TransportationCapacity(this Organization org)
-            => org.CountSlotitem(166) * 13.0;
+            => org.CountSlotitem(68, 166, 193) * 8.0;
 
         private static double LaunchTransportationCapacity(this Organization org)
-            => org.CountSlotitem(167) * 7.0;
+            => org.CountSlotitem(167) * 2.0;
 
         private static double RationsTransportationCapacity(this Organization org)
-            => org.CountExSlotitem(145) * 1.0;
+            => org.CountSlotitem(145, 150) * 1.0;
 
-        private static int CountSlotitem(this Organization org, int slotitemId)
+        private static int CountSlotitem(this Organization org, params int[] slotitemIds)
         {
             return org.TransportingShips()
-                .Sum(x => x.Slots.Count(y => y.Item.Info.Id == slotitemId));
-        }
-
-        private static int CountExSlotitem(this Organization org, int slotitemId)
-        {
-            return org.TransportingShips()
-                .Sum(x => x.ExSlot?.Item.Info.Id == slotitemId ? 1 : 0);
+                .SelectMany(x => x.Slots)
+                .Concat(org.TransportingShips().Select(x => x.ExSlot))
+                .Select(x => x.Item.Info.Id)
+                .Count(x => slotitemIds.Any(y => x == y));
         }
 
         private static double TransportationCapacity(this ShipType type)
