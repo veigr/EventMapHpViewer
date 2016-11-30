@@ -335,7 +335,8 @@ namespace EventMapHpViewer.ViewModels
             this.Current = info.Current?.ToString() ?? "???";
             this.Max = info.Max?.ToString() ?? "???";
             this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
-            this.RemainingCountTransportS = info.RemainingCountTransportS.ToString();
+            info.GetRemainingCount()
+                .ContinueWith(x => this.RemainingCountTransportS = x.Result.ToString());
             this.IsCleared = info.IsCleared == 1;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
@@ -386,7 +387,8 @@ namespace EventMapHpViewer.ViewModels
 
                 this.RemainingCountMin = remainingCount.Min.ToString();
                 this.RemainingCountMax = remainingCount.Max.ToString();
-                this.RemainingCountTransportS = this._source.RemainingCountTransportS.ToString();
+                this._source.GetRemainingCountTransportS()
+                    .ContinueWith(x => this.RemainingCountTransportS = x.Result.ToString());
                 this.IsInfinity = remainingCount == RemainingCount.MaxValue;
                 this.GaugeColor = remainingCount.Min < 2 ? red : green;
             });

@@ -2,11 +2,14 @@
 using Grabacr07.KanColleWrapper;
 using Nekoxy;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EventMapHpViewer.Models
@@ -14,6 +17,27 @@ namespace EventMapHpViewer.Models
     class RemoteSettingsClient
     {
         private HttpClient client;
+
+        private ConcurrentDictionary<string, DateTimeOffset> lastModified;
+
+        private ConcurrentDictionary<string, object> caches;
+
+        private TimeSpan cacheTtl;
+
+        private bool updating;
+
+#if DEBUG
+        public RemoteSettingsClient() : this(TimeSpan.FromSeconds(10)) { }
+#else
+        public RemoteSettingsClient() : this(TimeSpan.FromHours(1)) { }
+#endif
+
+        public RemoteSettingsClient(TimeSpan cacheTtl)
+        {
+            this.lastModified = new ConcurrentDictionary<string, DateTimeOffset>();
+            this.caches = new ConcurrentDictionary<string, object>();
+            this.cacheTtl = cacheTtl;
+        }
 
         /// <summary>
         /// 艦これ戦術データ・リンクから設定情報を取得する。
@@ -25,6 +49,28 @@ namespace EventMapHpViewer.Models
         public async Task<T> GetSettings<T>(string url)
             where T : class
         {
+            DateTimeOffset lm;
+            lock (this.lastModified)
+            {
+                while (this.updating)
+                {
+                    Thread.Sleep(100);
+                }
+
+                lm = this.lastModified.GetOrAdd(url, DateTimeOffset.MinValue);
+
+                if (DateTimeOffset.Now - lm < this.cacheTtl)
+                {
+                    object value;
+                    if (this.caches.TryGetValue(url, out value)
+                    && value is T)
+                    {
+                        return (T)value;
+                    }
+                }
+                this.updating = true;
+            }
+
             if (this.client == null)
             {
                 this.client = new HttpClient(GetProxyConfiguredHandler());
@@ -33,7 +79,6 @@ namespace EventMapHpViewer.Models
             }
             try
             {
-                // rank の後ろの"1"はサーバー上手動メンテデータを加味するかどうかのフラグ
                 var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -43,12 +88,18 @@ namespace EventMapHpViewer.Models
 
                 var json = await response.Content.ReadAsStringAsync();
                 T parsed = DynamicJson.Parse(json);
+                this.lastModified.TryUpdate(url, DateTimeOffset.Now, lm);
+                this.caches.AddOrUpdate(url, parsed, (_, __) => parsed);
                 return parsed;
             }
             catch (HttpRequestException)
             {
                 // HTTP リクエストに失敗した
                 return null;
+            }
+            finally
+            {
+                this.updating = false;
             }
         }
 

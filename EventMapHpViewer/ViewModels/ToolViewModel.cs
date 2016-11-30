@@ -111,14 +111,42 @@ namespace EventMapHpViewer.ViewModels
         }
         #endregion
 
-        public bool ExistsTransportGauge
-            => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
+        #region TransportCapacity 変更通知プロパティ
+        private int _TransportCapacity;
 
         public int TransportCapacity
-            => KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+        {
+            get
+            { return this._TransportCapacity; }
+            set
+            {
+                if (this._TransportCapacity == value)
+                    return;
+                this._TransportCapacity = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region TransportCapacityS 変更通知プロパティ
+        private int _TransportCapacityS;
 
         public int TransportCapacityS
-            => KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
+        {
+            get
+            { return this._TransportCapacityS; }
+            set
+            {
+                if (this._TransportCapacityS == value)
+                    return;
+                this._TransportCapacityS = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        public bool ExistsTransportGauge
+            => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
 
         private readonly HashSet<Ship> handledShips = new HashSet<Ship>();
 
@@ -144,6 +172,7 @@ namespace EventMapHpViewer.ViewModels
                     this.handledShips.Add(ship);
                 }
             }
+            this.RaiseTransportCapacityChanged();
         }
 
         private void RaiseTransportCapacityChanged()
@@ -151,8 +180,10 @@ namespace EventMapHpViewer.ViewModels
             if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
 
             Debug.WriteLine(nameof(this.RaiseTransportCapacityChanged));
-            this.RaisePropertyChanged(nameof(this.TransportCapacity));
-            this.RaisePropertyChanged(nameof(this.TransportCapacityS));
+            KanColleClient.Current.Homeport.Organization.TransportationCapacity()
+                .ContinueWith(x => this.TransportCapacity = x.Result);
+            KanColleClient.Current.Homeport.Organization.TransportationCapacity(true)
+                .ContinueWith(x => this.TransportCapacityS = x.Result);
             if (this.Maps == null) return;
             foreach (var map in this.Maps)
             {

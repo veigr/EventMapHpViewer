@@ -67,7 +67,7 @@ namespace EventMapHpViewer.Models
 
             if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
-                var capacityA = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+                var capacityA = await KanColleClient.Current.Homeport.Organization.TransportationCapacity();
                 if (capacityA == 0) return RemainingCount.MaxValue;  //ゲージ減らない
                 return new RemainingCount((int)Math.Ceiling((double)this.Current / capacityA));
             }
@@ -78,6 +78,7 @@ namespace EventMapHpViewer.Models
             {
                 var client = new RemoteSettingsClient();
                 this.remoteBossDataCache = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
+                client.CloseConnection();
 
                 if (!this.remoteBossDataCache.Any(x => x.isLast)
                 || !this.remoteBossDataCache.Any(x => !x.isLast))
@@ -114,15 +115,12 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 輸送ゲージのS勝利時の残回数
         /// </summary>
-        public int RemainingCountTransportS
+        public async Task<int> GetRemainingCountTransportS()
         {
-            get
-            {
-                if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
-                var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
-                if (capacity == 0) return int.MaxValue;  //ゲージ減らない
-                return (int)Math.Ceiling((double)this.Current / capacity);
-            }
+            if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
+            var capacity = await KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
+            if (capacity == 0) return int.MaxValue;  //ゲージ減らない
+            return (int)Math.Ceiling((double)this.Current / capacity);
         }
     }
 }
