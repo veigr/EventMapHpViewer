@@ -101,9 +101,10 @@ namespace EventMapHpViewer.Models
                         {
                             MaxMapHp = x.api_eventmap.api_max_maphp,
                             NowMapHp = x.api_eventmap.api_now_maphp,
-                            SelectedRank = x.api_eventmap.api_selected_rank,
+                            SelectedRank = (Rank) x.api_eventmap.api_selected_rank,
                             State = x.api_eventmap.api_state,
                             GaugeType = (GaugeType) x.api_eventmap.api_gauge_type,
+                            GaugeNum = x.api_eventmap.api_gauge_num,
                         }
                         : null,
                 }).ToArray();
@@ -121,7 +122,7 @@ namespace EventMapHpViewer.Models
             var targetMap = list.FirstOrDefault(m => m.Id.ToString() == areaId + mapNo);
             if (targetMap?.Eventmap == null) return list;
 
-            targetMap.Eventmap.SelectedRank = rank;
+            targetMap.Eventmap.SelectedRank = (Rank) rank;
             if(int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))
                 targetMap.Eventmap.GaugeType = (GaugeType) gaugeType;
             targetMap.Eventmap.MaxMapHp = data.Data.api_maphp.api_max_maphp;

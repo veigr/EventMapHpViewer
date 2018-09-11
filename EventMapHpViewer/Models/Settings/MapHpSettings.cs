@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EventMapHpViewer.Models
+namespace EventMapHpViewer.Models.Settings
 {
-    public static class MapHpSettings
+    static class MapHpSettings
     {
         public static readonly string RoamingFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -19,6 +19,12 @@ namespace EventMapHpViewer.Models
 
         public static SerializableProperty<int> TransportCapacityS { get; }
             = new SerializableProperty<int>(GetKey(), roamingProvider) { AutoSave = true };
+
+        public static SerializableProperty<string> BossSettings { get; }
+            = new SerializableProperty<string>(GetKey(), roamingProvider) { AutoSave = true };
+
+        public static SerializableProperty<bool> UseLocalBossSettings { get; }
+            = new SerializableProperty<bool>(GetKey(), roamingProvider, false) { AutoSave = true };
 
         private static string GetKey([CallerMemberName] string propertyName = "")
             => $"{nameof(MapHpSettings)}.{propertyName}";

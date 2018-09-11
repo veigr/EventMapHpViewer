@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
+using EventMapHpViewer.Models.Settings;
 using Livet;
 using MetroTrilithon.Mvvm;
 
@@ -335,7 +336,7 @@ namespace EventMapHpViewer.ViewModels
             this.AreaName = info.AreaName;
             this.Current = info.Current?.ToString() ?? "???";
             this.Max = info.Max?.ToString() ?? "???";
-            this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
+            this.SelectedRank = info.Eventmap?.SelectedRank.ToString();
             this.IsCleared = info.IsCleared == 1;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
@@ -353,12 +354,12 @@ namespace EventMapHpViewer.ViewModels
         }
 
 
-        private void UpdateRemainingCount(TransportCapacity capacity, bool useCache = false)
+        private void UpdateRemainingCount(TransportCapacity capacity)
         {
             try
             {
-                this._source.GetRemainingCount(capacity, useCache)
-                    .ContinueWith(t => this.Update(t.Result, capacity, useCache));
+                this._source.GetRemainingCount(capacity)
+                    .ContinueWith(t => this.Update(t.Result, capacity));
             }
             catch (AggregateException e)
             {
@@ -366,14 +367,11 @@ namespace EventMapHpViewer.ViewModels
             }
         }
 
-        private void Update(RemainingCount remainingCount, TransportCapacity capacity, bool useCache)
+        private void Update(RemainingCount remainingCount, TransportCapacity capacity)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (!useCache)
-                {
-                    this.IsLoading = false;
-                }
+                this.IsLoading = false;
                 this.IsSupported = remainingCount != null;
                 if (!this.IsSupported)
                 {

@@ -10,6 +10,7 @@ using System;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using System.Diagnostics;
+using EventMapHpViewer.Models.Settings;
 
 namespace EventMapHpViewer.ViewModels
 {

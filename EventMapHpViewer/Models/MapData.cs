@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Codeplex.Data;
+using EventMapHpViewer.Models.Settings;
 using Grabacr07.KanColleWrapper;
 using Nekoxy;
 
@@ -50,12 +51,10 @@ namespace EventMapHpViewer.Models
             }
         }
 
-        private Raw.map_exboss[] remoteBossDataCache;
-
         /// <summary>
         /// 残回数。輸送の場合はA勝利の残回数。
         /// </summary>
-        public async Task<RemainingCount> GetRemainingCount(TransportCapacity capacity, bool useCache = false)
+        public async Task<RemainingCount> GetRemainingCount(TransportCapacity capacity)
         {
             if (this.IsCleared == 1) return RemainingCount.Zero;
 
@@ -73,36 +72,42 @@ namespace EventMapHpViewer.Models
 
             if (this.Eventmap.SelectedRank == 0) return null; //難易度未選択
 
-            if (!useCache)
+            if (MapHpSettings.UseLocalBossSettings)
+            {
+                var settings = BossSettings.Settings;
+                if (settings != null && settings.Any())
+                    return this.CalculateRemainingCount(settings);
+            }
+            else
             {
                 var client = new RemoteSettingsClient();
-                this.remoteBossDataCache = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
+                var remoteBossData = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
                 client.CloseConnection();
 
-                if (this.remoteBossDataCache != null
-                && !this.remoteBossDataCache.Any(x => x.isLast)
-                || !this.remoteBossDataCache.Any(x => !x.isLast))
+                if (remoteBossData != null
+                && !remoteBossData.Any(x => x.isLast)
+                || !remoteBossData.Any(x => !x.isLast))
                 {
-                    this.remoteBossDataCache = null;
+                    remoteBossData = null;
                 }
+
+                if (remoteBossData != null && remoteBossData.Any())
+                    return this.CalculateRemainingCount(BossSettings.Parse(remoteBossData));   //イベント海域(リモートデータ)
             }
-            
-            if (this.remoteBossDataCache != null && this.remoteBossDataCache.Any())
-                return this.CalculateRemainingCount(this.remoteBossDataCache);   //イベント海域(リモートデータ)
 
             return null;  //未対応
         }
 
-        private RemainingCount CalculateRemainingCount(Raw.map_exboss[] data)
+        private RemainingCount CalculateRemainingCount(IEnumerable<BossSetting> settings)
         {
             return new RemainingCount(
                 CalculateRemainingCount(
-                    data.Where(x => !x.isLast).Max(x => x.ship.maxhp),
-                    data.Where(x => x.isLast).Max(x => x.ship.maxhp)
+                    settings.Where(x => !x.IsLast).Max(x => x.BossHP),
+                    settings.Where(x => x.IsLast).Max(x => x.BossHP)
                 ),
                 CalculateRemainingCount(
-                    data.Where(x => !x.isLast).Min(x => x.ship.maxhp),
-                    data.Where(x => x.isLast).Min(x => x.ship.maxhp)
+                    settings.Where(x => !x.IsLast).Min(x => x.BossHP),
+                    settings.Where(x => x.IsLast).Min(x => x.BossHP)
                 ));
         }
 
