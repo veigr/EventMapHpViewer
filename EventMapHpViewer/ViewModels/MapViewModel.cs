@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
 using Livet;
+using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.ViewModels
 {
@@ -335,8 +336,6 @@ namespace EventMapHpViewer.ViewModels
             this.Current = info.Current?.ToString() ?? "???";
             this.Max = info.Max?.ToString() ?? "???";
             this.SelectedRank = info.Eventmap?.SelectedRankText ?? "";
-            info.GetRemainingCount()
-                .ContinueWith(x => this.RemainingCountTransportS = x.Result.ToString());
             this.IsCleared = info.IsCleared == 1;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
@@ -348,21 +347,18 @@ namespace EventMapHpViewer.ViewModels
             this.IsInfinity = false;
             this.IsLoading = true;
 
-            this.UpdateRemainingCount(info);
-        }
-
-        public void UpdateTransportCapacity()
-        {
-            this.UpdateRemainingCount(this._source, true);
+            MapHpSettings.TransportCapacityS
+                .Subscribe(x => this.UpdateRemainingCount(new TransportCapacity(x)))
+                .AddTo(this);
         }
 
 
-        private void UpdateRemainingCount(MapData info, bool useCache = false)
+        private void UpdateRemainingCount(TransportCapacity capacity, bool useCache = false)
         {
             try
             {
-                info.GetRemainingCount(useCache)
-                    .ContinueWith(t => this.Update(t.Result, useCache));
+                this._source.GetRemainingCount(capacity, useCache)
+                    .ContinueWith(t => this.Update(t.Result, capacity, useCache));
             }
             catch (AggregateException e)
             {
@@ -370,7 +366,7 @@ namespace EventMapHpViewer.ViewModels
             }
         }
 
-        private void Update(RemainingCount remainingCount, bool useCache)
+        private void Update(RemainingCount remainingCount, TransportCapacity capacity, bool useCache)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -387,8 +383,7 @@ namespace EventMapHpViewer.ViewModels
 
                 this.RemainingCountMin = remainingCount.Min.ToString();
                 this.RemainingCountMax = remainingCount.Max.ToString();
-                this._source.GetRemainingCountTransportS()
-                    .ContinueWith(x => this.RemainingCountTransportS = x.Result.ToString());
+                this.RemainingCountTransportS = this._source.GetRemainingCountTransportS(capacity).ToString();
                 this.IsInfinity = remainingCount == RemainingCount.MaxValue;
                 this.GaugeColor = remainingCount.Min < 2 ? red : green;
             });

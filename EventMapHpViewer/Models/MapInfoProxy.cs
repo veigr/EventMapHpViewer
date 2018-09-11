@@ -36,7 +36,8 @@ namespace EventMapHpViewer.Models
 
             var proxy = KanColleClient.Current.Proxy;
 
-            proxy.api_start2
+            proxy.ApiSessionSource
+                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_start2/getData")
                 .TryParse<kcsapi_start2>()
                 .Subscribe(x =>
                 {
@@ -121,8 +122,10 @@ namespace EventMapHpViewer.Models
             if (targetMap?.Eventmap == null) return list;
 
             targetMap.Eventmap.SelectedRank = rank;
-            targetMap.Eventmap.MaxMapHp = null;
-            targetMap.Eventmap.NowMapHp = null;
+            if(int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))
+                targetMap.Eventmap.GaugeType = (GaugeType) gaugeType;
+            targetMap.Eventmap.MaxMapHp = data.Data.api_maphp.api_max_maphp;
+            targetMap.Eventmap.NowMapHp = data.Data.api_maphp.api_now_maphp;
             return list;
         }
     }

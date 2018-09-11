@@ -1,5 +1,6 @@
 ﻿<UserControl x:Class="EventMapHpViewer.ToolView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,6 +8,7 @@
              xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
+             xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
@@ -306,28 +308,29 @@
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                 <StackPanel Orientation="Horizontal"
                             Margin="5">
-                    <TextBlock Text="第一艦隊の輸送力"
+                    <TextBlock Text="艦隊の輸送力"
                                Style="{DynamicResource EmphaticTextStyleKey}"
-                               FontSize="12"
-                               Visibility="{Binding Source={x:Static kanColleWrapper:KanColleClient.Current}, Path=Homeport.Organization.Combined, Converter={StaticResource FalseToVisibleConverter}}"/>
-                    <TextBlock Text="連合艦隊の輸送力"
-                               Style="{DynamicResource EmphaticTextStyleKey}"
-                               FontSize="12"
-                               Visibility="{Binding Source={x:Static kanColleWrapper:KanColleClient.Current}, Path=Homeport.Organization.Combined, Converter={StaticResource TrueToVisibleConverter}}"/>
-                    <TextBlock Text=" (揚陸地点到達時に確定)"
-                               Style="{DynamicResource DefaultTextStyleKey}"/>
+                               FontSize="12"/>
                     <StackPanel Margin="8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="S:"
+                                       Style="{DynamicResource DefaultTextStyleKey}"/>
+                            <metro:PromptTextBox>
+                                <metro:PromptTextBox.Text>
+                                    <Binding Path="TransportCapacityS"
+                                             UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <metro:Int32Rule Min="0"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </metro:PromptTextBox.Text>
+                            </metro:PromptTextBox>
+                        </StackPanel>
                         <TextBlock>
                             <Run Text="A:"
                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacity, Mode=OneWay}"
+                            <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="S:"
-                                    Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacityS, Mode=OneWay}"
-                                    Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                         </TextBlock>
                     </StackPanel>
                 </StackPanel>

@@ -55,7 +55,7 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 残回数。輸送の場合はA勝利の残回数。
         /// </summary>
-        public async Task<RemainingCount> GetRemainingCount(bool useCache = false)
+        public async Task<RemainingCount> GetRemainingCount(TransportCapacity capacity, bool useCache = false)
         {
             if (this.IsCleared == 1) return RemainingCount.Zero;
 
@@ -67,9 +67,8 @@ namespace EventMapHpViewer.Models
 
             if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
-                var capacityA = await KanColleClient.Current.Homeport.Organization.TransportationCapacity();
-                if (capacityA == 0) return RemainingCount.MaxValue;  //ゲージ減らない
-                return new RemainingCount((int)Math.Ceiling((double)this.Current / capacityA));
+                if (capacity.A == 0) return RemainingCount.MaxValue;  //ゲージ減らない
+                return new RemainingCount((int)Math.Ceiling((double)this.Current / capacity.A));
             }
 
             if (this.Eventmap.SelectedRank == 0) return null; //難易度未選択
@@ -80,7 +79,8 @@ namespace EventMapHpViewer.Models
                 this.remoteBossDataCache = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
                 client.CloseConnection();
 
-                if (!this.remoteBossDataCache.Any(x => x.isLast)
+                if (this.remoteBossDataCache != null
+                && !this.remoteBossDataCache.Any(x => x.isLast)
                 || !this.remoteBossDataCache.Any(x => !x.isLast))
                 {
                     this.remoteBossDataCache = null;
@@ -115,12 +115,11 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 輸送ゲージのS勝利時の残回数
         /// </summary>
-        public async Task<int> GetRemainingCountTransportS()
+        public int GetRemainingCountTransportS(TransportCapacity capacity)
         {
             if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
-            var capacity = await KanColleClient.Current.Homeport.Organization.TransportationCapacity(true);
-            if (capacity == 0) return int.MaxValue;  //ゲージ減らない
-            return (int)Math.Ceiling((double)this.Current / capacity);
+            if (capacity.S == 0) return int.MaxValue;  //ゲージ減らない
+            return (int)Math.Ceiling((double)this.Current / capacity.S);
         }
     }
 }

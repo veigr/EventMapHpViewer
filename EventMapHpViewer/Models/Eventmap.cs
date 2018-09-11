@@ -1,4 +1,4 @@
-namespace EventMapHpViewer.Models
+Ôªønamespace EventMapHpViewer.Models
 {
     public class Eventmap
     {
@@ -15,11 +15,13 @@ namespace EventMapHpViewer.Models
                 switch (this.SelectedRank)
                 {
                     case 1:
-                        return "ï∏";
+                        return "‰∏Å";
                     case 2:
-                        return "â≥";
+                        return "‰∏ô";
                     case 3:
-                        return "çb";
+                        return "‰πô";
+                    case 4:
+                        return "Áî≤";
                     default:
                         return "";
                 }

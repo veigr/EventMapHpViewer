@@ -7,5 +7,6 @@
         public int api_state { get; set; }
         public int api_selected_rank { get; set; }
         public int api_gauge_type { get; set; }
+        public int api_gauge_num { get; set; }
     }
 }
