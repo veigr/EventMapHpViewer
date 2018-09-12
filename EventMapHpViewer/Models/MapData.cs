@@ -67,14 +67,14 @@ namespace EventMapHpViewer.Models
             if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
                 if (capacity.A == 0) return RemainingCount.MaxValue;  //ゲージ減らない
-                return new RemainingCount((int)Math.Ceiling((double)this.Current / capacity.A));
+                return new RemainingCount((int)Math.Ceiling((decimal)this.Current / capacity.A));
             }
 
             if (this.Eventmap.SelectedRank == 0) return null; //難易度未選択
 
             if (MapHpSettings.UseLocalBossSettings)
             {
-                var settings = BossSettings.Settings;
+                var settings = this.BossSettings.List;
                 if (settings != null && settings.Any())
                     return this.CalculateRemainingCount(settings);
             }
@@ -124,7 +124,9 @@ namespace EventMapHpViewer.Models
         {
             if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
             if (capacity.S == 0) return int.MaxValue;  //ゲージ減らない
-            return (int)Math.Ceiling((double)this.Current / capacity.S);
+            return (int)Math.Ceiling((decimal)this.Current / capacity.S);
         }
+
+        private BossSettings BossSettings { get; } = new BossSettings();
     }
 }

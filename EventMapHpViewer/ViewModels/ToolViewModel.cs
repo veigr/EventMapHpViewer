@@ -21,6 +21,7 @@ namespace EventMapHpViewer.ViewModels
         public ToolViewModel(MapInfoProxy proxy)
         {
             this.mapInfoProxy = proxy;
+            this.CompositeDisposable.Add(proxy);
 
             if (this.mapInfoProxy == null) return;
 
@@ -36,7 +37,8 @@ namespace EventMapHpViewer.ViewModels
                         .Where(x => !x.IsCleared)
                         .ToArray();
                     this.IsNoMap = !this.Maps.Any();
-                }, false);
+                }, false)
+                .AddTo(this);
 
             KanColleClient.Current
                 .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false);
@@ -104,9 +106,9 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region TransportCapacityS 変更通知プロパティ
-        private int _TransportCapacityS;
+        private decimal _TransportCapacityS;
 
-        public int TransportCapacityS
+        public decimal TransportCapacityS
         {
             get
             { return this._TransportCapacityS; }

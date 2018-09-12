@@ -27,7 +27,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid Margin="10">
+    <Grid Margin="10,10,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -74,6 +74,7 @@
                         <Setter Property="Padding" Value="5,2"/>
                     </Style>
                     <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="{StaticResource ActiveBackgroundBrushKey}"/>

@@ -33,6 +33,17 @@ namespace EventMapHpViewer
         // タブ表示するたびに new されてしまうが、今のところ new しないとマルチウィンドウで正常に表示されない
         object ITool.View => new ToolView { DataContext = this.toolVm };
 
-        object ISettings.View => new SettingsView { DataContext = this.settingsVm };
+        private SettingsView settingsViewCache;
+        object ISettings.View
+        {
+            get
+            {
+                // なぜかViewを使い回さずVMだけ使い回し、Viewを作り直すとUseAutoCalcTpSettingsのRadioButtonでStackOverFlowが発生する。
+                if (settingsViewCache == null)
+                    this.settingsViewCache = new SettingsView { DataContext = this.settingsVm };
+                return this.settingsViewCache;
+            }
+        }
+        
     }
 }

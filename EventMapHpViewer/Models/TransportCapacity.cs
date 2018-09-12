@@ -8,21 +8,21 @@ namespace EventMapHpViewer.Models
 {
     public struct TransportCapacity
     {
-        private int _s;
+        private decimal _s;
 
-        public int S
+        public decimal S
         {
             get { return _s; }
             set
             {
                 _s = value;
-                this.A = (int)Math.Floor(value * 0.7);
+                this.A = Math.Floor(value * 0.7m);
             }
         }
 
-        public int A { get; private set; }
+        public decimal A { get; private set; }
 
-        public TransportCapacity(int s)
+        public TransportCapacity(decimal s)
         {
             A = 0;
             _s = 0;

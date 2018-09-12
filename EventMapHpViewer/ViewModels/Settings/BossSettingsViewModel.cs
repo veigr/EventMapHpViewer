@@ -147,7 +147,7 @@ namespace EventMapHpViewer.ViewModels.Settings
         #region IsAddEnabled
         public bool IsAddEnabled
         {
-            get => !Models.Settings.BossSettings.Settings.Any(
+            get => !this.Settings.List.Any(
                 x => x.Id == this.Id
                     && x.Rank == this.Rank
                     && x.GaugeNum == this.GaugeNum
@@ -210,25 +210,16 @@ namespace EventMapHpViewer.ViewModels.Settings
         }
         #endregion
 
+        private BossSettings Settings { get; }
+
         public BossSettingsViewModel()
         {
-            this.BossSettings = Models.Settings.BossSettings.Settings
+            this.Settings = new BossSettings();
+
+            this.BossSettings = this.Settings.List
                 .ToSyncedSortedObservableCollection(x => $"{x.Id:D4}{x.Rank:D2}{x.GaugeNum:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}")
                 .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
                 .ToSyncedReadOnlyNotifyChangedCollection();
-            
-            KanColleClient.Current.Subscribe(nameof(KanColleClient.Current.IsStarted), () =>
-            {
-                this.MapItemsSource
-                    = Models.Maps.MapInfos
-                    .Where(x => 20 < x.Value.MapAreaId)
-                    .Select(x => x.Value)
-                    .Select(x => new KeyValuePair<int, string>(x.Id, $"{x.MapAreaId}-{x.IdInEachMapArea} : {x.Name} - {x.OperationName}"))
-                    .ToArray();
-                this.IsEnabled = true;
-            }
-            , false)
-            .AddTo(this);
         }
 
         public void Add()
@@ -241,22 +232,22 @@ namespace EventMapHpViewer.ViewModels.Settings
                 BossHP = this.BossHP,
                 IsLast = this.IsLast
             };
-            Models.Settings.BossSettings.Settings.Add(newValue);
-            Models.Settings.BossSettings.Save();
+            this.Settings.List.Add(newValue);
+            this.Settings.Save();
             this.SelectedBossSetting = newValue;
             this.UpdateButtonState();
         }
 
         public void Modify()
         {
-            Models.Settings.BossSettings.Settings.Remove(this.SelectedBossSetting);
+            this.Settings.List.Remove(this.SelectedBossSetting);
             this.Add();
         }
 
         public void Remove()
         {
-            Models.Settings.BossSettings.Settings.Remove(this.SelectedBossSetting);
-            Models.Settings.BossSettings.Save();
+            this.Settings.List.Remove(this.SelectedBossSetting);
+            this.Settings.Save();
             this.UpdateButtonState();
         }
 

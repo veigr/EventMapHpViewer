@@ -11,18 +11,18 @@ namespace EventMapHpViewer.Models.Settings
 {
     class BossSettings
     {
-        public static ObservableSynchronizedCollection<BossSetting> Settings { get; }
+        public ObservableSynchronizedCollection<BossSetting> List { get; }
         
-        static BossSettings()
+        public BossSettings()
         {
             if(string.IsNullOrWhiteSpace(MapHpSettings.BossSettings))
-                Settings = new ObservableSynchronizedCollection<BossSetting>();
+                this.List = new ObservableSynchronizedCollection<BossSetting>();
             else
-                Settings = DynamicJson.Parse(MapHpSettings.BossSettings.Value);
+                this.List = DynamicJson.Parse(MapHpSettings.BossSettings?.Value);
         }
 
-        public static void Save()
-            => MapHpSettings.BossSettings.Value = DynamicJson.Serialize(Settings);
+        public void Save()
+            => MapHpSettings.BossSettings.Value = DynamicJson.Serialize(this.List);
 
         public static IEnumerable<BossSetting> Parse(IEnumerable<Raw.map_exboss> source)
         {
