@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetroRadiance.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,22 @@ namespace EventMapHpViewer.Views
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var window = FindAncestor<MetroWindow>(this);
+            window.Width = 800;
+            window.Height = 600;
+        }
+
+        private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(current);
+            if (parent is T)
+                return (T)parent;
+            else
+                return FindAncestor<T>(parent);
         }
     }
 }
