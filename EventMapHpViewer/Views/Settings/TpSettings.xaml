@@ -54,7 +54,6 @@
                             Margin="5"
                             IsEnabled="{Binding UseAutoCalcTpSettings, Converter={StaticResource ReverseBooelanConverter}}">
                     <TextBlock Text="艦隊の輸送力"
-                               VerticalAlignment="Stretch"
                                TextAlignment="Center"
                                Style="{DynamicResource EmphaticTextStyleKey}"
                                FontSize="12"
@@ -74,12 +73,11 @@
                             </metro:PromptTextBox.Text>
                         </metro:PromptTextBox>
                     </StackPanel>
-                    <TextBlock Margin="4,0"
-                               VerticalAlignment="Stretch">
+                    <TextBlock Margin="4,0">
                         <Run Text="A:"
                              Style="{DynamicResource DefaultTextElementStyleKey}"/>
                         <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
-                             Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                             Style="{DynamicResource DefaultTextElementStyleKey}"/>
                     </TextBlock>
                 </StackPanel>
 

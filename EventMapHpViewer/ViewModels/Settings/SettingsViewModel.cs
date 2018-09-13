@@ -8,18 +8,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using MetroTrilithon.Mvvm;
 using StatefulModel;
+using EventMapHpViewer.Models.Settings;
 
 namespace EventMapHpViewer.ViewModels.Settings
 {
     public class SettingsViewModel : ViewModel
     {
         public BossSettingsViewModel BossSettings { get; }
-            = new BossSettingsViewModel();
         public TpSettingsViewModel TpSettings { get; }
-            = new TpSettingsViewModel();
 
         public SettingsViewModel()
         {
+            this.BossSettings = new BossSettingsViewModel();
+            this.TpSettings = new TpSettingsViewModel
+            {
+                TransportCapacityS = MapHpSettings.TransportCapacityS.Value
+            };
+
             KanColleClient.Current.Subscribe(nameof(KanColleClient.Current.IsStarted), () =>
             DispatcherHelper.UIDispatcher.Invoke(() =>
             {

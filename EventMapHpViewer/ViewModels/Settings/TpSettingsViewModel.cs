@@ -66,11 +66,11 @@ namespace EventMapHpViewer.ViewModels.Settings
             get => MapHpSettings.TransportCapacityS.Value;
             set
             {
-                if (MapHpSettings.TransportCapacityS.Value == value)
-                    return;
-                MapHpSettings.TransportCapacityS.Value = value;
-                this.RaisePropertyChanged();
-
+                if (MapHpSettings.TransportCapacityS.Value != value)
+                {
+                    MapHpSettings.TransportCapacityS.Value = value;
+                    this.RaisePropertyChanged();
+                }
                 this.TransportCapacity = new TransportCapacity(value);
             }
         }
