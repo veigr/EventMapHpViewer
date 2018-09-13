@@ -21,16 +21,16 @@ namespace EventMapHpViewer.Models.Settings
         public static SerializableProperty<decimal> TransportCapacityS { get; }
             = new SerializableProperty<decimal>(GetKey(), roamingProvider) { AutoSave = true };
 
-        public static SerializableProperty<string> ShipTypeTpSettings { get; }
+        internal static SerializableProperty<string> ShipTypeTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTypeTp.ToArray())) { AutoSave = true };
 
-        public static SerializableProperty<string> SlotItemTpSettings { get; }
+        internal static SerializableProperty<string> SlotItemTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray())) { AutoSave = true };
 
         public static SerializableProperty<bool> UseAutoCalcTpSettings { get; }
             = new SerializableProperty<bool>(GetKey(), roamingProvider, true) { AutoSave = true };
 
-        public static SerializableProperty<string> BossSettings { get; }
+        internal static SerializableProperty<string> BossSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider) { AutoSave = true };
 
         public static SerializableProperty<bool> UseLocalBossSettings { get; }

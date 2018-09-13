@@ -92,7 +92,7 @@ namespace EventMapHpViewer.Models
                 }
 
                 if (remoteBossData != null && remoteBossData.Any())
-                    return this.CalculateRemainingCount(BossSettings.Parse(remoteBossData));   //イベント海域(リモートデータ)
+                    return this.CalculateRemainingCount(BossSettingsWrapper.Parse(remoteBossData));   //イベント海域(リモートデータ)
             }
 
             return null;  //未対応
@@ -127,6 +127,6 @@ namespace EventMapHpViewer.Models
             return (int)Math.Ceiling((decimal)this.Current / capacity.S);
         }
 
-        private BossSettings BossSettings { get; } = new BossSettings();
+        private BossSettingsWrapper BossSettings { get; } = new BossSettingsWrapper();
     }
 }

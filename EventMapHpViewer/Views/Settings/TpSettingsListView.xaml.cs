@@ -24,5 +24,45 @@ namespace EventMapHpViewer.Views.Settings
         {
             InitializeComponent();
         }
+
+        public double IdColumnWidth
+        {
+            get { return (double)GetValue(IdColumnWidthProperty); }
+            set { SetValue(IdColumnWidthProperty, value); }
+        }
+        public static readonly DependencyProperty IdColumnWidthProperty =
+            DependencyProperty.Register(nameof(IdColumnWidth), typeof(double), typeof(TpSettingsListView), new PropertyMetadata(double.NaN));
+
+        public double NameColumnWidth
+        {
+            get { return (double)GetValue(NameColumnWidthProperty); }
+            set { SetValue(NameColumnWidthProperty, value); }
+        }
+        public static readonly DependencyProperty NameColumnWidthProperty =
+            DependencyProperty.Register(nameof(NameColumnWidth), typeof(double), typeof(TpSettingsListView), new PropertyMetadata(double.NaN));
+
+        public double TpColumnWidth
+        {
+            get { return (double)GetValue(TpColumnWidthProperty); }
+            set { SetValue(TpColumnWidthProperty, value); }
+        }
+        public static readonly DependencyProperty TpColumnWidthProperty =
+            DependencyProperty.Register(nameof(TpColumnWidth), typeof(double), typeof(TpSettingsListView), new PropertyMetadata(double.NaN));
+
+        public double TypeIdColumnWidth
+        {
+            get { return (double)GetValue(TypeIdColumnWidthProperty); }
+            set { SetValue(TypeIdColumnWidthProperty, value); }
+        }
+        public static readonly DependencyProperty TypeIdColumnWidthProperty =
+            DependencyProperty.Register(nameof(TypeIdColumnWidth), typeof(double), typeof(TpSettingsListView), new PropertyMetadata(double.NaN));
+
+        public double TypeNameColumnWidth
+        {
+            get { return (double)GetValue(TypeNameColumnWidthProperty); }
+            set { SetValue(TypeNameColumnWidthProperty, value); }
+        }
+        public static readonly DependencyProperty TypeNameColumnWidthProperty =
+            DependencyProperty.Register(nameof(TypeNameColumnWidth), typeof(double), typeof(TpSettingsListView), new PropertyMetadata(double.NaN));
     }
 }

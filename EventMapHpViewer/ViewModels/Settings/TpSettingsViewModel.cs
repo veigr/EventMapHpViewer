@@ -119,7 +119,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             {
                 this.ShipTypeTpSettings = this.Settings.ShipTypeTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.Id)
+                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.Id)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
             .AddTo(this);
@@ -129,7 +129,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             {
                 this.SlotItemTpSettings = this.Settings.SlotItemTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.Id)
+                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.Id)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
             .AddTo(this);

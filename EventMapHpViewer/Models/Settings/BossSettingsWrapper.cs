@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettings
+    class BossSettingsWrapper
     {
         public ObservableSynchronizedCollection<BossSetting> List { get; }
         
-        public BossSettings()
+        public BossSettingsWrapper()
         {
-            if(string.IsNullOrWhiteSpace(MapHpSettings.BossSettings))
+            if(string.IsNullOrWhiteSpace(MapHpSettings.BossSettings.Value))
                 this.List = new ObservableSynchronizedCollection<BossSetting>();
             else
                 this.List = DynamicJson.Parse(MapHpSettings.BossSettings?.Value);

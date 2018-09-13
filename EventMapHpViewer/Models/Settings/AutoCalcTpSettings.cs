@@ -15,15 +15,40 @@ namespace EventMapHpViewer.Models.Settings
 {
     class AutoCalcTpSettings : Livet.NotificationObject
     {
-        public ObservableSynchronizedCollection<TpSetting> ShipTypeTp { get; private set; }
-        public ObservableSynchronizedCollection<TpSetting> SlotItemTp { get; private set; }
+        private ObservableSynchronizedCollection<TpSetting> _ShipTypeTp;
+        public ObservableSynchronizedCollection<TpSetting> ShipTypeTp
+        {
+            get => this._ShipTypeTp;
+            private set
+            {
+                if (this._ShipTypeTp == value)
+                    return;
+                this._ShipTypeTp = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        private ObservableSynchronizedCollection<TpSetting> _SlotItemTp;
+        public ObservableSynchronizedCollection<TpSetting> SlotItemTp
+        {
+            get => this._SlotItemTp;
+            private set
+            {
+                if (this._SlotItemTp == value)
+                    return;
+                this._SlotItemTp = value;
+                this.RaisePropertyChanged();
+            }
+        }
 
         public AutoCalcTpSettings()
         {
-            this.LoadFromLocal();
+            MapHpSettings.ShipTypeTpSettings
+                ?.Subscribe(x => this.ShipTypeTp = DynamicJson.Parse(x));
+            MapHpSettings.SlotItemTpSettings
+                ?.Subscribe(x => this.SlotItemTp = DynamicJson.Parse(x));
         }
 
-        private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp)
+        private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp) : this()
         {
             this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(stypeTp));
             this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(slotitemTp));
@@ -37,28 +62,11 @@ namespace EventMapHpViewer.Models.Settings
                 MapHpSettings.SlotItemTpSettings.Value = DynamicJson.Serialize(this.SlotItemTp);
         }
 
-        private void LoadFromLocal()
-        {
-            var stypeJson = MapHpSettings.ShipTypeTpSettings?.Value;
-            if (!string.IsNullOrWhiteSpace(stypeJson))
-            {
-                this.ShipTypeTp = DynamicJson.Parse(stypeJson);
-            }
-
-            var slotItemJson = MapHpSettings.SlotItemTpSettings?.Value;
-            if (!string.IsNullOrWhiteSpace(slotItemJson))
-            {
-                this.SlotItemTp = DynamicJson.Parse(slotItemJson);
-            }
-
-            this.RaiseSettingsPropertyChanged();
-        }
-
         public void ResetAndSave()
         {
             MapHpSettings.ShipTypeTpSettings?.Reset();
             MapHpSettings.SlotItemTpSettings?.Reset();
-            this.LoadFromLocal();
+            this.UpdateFromMaster();
         }
 
         public void UpdateFromMaster()
@@ -74,7 +82,6 @@ namespace EventMapHpViewer.Models.Settings
             {
                 if (newStypeTp.Any(x => x.Key == oldStyleTp.Id))
                 {
-                    newStypeTp[oldStyleTp.Id].Name = oldStyleTp.Name;
                     newStypeTp[oldStyleTp.Id].Tp = oldStyleTp.Tp;
                 }
                 else
@@ -85,14 +92,13 @@ namespace EventMapHpViewer.Models.Settings
             this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(newStypeTp.Select(x => x.Value)));
 
             var newSlotitemTp = master.SlotItems
-                .Where(x => x.Key <= 500)
-                .Select(x => new TpSetting(x.Value.Id, x.Value.Name, 0))
+                .Where(x => x.Key <= 500)   // 敵の装備は除外
+                .Select(x => new TpSetting(x.Value.Id, x.Value.Name, 0, x.Value.EquipType.Id, x.Value.EquipType.Name))
                 .ToDictionary(x => x.Id);
             foreach (var oldSltitemTp in this.SlotItemTp)
             {
                 if (newSlotitemTp.Any(x => x.Key == oldSltitemTp.Id))
                 {
-                    newSlotitemTp[oldSltitemTp.Id].Name = oldSltitemTp.Name;
                     newSlotitemTp[oldSltitemTp.Id].Tp = oldSltitemTp.Tp;
                 }
                 else
@@ -102,15 +108,7 @@ namespace EventMapHpViewer.Models.Settings
             }
             this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(newSlotitemTp.Select(x => x.Value)));
 
-            this.RaiseSettingsPropertyChanged();
-
             this.Save();
-        }
-
-        private void RaiseSettingsPropertyChanged()
-        {
-            this.RaisePropertyChanged(nameof(this.ShipTypeTp));
-            this.RaisePropertyChanged(nameof(this.SlotItemTp));
         }
 
         public static AutoCalcTpSettings Default { get; } = CreateDefault();
@@ -146,49 +144,14 @@ namespace EventMapHpViewer.Models.Settings
 
             return new AutoCalcTpSettings(stypTp, slotitemTp);
         }
-
-        //private static KeyValuePair<ShipType, int> NewShipTypeTp(int id, string name, int tp)
-        //{
-        //    return new KeyValuePair<ShipType, int>(NewShipType(id, name), tp);
-        //}
-
-        //private static ShipType NewShipType(int id, string name)
-        //{
-        //    return new ShipType(new kcsapi_mst_stype()
-        //    {
-        //        api_id = id,
-        //        api_name = name,
-        //    });
-        //}
-
-        //private static TpSetting NewSlotItemTp(int id, string name, int tp)
-        //{
-        //    return new TpSetting(NewSlotItem(id, name), tp);
-        //}
-
-        //private static SlotItemInfo NewSlotItem(int id, string name)
-        //{
-        //    return typeof(SlotItemInfo).GetConstructor(
-        //        BindingFlags.NonPublic | BindingFlags.Instance,
-        //        null,
-        //        new[] { typeof(kcsapi_mst_slotitem), typeof(MasterTable<SlotItemEquipType>) },
-        //        null)
-        //        .Invoke(new object[]
-        //        {
-        //            new kcsapi_mst_slotitem
-        //            {
-        //                api_id = id,
-        //                api_name = name,
-        //            },
-        //            new MasterTable<SlotItemEquipType>()
-        //        }) as SlotItemInfo;
-        //}
     }
 
     public class TpSetting: Livet.NotificationObject
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int TypeId { get; set; }
+        public string TypeName { get; set; }
 
         private decimal _Tp;
         public decimal Tp
@@ -205,11 +168,13 @@ namespace EventMapHpViewer.Models.Settings
 
         public TpSetting() { }
 
-        public TpSetting(int id, string name, decimal tp = 0)
+        public TpSetting(int id, string name, decimal tp = 0, int typeId = 0, string typeName = "")
         {
             this.Id = id;
             this.Name = name;
             this.Tp = tp;
+            this.TypeId = typeId;
+            this.TypeName = typeName;
         }
     }
 }
