@@ -54,7 +54,7 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 残回数。輸送の場合はA勝利の残回数。
         /// </summary>
-        public async Task<RemainingCount> GetRemainingCount(TransportCapacity capacity)
+        public async Task<RemainingCount> GetRemainingCount()
         {
             if (this.IsCleared == 1) return RemainingCount.Zero;
 
@@ -66,6 +66,7 @@ namespace EventMapHpViewer.Models
 
             if (this.Eventmap.GaugeType == GaugeType.Transport)
             {
+                var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
                 if (capacity.A == 0) return RemainingCount.MaxValue;  //ゲージ減らない
                 return new RemainingCount((int)Math.Ceiling((decimal)this.Current / capacity.A));
             }
@@ -74,7 +75,7 @@ namespace EventMapHpViewer.Models
 
             if (MapHpSettings.UseLocalBossSettings)
             {
-                var settings = this.BossSettings.List;
+                var settings = BossSettingsWrapper.FromSettings.List;
                 if (settings != null && settings.Any())
                     return this.CalculateRemainingCount(settings);
             }
@@ -84,15 +85,16 @@ namespace EventMapHpViewer.Models
                 var remoteBossData = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
                 client.CloseConnection();
 
-                if (remoteBossData != null
-                && !remoteBossData.Any(x => x.isLast)
-                || !remoteBossData.Any(x => !x.isLast))
-                {
-                    remoteBossData = null;
-                }
+                if (remoteBossData == null)
+                    return null;
 
-                if (remoteBossData != null && remoteBossData.Any())
-                    return this.CalculateRemainingCount(BossSettingsWrapper.Parse(remoteBossData));   //イベント海域(リモートデータ)
+                if (!remoteBossData.Any(x => x.isLast))
+                    return null;
+
+                if(!remoteBossData.Any(x => !x.isLast))
+                    return null;
+
+                return this.CalculateRemainingCount(BossSettingsWrapper.Parse(remoteBossData));   //イベント海域(リモートデータ)
             }
 
             return null;  //未対応
@@ -100,14 +102,18 @@ namespace EventMapHpViewer.Models
 
         private RemainingCount CalculateRemainingCount(IEnumerable<BossSetting> settings)
         {
+            var normals = settings.Where(x => !x.IsLast);
+            var lasts = settings.Where(x => x.IsLast);
+            if (!normals.Any() || !lasts.Any())
+                return null;
             return new RemainingCount(
                 CalculateRemainingCount(
-                    settings.Where(x => !x.IsLast).Max(x => x.BossHP),
-                    settings.Where(x => x.IsLast).Max(x => x.BossHP)
+                    normals.Max(x => x.BossHP),
+                    lasts.Max(x => x.BossHP)
                 ),
                 CalculateRemainingCount(
-                    settings.Where(x => !x.IsLast).Min(x => x.BossHP),
-                    settings.Where(x => x.IsLast).Min(x => x.BossHP)
+                    normals.Min(x => x.BossHP),
+                    lasts.Min(x => x.BossHP)
                 ));
         }
 
@@ -120,13 +126,13 @@ namespace EventMapHpViewer.Models
         /// <summary>
         /// 輸送ゲージのS勝利時の残回数
         /// </summary>
-        public int GetRemainingCountTransportS(TransportCapacity capacity)
+        public int GetRemainingCountTransportS()
         {
             if (this.Eventmap?.GaugeType != GaugeType.Transport) return -1;
+
+            var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
             if (capacity.S == 0) return int.MaxValue;  //ゲージ減らない
             return (int)Math.Ceiling((decimal)this.Current / capacity.S);
         }
-
-        private BossSettingsWrapper BossSettings { get; } = new BossSettingsWrapper();
     }
 }

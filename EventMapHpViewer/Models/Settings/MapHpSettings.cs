@@ -18,23 +18,31 @@ namespace EventMapHpViewer.Models.Settings
 
         private static readonly ISerializationProvider roamingProvider = new FileSettingsProvider(RoamingFilePath);
 
+        #region TpSettings
+
         public static SerializableProperty<decimal> TransportCapacityS { get; }
             = new SerializableProperty<decimal>(GetKey(), roamingProvider) { AutoSave = true };
 
-        internal static SerializableProperty<string> ShipTypeTpSettings { get; }
+        public static SerializableProperty<string> ShipTypeTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTypeTp.ToArray())) { AutoSave = true };
 
-        internal static SerializableProperty<string> SlotItemTpSettings { get; }
+        public static SerializableProperty<string> SlotItemTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray())) { AutoSave = true };
 
         public static SerializableProperty<bool> UseAutoCalcTpSettings { get; }
             = new SerializableProperty<bool>(GetKey(), roamingProvider, true) { AutoSave = true };
 
-        internal static SerializableProperty<string> BossSettings { get; }
+        #endregion
+
+        #region BossHpSettings
+
+        public static SerializableProperty<string> BossSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider) { AutoSave = true };
 
         public static SerializableProperty<bool> UseLocalBossSettings { get; }
             = new SerializableProperty<bool>(GetKey(), roamingProvider, false) { AutoSave = true };
+
+        #endregion
 
         private static string GetKey([CallerMemberName] string propertyName = "")
             => $"{nameof(MapHpSettings)}.{propertyName}";

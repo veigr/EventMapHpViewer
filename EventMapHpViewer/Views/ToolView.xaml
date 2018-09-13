@@ -290,22 +290,15 @@
                     <TextBlock Text="艦隊の輸送力"
                                Style="{DynamicResource EmphaticTextStyleKey}"
                                FontSize="12"/>
-                    <StackPanel Margin="8,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="S:"
-                                       Style="{DynamicResource DefaultTextStyleKey}"/>
-                            <metro:PromptTextBox>
-                                <metro:PromptTextBox.Text>
-                                    <Binding Path="TransportCapacityS"
-                                             UpdateSourceTrigger="PropertyChanged">
-                                        <Binding.ValidationRules>
-                                            <metro:Int32Rule Min="0"/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </metro:PromptTextBox.Text>
-                            </metro:PromptTextBox>
-                        </StackPanel>
+                    <StackPanel Margin="8,0"
+                                Orientation="Horizontal">
                         <TextBlock>
+                            <Run Text="S:"
+                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                            <Run Text="{Binding TransportCapacity.S, Mode=OneWay}"
+                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                        <TextBlock Margin="8,0">
                             <Run Text="A:"
                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
                             <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"

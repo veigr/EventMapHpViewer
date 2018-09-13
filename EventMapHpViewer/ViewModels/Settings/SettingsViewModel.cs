@@ -26,10 +26,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             };
 
             KanColleClient.Current.Subscribe(nameof(KanColleClient.Current.IsStarted), () =>
-            DispatcherHelper.UIDispatcher.Invoke(() =>
-            {
-                this.Initialize();
-            })
+            DispatcherHelper.UIDispatcher.Invoke(this.Initialize)
             , false)
             .AddTo(this);
         }

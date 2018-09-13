@@ -6,23 +6,31 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettingsWrapper
+    class BossSettingsWrapper: Livet.NotificationObject
     {
-        public ObservableSynchronizedCollection<BossSetting> List { get; }
-        
-        public BossSettingsWrapper()
+        private ObservableSynchronizedCollection<BossSetting> _List;
+        public ObservableSynchronizedCollection<BossSetting> List
         {
-            if(string.IsNullOrWhiteSpace(MapHpSettings.BossSettings.Value))
-                this.List = new ObservableSynchronizedCollection<BossSetting>();
-            else
-                this.List = DynamicJson.Parse(MapHpSettings.BossSettings?.Value);
+            get => this._List;
+            private set
+            {
+                if (this._List == value)
+                    return;
+                this._List = value;
+                this.RaisePropertyChanged();
+            }
         }
 
-        public void Save()
-            => MapHpSettings.BossSettings.Value = DynamicJson.Serialize(this.List);
+        public BossSettingsWrapper(string json = "")
+        {
+            this.List = !string.IsNullOrEmpty(json)
+                ? DynamicJson.Parse(json)
+                : new ObservableSynchronizedCollection<BossSetting>();
+        }
 
         public static IEnumerable<BossSetting> Parse(IEnumerable<Raw.map_exboss> source)
         {
@@ -31,6 +39,11 @@ namespace EventMapHpViewer.Models.Settings
                 BossHP = x.ship.maxhp,
                 IsLast = x.isLast,
             });
+        }
+
+        public static BossSettingsWrapper FromSettings
+        {
+            get => new BossSettingsWrapper(MapHpSettings.BossSettings?.Value);
         }
     }
 
@@ -41,5 +54,11 @@ namespace EventMapHpViewer.Models.Settings
         public int GaugeNum { get; set; }
         public int BossHP { get; set; }
         public bool IsLast { get; set; }
+    }
+
+    static class BossSettingsWrapperExtensions
+    {
+        public static void Save(this BossSettingsWrapper settings)
+            => MapHpSettings.BossSettings.Value = DynamicJson.Serialize(settings.List);
     }
 }

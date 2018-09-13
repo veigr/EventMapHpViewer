@@ -214,7 +214,7 @@ namespace EventMapHpViewer.ViewModels.Settings
 
         public BossSettingsViewModel()
         {
-            this.Settings = new BossSettingsWrapper();
+            this.Settings = BossSettingsWrapper.FromSettings;
 
             this.BossSettings = this.Settings.List
                 .ToSyncedSortedObservableCollection(x => $"{x.Id:D4}{x.Rank:D2}{x.GaugeNum:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}")

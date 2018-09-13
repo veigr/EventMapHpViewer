@@ -128,7 +128,8 @@
                                       ItemsSource="{Binding MapItemsSource}"
                                       DisplayMemberPath="Value"
                                       SelectedValuePath="Key"
-                                      SelectedValue="{Binding Id}"/>
+                                      SelectedValue="{Binding Id}"
+                                      Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="1"
@@ -138,13 +139,15 @@
                                       ItemsSource="{Binding RankItemsSource}"
                                       DisplayMemberPath="Value"
                                       SelectedValuePath="Key"
-                                      SelectedValue="{Binding Rank}"/>
+                                      SelectedValue="{Binding Rank}"
+                                      Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="2"
                            Text="ゲージ番号: "/>
                 <metro:PromptTextBox Grid.Column="1"
-                                     Grid.Row="2">
+                                     Grid.Row="2"
+                                     Margin="0,4">
                     <Binding Path="GaugeNum"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
@@ -159,7 +162,8 @@
                            Grid.Row="3"
                            Text="ボスHP: "/>
                 <metro:PromptTextBox Grid.Column="1"
-                                     Grid.Row="3">
+                                     Grid.Row="3"
+                                     Margin="0,4">
                     <Binding Path="BossHP"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
@@ -176,7 +180,8 @@
                 <CheckBox Grid.Column="1"
                           Grid.Row="4"
                           IsChecked="{Binding IsLast}"
-                          Height="24"/>
+                          Height="24"
+                          Margin="0,4"/>
 
                 <Grid Grid.ColumnSpan="2"
                       Grid.Row="5"

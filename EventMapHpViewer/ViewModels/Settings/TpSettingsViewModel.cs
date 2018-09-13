@@ -112,7 +112,7 @@ namespace EventMapHpViewer.ViewModels.Settings
 
         public TpSettingsViewModel()
         {
-            this.Settings = new AutoCalcTpSettings();
+            this.Settings = AutoCalcTpSettings.FromSettings;
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTypeTp), () =>
             DispatcherHelper.UIDispatcher.Invoke(() =>

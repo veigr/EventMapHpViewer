@@ -10,6 +10,7 @@ using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using StatefulModel;
+using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
@@ -42,30 +43,26 @@ namespace EventMapHpViewer.Models.Settings
 
         public AutoCalcTpSettings()
         {
-            MapHpSettings.ShipTypeTpSettings
-                ?.Subscribe(x => this.ShipTypeTp = DynamicJson.Parse(x));
-            MapHpSettings.SlotItemTpSettings
-                ?.Subscribe(x => this.SlotItemTp = DynamicJson.Parse(x));
+            this.ShipTypeTp = Default.ShipTypeTp;
+            this.SlotItemTp = Default.SlotItemTp;
         }
 
-        private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp) : this()
+        private AutoCalcTpSettings(string stypeTp, string slotitemTp)
+        {
+            this.ShipTypeTp = !string.IsNullOrEmpty(stypeTp) ? DynamicJson.Parse(stypeTp) : Default.ShipTypeTp;
+            this.SlotItemTp = !string.IsNullOrEmpty(slotitemTp) ? DynamicJson.Parse(slotitemTp) : Default.SlotItemTp;
+        }
+
+        private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp)
         {
             this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(stypeTp));
             this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(slotitemTp));
         }
 
-        public void Save()
+        public void RestoreDefault()
         {
-            if(this.ShipTypeTp.Any())
-                MapHpSettings.ShipTypeTpSettings.Value = DynamicJson.Serialize(this.ShipTypeTp);
-            if (this.SlotItemTp.Any())
-                MapHpSettings.SlotItemTpSettings.Value = DynamicJson.Serialize(this.SlotItemTp);
-        }
-
-        public void ResetAndSave()
-        {
-            MapHpSettings.ShipTypeTpSettings?.Reset();
-            MapHpSettings.SlotItemTpSettings?.Reset();
+            this.ShipTypeTp = Default.ShipTypeTp;
+            this.SlotItemTp = Default.SlotItemTp;
             this.UpdateFromMaster();
         }
 
@@ -144,6 +141,12 @@ namespace EventMapHpViewer.Models.Settings
 
             return new AutoCalcTpSettings(stypTp, slotitemTp);
         }
+
+        public static AutoCalcTpSettings FromSettings
+        {
+            get => new AutoCalcTpSettings(MapHpSettings.ShipTypeTpSettings?.Value, MapHpSettings.SlotItemTpSettings?.Value);
+        }
+        
     }
 
     public class TpSetting: Livet.NotificationObject
@@ -175,6 +178,24 @@ namespace EventMapHpViewer.Models.Settings
             this.Tp = tp;
             this.TypeId = typeId;
             this.TypeName = typeName;
+        }
+    }
+
+    static class AutoCalcTpSettingsExtensions
+    {
+        public static void Save(this AutoCalcTpSettings settings)
+        {
+            if (settings.ShipTypeTp.Any())
+                MapHpSettings.ShipTypeTpSettings.Value = DynamicJson.Serialize(settings.ShipTypeTp);
+            if (settings.SlotItemTp.Any())
+                MapHpSettings.SlotItemTpSettings.Value = DynamicJson.Serialize(settings.SlotItemTp);
+        }
+
+        public static void ResetAndSave(this AutoCalcTpSettings settings)
+        {
+            MapHpSettings.ShipTypeTpSettings?.Reset();
+            MapHpSettings.SlotItemTpSettings?.Reset();
+            settings.RestoreDefault();
         }
     }
 }

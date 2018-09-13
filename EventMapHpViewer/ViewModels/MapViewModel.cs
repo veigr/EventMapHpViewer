@@ -348,18 +348,16 @@ namespace EventMapHpViewer.ViewModels
             this.IsInfinity = false;
             this.IsLoading = true;
 
-            MapHpSettings.TransportCapacityS
-                .Subscribe(x => this.UpdateRemainingCount(new TransportCapacity(x)))
-                .AddTo(this);
+            this.UpdateRemainingCount();
         }
 
 
-        private void UpdateRemainingCount(TransportCapacity capacity)
+        public void UpdateRemainingCount()
         {
             try
             {
-                this._source.GetRemainingCount(capacity)
-                    .ContinueWith(t => this.Update(t.Result, capacity));
+                this._source.GetRemainingCount()
+                    .ContinueWith(t => this.Update(t.Result));
             }
             catch (AggregateException e)
             {
@@ -367,7 +365,7 @@ namespace EventMapHpViewer.ViewModels
             }
         }
 
-        private void Update(RemainingCount remainingCount, TransportCapacity capacity)
+        private void Update(RemainingCount remainingCount)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -381,7 +379,7 @@ namespace EventMapHpViewer.ViewModels
 
                 this.RemainingCountMin = remainingCount.Min.ToString();
                 this.RemainingCountMax = remainingCount.Max.ToString();
-                this.RemainingCountTransportS = this._source.GetRemainingCountTransportS(capacity).ToString();
+                this.RemainingCountTransportS = this._source.GetRemainingCountTransportS().ToString();
                 this.IsInfinity = remainingCount == RemainingCount.MaxValue;
                 this.GaugeColor = remainingCount.Min < 2 ? red : green;
             });

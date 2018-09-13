@@ -30,7 +30,7 @@ namespace EventMapHpViewer.ViewModels
                 () =>
                 {
                     if (this.mapInfoProxy?.Maps?.MapList == null) return;
-                    // M の中身は殆ど変更通知してくれないし全部一括作りなおししかしないひどい実装
+                    // 雑
                     this.Maps = this.mapInfoProxy.Maps.MapList
                         .OrderBy(x => x.Id)
                         .Select(x => new MapViewModel(x))
@@ -41,13 +41,49 @@ namespace EventMapHpViewer.ViewModels
                 .AddTo(this);
 
             KanColleClient.Current
-                .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false);
+                .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false)
+                .AddTo(this);
+
+            MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
+            MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
+
+            MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
         }
 
         public void Initialize()
         {
             Debug.WriteLine("ToolViewModel: Initialize()");
-            this.TransportCapacityS = MapHpSettings.TransportCapacityS;
+            KanColleClient.Current.Homeport.Organization
+                .Subscribe(nameof(Organization.Fleets), this.UpdateFleets, false)
+                .Subscribe(nameof(Organization.Combined), this.UpdateTransportCapacity, false)
+                .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear(), false)
+                .AddTo(this);
+            KanColleClient.Current.Proxy.ApiSessionSource
+                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/next")
+                .TryParse<map_start_next>()
+                .Subscribe(x =>
+                {
+                    if (x.Data.api_event_id == 9)
+                    {
+                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = true");
+                        this.fixedTransportCapacity = true;
+                    }
+                })
+                .AddTo(this);
+            KanColleClient.Current.Proxy.api_port
+                .Subscribe(_ =>
+                {
+                    if (fixedTransportCapacity)
+                    {
+                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = false");
+                        this.fixedTransportCapacity = false;
+                    }
+                    this.UpdateTransportCapacity();
+                })
+                .AddTo(this);
         }
 
         #region Maps変更通知プロパティ
@@ -104,31 +140,55 @@ namespace EventMapHpViewer.ViewModels
         }
         #endregion
 
-
-        #region TransportCapacityS 変更通知プロパティ
-        private decimal _TransportCapacityS;
-
-        public decimal TransportCapacityS
-        {
-            get
-            { return this._TransportCapacityS; }
-            set
-            {
-                if (this._TransportCapacityS.Equals(value))
-                    return;
-                this._TransportCapacityS = value;
-                this.RaisePropertyChanged();
-
-                this.TransportCapacity = new TransportCapacity(value);
-
-                if (MapHpSettings.TransportCapacityS != value)
-                    MapHpSettings.TransportCapacityS.Value = value;
-            }
-        }
-        #endregion
-        
-
         public bool ExistsTransportGauge
             => this.Maps?.Any(x => x.GaugeType == GaugeType.Transport) ?? false;
+
+        private readonly HashSet<Ship> handledShips = new HashSet<Ship>();
+
+        private readonly List<IDisposable> fleetHandlers = new List<IDisposable>();
+
+        private bool fixedTransportCapacity;
+
+        private void UpdateFleets()
+        {
+            foreach (var handler in fleetHandlers)
+            {
+                handler.Dispose();
+            }
+            this.fleetHandlers.Clear();
+            foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets.Values)
+            {
+                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.UpdateTransportCapacity, false));
+                foreach (var ship in fleet.Ships)
+                {
+                    if (this.handledShips.Contains(ship)) return;
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.UpdateTransportCapacity, false));
+                    this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Situation), this.UpdateTransportCapacity, false));
+                    this.handledShips.Add(ship);
+                }
+            }
+        }
+
+        private void UpdateTransportCapacity()
+        {
+            if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
+
+            if (KanColleClient.Current.Homeport?.Organization?.Fleets.Any() != true) return;
+
+            Debug.WriteLine(nameof(this.UpdateTransportCapacity));
+            this.TransportCapacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+            this.UpdateRemainingCount();
+        }
+
+        private void UpdateRemainingCount()
+        {
+            if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
+
+            if (this.Maps == null) return;
+            foreach (var map in this.Maps)
+            {
+                map.UpdateRemainingCount();
+            }
+        }
     }
 }
