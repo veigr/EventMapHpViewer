@@ -75,8 +75,12 @@ namespace EventMapHpViewer.Models
 
             if (MapHpSettings.UseLocalBossSettings)
             {
-                var settings = BossSettingsWrapper.FromSettings.List;
-                if (settings != null && settings.Any())
+                var settings = BossSettingsWrapper.FromSettings.List
+                    .Where(x => x.Id == this.Id)
+                    .Where(x => x.Rank == (int)this.Eventmap.SelectedRank)
+                    .Where(x => x.GaugeNum == (this.Eventmap.GaugeNum ?? 1))
+                    .ToArray();
+                if (settings.Any())
                     return this.CalculateRemainingCount(settings);
             }
             else
