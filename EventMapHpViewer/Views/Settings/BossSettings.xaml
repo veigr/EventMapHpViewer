@@ -8,11 +8,11 @@
              xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
              mc:Ignorable="d"
-             d:DesignWidth="200"
-             d:DesignHeight="100"
+             d:DesignWidth="595"
+             d:DesignHeight="270"
              d:DataContext="{d:DesignInstance vm:BossSettingsViewModel}"
-             MinWidth="480"
-             MinHeight="260">
+             MinWidth="314"
+             MinHeight="270">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -26,7 +26,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid Margin="11,11,11,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -37,7 +37,7 @@
                    Margin="0,0,0,10"
                    Text="※ログイン後に設定が可能になります"
                    Style="{DynamicResource DetailTextStyleKey}"/>
-        
+
         <Grid Grid.Row="1"
               IsEnabled="{Binding IsEnabled}">
             <Grid.ColumnDefinitions>

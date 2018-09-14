@@ -7,8 +7,8 @@
              xmlns:settings="clr-namespace:EventMapHpViewer.Views.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
              mc:Ignorable="d"
-             d:DesignWidth="400"
-             d:DesignHeight="320"
+             d:DesignWidth="800"
+             d:DesignHeight="400"
              d:DataContext="{d:DesignInstance vm:SettingsViewModel}" Loaded="UserControl_Loaded">
 
     <UserControl.Resources>

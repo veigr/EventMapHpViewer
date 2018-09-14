@@ -3,8 +3,7 @@
                           xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
                           xmlns:models="clr-namespace:EventMapHpViewer.Models"
                           IsNoMap="False"
-                          ExistsTransportGauge="True"
-                          TransportCapacityS="145">
+                          ExistsTransportGauge="True">
     <viewModels:ToolViewModel.TransportCapacity>
         <models:TransportCapacity S="145" A="100"/>
     </viewModels:ToolViewModel.TransportCapacity>
