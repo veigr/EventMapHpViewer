@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,6 +80,7 @@ namespace EventMapHpViewer.Models.Settings
             }
             try
             {
+                Debug.WriteLine($"MapHP - GET: {url}");
                 var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -143,6 +145,28 @@ namespace EventMapHpViewer.Models.Settings
                 default:
                     return new HttpClientHandler();
             }
+        }
+
+        public static string BuildBossSettingsUrl(string url, int id, int rank, int gaugeNum)
+        {
+            return BuildUrl(url, new Dictionary<string, string>
+            {
+                { "version", $"{MapHpViewer.version}" },
+                { "id", id.ToString() },
+                { "rank", rank.ToString() },
+                { "gaugeNum", gaugeNum.ToString() },
+            });
+        }
+
+        public static string BuildUrl(string url, IDictionary<string, string> placeHolders)
+        {
+            if (placeHolders == null)
+                return url;
+            foreach(var placeHolder in placeHolders)
+            {
+                url = url.Replace($"{{{placeHolder.Key}}}", placeHolder.Value);
+            }
+            return url;
         }
     }
 }

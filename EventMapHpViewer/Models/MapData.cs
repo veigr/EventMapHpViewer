@@ -86,7 +86,12 @@ namespace EventMapHpViewer.Models
             else
             {
                 var client = new RemoteSettingsClient();
-                var remoteBossData = await client.GetSettings<Raw.map_exboss[]>($"https://kctadil.azurewebsites.net/map/maphp/v3.2/{this.Id}/{this.Eventmap.SelectedRank}");
+                var remoteBossData = await client.GetSettings<Raw.map_exboss[]>(
+                    RemoteSettingsClient.BuildBossSettingsUrl(
+                        MapHpSettings.RemoteBossSettingsUrl,
+                        this.Id,
+                        (int)this.Eventmap.SelectedRank,
+                        this.Eventmap.GaugeNum ?? 1));
                 client.CloseConnection();
 
                 if (remoteBossData == null)

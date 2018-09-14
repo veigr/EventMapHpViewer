@@ -46,6 +46,8 @@ namespace EventMapHpViewer.ViewModels
 
             MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
             MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
+            // RemoteBossSettingsUrl は文字入力の度にリクエスト飛ぶようになるのは現実的ではないので、変更検知しない
+            //MapHpSettings.RemoteBossSettingsUrl.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
 
             MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
             MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);

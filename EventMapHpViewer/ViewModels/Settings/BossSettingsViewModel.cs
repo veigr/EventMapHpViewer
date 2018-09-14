@@ -210,6 +210,23 @@ namespace EventMapHpViewer.ViewModels.Settings
         }
         #endregion
 
+        #region RemoteBossSettingsUrl
+        public string RemoteBossSettingsUrl
+        {
+            get => MapHpSettings.RemoteBossSettingsUrl.Value;
+            set
+            {
+                if (MapHpSettings.RemoteBossSettingsUrl.Value == value)
+                    return;
+                if (value == null)
+                    MapHpSettings.RemoteBossSettingsUrl.Reset();
+                else
+                    MapHpSettings.RemoteBossSettingsUrl.Value = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
         private BossSettingsWrapper Settings { get; }
 
         public BossSettingsViewModel()
@@ -249,6 +266,11 @@ namespace EventMapHpViewer.ViewModels.Settings
             this.Settings.List.Remove(this.SelectedBossSetting);
             this.Settings.Save();
             this.UpdateButtonState();
+        }
+
+        public void RestoreDefaultRemoteBossSettingsUrl()
+        {
+            this.RemoteBossSettingsUrl = MapHpSettings.RemoteBossSettingsUrl?.Default;
         }
 
         private void UpdateButtonState()

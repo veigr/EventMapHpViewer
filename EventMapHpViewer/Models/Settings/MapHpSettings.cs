@@ -24,16 +24,24 @@ namespace EventMapHpViewer.Models.Settings
             = new SerializableProperty<decimal>(GetKey(), roamingProvider) { AutoSave = true };
 
         public static SerializableProperty<string> ShipTypeTpSettings { get; }
-            = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTypeTp.ToArray())) { AutoSave = true };
+            = new SerializableProperty<string>(GetKey(), roamingProvider,
+                DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTypeTp.ToArray()
+                    )) { AutoSave = true };
 
         public static SerializableProperty<string> SlotItemTpSettings { get; }
-            = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray())) { AutoSave = true };
+            = new SerializableProperty<string>(GetKey(), roamingProvider,
+                DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray()
+                    )) { AutoSave = true };
 
         public static SerializableProperty<string> ShipTpSettings { get; }
-            = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTp.ToArray())) { AutoSave = true };
+            = new SerializableProperty<string>(GetKey(), roamingProvider,
+                DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTp.ToArray()
+                    )) { AutoSave = true };
 
         public static SerializableProperty<bool> UseAutoCalcTpSettings { get; }
-            = new SerializableProperty<bool>(GetKey(), roamingProvider, true) { AutoSave = true };
+            = new SerializableProperty<bool>(GetKey(), roamingProvider,
+                true
+                ) { AutoSave = true };
 
         #endregion
 
@@ -43,7 +51,14 @@ namespace EventMapHpViewer.Models.Settings
             = new SerializableProperty<string>(GetKey(), roamingProvider) { AutoSave = true };
 
         public static SerializableProperty<bool> UseLocalBossSettings { get; }
-            = new SerializableProperty<bool>(GetKey(), roamingProvider, false) { AutoSave = true };
+            = new SerializableProperty<bool>(GetKey(), roamingProvider,
+                false
+                ) { AutoSave = true };
+
+        public static SerializableProperty<string> RemoteBossSettingsUrl { get; }
+            = new SerializableProperty<string>(GetKey(), roamingProvider,
+                "https://kctadil-admin.azurewebsites.net/admin/maphp/{version}/{id}/{rank}/{gaugeNum}"
+                ) { AutoSave = true };
 
         #endregion
 

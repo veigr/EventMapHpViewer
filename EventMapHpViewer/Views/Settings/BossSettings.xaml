@@ -7,12 +7,13 @@
              xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
+             xmlns:controls="clr-namespace:EventMapHpViewer.Views.Controls"
              mc:Ignorable="d"
              d:DesignWidth="595"
-             d:DesignHeight="270"
+             d:DesignHeight="388"
              d:DataContext="{d:DesignInstance vm:BossSettingsViewModel}"
-             MinWidth="314"
-             MinHeight="270">
+             MinWidth="315"
+             MinHeight="390">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -47,6 +48,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
@@ -56,14 +58,53 @@
                          Content="リモートから情報を取得する"
                          Margin="0,0,0,10"
                          IsChecked="{Binding UseLocalBossSettings, Converter={StaticResource ReverseBooelanConverter}}"/>
-            <RadioButton Grid.Row="1"
+
+            <StackPanel Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        IsEnabled="{Binding UseLocalBossSettings, Converter={StaticResource ReverseBooelanConverter}}">
+                <Grid Margin="8,0,4,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="URL: "/>
+                    <metro:PromptTextBox Grid.Column="1"
+                                         Margin="0,0,8,0"
+                                         VerticalAlignment="Center">
+                        <Binding Path="RemoteBossSettingsUrl"
+                                 Mode="TwoWay"
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <controls:BossSettingsUrlRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </metro:PromptTextBox>
+                    <metro2:CallMethodButton Grid.Column="2"
+                                             MethodTarget="{Binding}"
+                                             MethodName="RestoreDefaultRemoteBossSettingsUrl"
+                                             Content="既定値に戻す"
+                                             Width="110"
+                                             Padding="16,6"/>
+                </Grid>
+                <TextBlock Style="{DynamicResource DefaultTextStyleKey}"
+                           Margin="8,0,0,8">
+                    <Run Text="{}{version}: プラグイン バージョン"/><LineBreak/>
+                    <Run Text="{}{id}: マップ ID"/><LineBreak/>
+                    <Run Text="{}{rank}: 難易度"/><LineBreak/>
+                    <Run Text="{}{gaugeNum}: ゲージ番号"/>
+                </TextBlock>
+            </StackPanel>
+            
+            <RadioButton Grid.Row="2"
                          Grid.ColumnSpan="2"
                          GroupName="BossSettings"
                          Content="自分で設定する"
                          Margin="0,0,0,10"
                          IsChecked="{Binding UseLocalBossSettings}"/>
 
-            <ListView Grid.Row="2"
+            <ListView Grid.Row="3"
                       Grid.Column="0"
                       IsEnabled="{Binding UseLocalBossSettings}"
                       ItemsSource="{Binding BossSettings}"
@@ -103,9 +144,9 @@
                 </ListView.View>
             </ListView>
 
-            <Grid Grid.Row="2"
+            <Grid Grid.Row="3"
                   Grid.Column="1"
-                  Margin="5,0"
+                  Margin="4,0"
                   IsEnabled="{Binding UseLocalBossSettings}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

@@ -165,6 +165,7 @@
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Settings\TpSettingsViewModel.cs" />
     <Compile Include="Views\Controls\DecimalRule.cs" />
+    <Compile Include="Views\Controls\BossSettingsUrlRule.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
