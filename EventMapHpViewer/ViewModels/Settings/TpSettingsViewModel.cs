@@ -108,6 +108,22 @@ namespace EventMapHpViewer.ViewModels.Settings
         }
         #endregion
 
+        #region ShipTpSettings 変更通知プロパティ
+        private ReadOnlyNotifyChangedCollection<TpSetting> _ShipTpSettings;
+
+        public ReadOnlyNotifyChangedCollection<TpSetting> ShipTpSettings
+        {
+            get => this._ShipTpSettings;
+            set
+            {
+                if (this._ShipTpSettings == value)
+                    return;
+                this._ShipTpSettings = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
         internal AutoCalcTpSettings Settings { get; }
 
         public TpSettingsViewModel()
@@ -119,7 +135,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             {
                 this.ShipTypeTpSettings = this.Settings.ShipTypeTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.Id)
+                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
             .AddTo(this);
@@ -129,7 +145,17 @@ namespace EventMapHpViewer.ViewModels.Settings
             {
                 this.SlotItemTpSettings = this.Settings.SlotItemTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.Id)
+                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
+                        .ToSyncedReadOnlyNotifyChangedCollection();
+            }))
+            .AddTo(this);
+
+            this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTp), () =>
+            DispatcherHelper.UIDispatcher.Invoke(() =>
+            {
+                this.ShipTpSettings = this.Settings.ShipTp
+                        .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
+                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
             .AddTo(this);

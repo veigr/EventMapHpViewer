@@ -28,4 +28,15 @@
     </ResourceDictionary.MergedDictionaries>
 
     <conv:ReverseBooleanConverter x:Key="ReverseBooelanConverter"/>
+
+    <Style x:Key="TabHeaderTextStyleKey"
+           TargetType="{x:Type TextBlock}"
+           BasedOn="{StaticResource DefaultTextStyleKey}">
+        <Setter Property="Foreground"
+                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Foreground}" />
+        <Setter Property="Margin"
+                Value="12,0" />
+        <Setter Property="FontSize"
+                Value="14" />
+    </Style>
 </ResourceDictionary>

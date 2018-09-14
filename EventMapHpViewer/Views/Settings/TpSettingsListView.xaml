@@ -8,6 +8,7 @@
              xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              xmlns:m="clr-namespace:EventMapHpViewer.Models.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
+             xmlns:controls="clr-namespace:EventMapHpViewer.Views.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance {x:Type m:TpSetting}, CreateList=True}"
@@ -134,7 +135,7 @@
                                     <Binding Path="Tp"
                                              UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
-                                            <metro:Int32Rule Min="0"/>
+                                            <controls:DecimalRule/>
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </metro:PromptTextBox.Text>

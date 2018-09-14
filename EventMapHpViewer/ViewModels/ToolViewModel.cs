@@ -51,6 +51,7 @@ namespace EventMapHpViewer.ViewModels
             MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
             MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
             MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
         }
 
         public void Initialize()

@@ -157,12 +157,14 @@
     <Compile Include="Models\RemainingCount.cs" />
     <Compile Include="Models\Settings\RemoteSettingsClient.cs" />
     <Compile Include="Models\Settings\AutoCalcTpSettings.cs" />
+    <Compile Include="Models\Settings\TpSetting.cs" />
     <Compile Include="Models\TpExtensions.cs" />
     <Compile Include="Models\TransportCapacity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Settings\BossSettingsViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Settings\TpSettingsViewModel.cs" />
+    <Compile Include="Views\Controls\DecimalRule.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>

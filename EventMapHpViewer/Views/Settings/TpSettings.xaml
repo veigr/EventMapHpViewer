@@ -89,37 +89,58 @@
 
             <Grid Grid.Row="1"
                   IsEnabled="{Binding UseAutoCalcTpSettings}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <v:TpSettingsListView Grid.Column="0"
-                                      Grid.Row="0"
-                                      DataContext="{Binding ShipTypeTpSettings}"
-                                      Margin="0,0,10,0"
-                                      TypeIdColumnWidth="0"
-                                      TypeNameColumnWidth="0"
-                                      IdColumnWidth="0"
-                                      NameColumnWidth="100"
-                                      TpColumnWidth="30"/>
-                
-                <v:TpSettingsListView Grid.Column="1"
-                                      Grid.Row="0"
-                                      DataContext="{Binding SlotItemTpSettings}"
-                                      TypeIdColumnWidth="0"
-                                      TypeNameColumnWidth="100"
-                                      IdColumnWidth="0"
-                                      NameColumnWidth="300"
-                                      TpColumnWidth="30"/>
+                <TextBlock Grid.Row="0"
+                           Text="※全て加算されます"
+                           Style="{DynamicResource DefaultTextStyleKey}"
+                           Margin="8,0,0,8"/>
 
+                <TabControl Grid.Row="1"
+                            Style="{DynamicResource VerticalTabControlStyleKey}">
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="装備"
+                                       Style="{StaticResource TabHeaderTextStyleKey}"/>
+                        </TabItem.Header>
+                        <v:TpSettingsListView DataContext="{Binding SlotItemTpSettings}"
+                                              TypeIdColumnWidth="0"
+                                              TypeNameColumnWidth="120"
+                                              IdColumnWidth="0"
+                                              NameColumnWidth="330"
+                                              TpColumnWidth="30"/>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="艦種"
+                                       Style="{StaticResource TabHeaderTextStyleKey}"/>
+                        </TabItem.Header>
+                        <v:TpSettingsListView DataContext="{Binding ShipTypeTpSettings}"
+                                              TypeIdColumnWidth="0"
+                                              TypeNameColumnWidth="0"
+                                              IdColumnWidth="0"
+                                              NameColumnWidth="150"
+                                              TpColumnWidth="30"/>
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="艦娘"
+                                       Style="{StaticResource TabHeaderTextStyleKey}"/>
+                        </TabItem.Header>
+                        <v:TpSettingsListView DataContext="{Binding ShipTpSettings}"
+                                              TypeIdColumnWidth="0"
+                                              TypeNameColumnWidth="120"
+                                              IdColumnWidth="0"
+                                              NameColumnWidth="330"
+                                              TpColumnWidth="30"/>
+                    </TabItem>
+                </TabControl>
 
-                <metro2:CallMethodButton Grid.ColumnSpan="2"
-                                         Grid.Row="1"
+                <metro2:CallMethodButton Grid.Row="2"
                                          HorizontalAlignment="Left"
                                          MethodTarget="{Binding}"
                                          MethodName="Reset"
@@ -129,8 +150,7 @@
                                          Margin="0,8,0,0"/>
 
 
-                <metro2:CallMethodButton Grid.ColumnSpan="2"
-                                         Grid.Row="1"
+                <metro2:CallMethodButton Grid.Row="2"
                                          HorizontalAlignment="Right"
                                          MethodTarget="{Binding}"
                                          MethodName="Save"

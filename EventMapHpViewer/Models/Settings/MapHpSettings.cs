@@ -29,6 +29,9 @@ namespace EventMapHpViewer.Models.Settings
         public static SerializableProperty<string> SlotItemTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray())) { AutoSave = true };
 
+        public static SerializableProperty<string> ShipTpSettings { get; }
+            = new SerializableProperty<string>(GetKey(), roamingProvider, DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTp.ToArray())) { AutoSave = true };
+
         public static SerializableProperty<bool> UseAutoCalcTpSettings { get; }
             = new SerializableProperty<bool>(GetKey(), roamingProvider, true) { AutoSave = true };
 

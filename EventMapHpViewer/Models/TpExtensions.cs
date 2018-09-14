@@ -25,7 +25,13 @@ namespace EventMapHpViewer.Models
 
         public static decimal CalcTp(this Ship ship, AutoCalcTpSettings settings)
         {
-            var stypeTp = settings.ShipTypeTp.FirstOrDefault(x => x.Id == ship.Info.ShipType.Id)?.Tp ?? 0;
+            var stypeTp = settings.ShipTypeTp
+                .FirstOrDefault(x => x.Id == ship.Info.ShipType.Id)?.Tp
+                ?? 0;
+
+            var shipTp = settings.ShipTp
+                .FirstOrDefault(x => x.Id == ship.Info.Id)?.Tp
+                ?? 0;
 
             var slotTp = ship.Slots
                 .Concat(new[] { ship.ExSlot })
@@ -33,7 +39,7 @@ namespace EventMapHpViewer.Models
                 .Select(x => x.Item.Info.Id)
                 .Sum(x => settings.SlotItemTp.FirstOrDefault(y => y.Id == x)?.Tp ?? 0);
 
-            return stypeTp + slotTp;
+            return stypeTp + shipTp + slotTp;
         }
 
         private static IEnumerable<Ship> TransportingShips(this Organization org)
