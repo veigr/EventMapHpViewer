@@ -10,7 +10,7 @@ namespace EventMapHpViewer.Models.Raw
     {
         public int mapid { get; set; }
         public int rank { get; set; }
-        public int? gauge { get; set; }
+        public int gauge { get; set; }
         public int maxhp { get; set; }
         public bool last { get; set; }
     }

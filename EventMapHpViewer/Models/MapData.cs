@@ -91,7 +91,7 @@ namespace EventMapHpViewer.Models
                         MapHpSettings.RemoteBossSettingsUrl,
                         this.Id,
                         (int)this.Eventmap.SelectedRank,
-                        this.Eventmap.GaugeNum ?? 1));  // GaugeNum がない場合どうしよう？とりあえず1
+                        this.Eventmap.GaugeNum ?? 0));  // GaugeNum がない場合 0 とみなす(リモート設定は空にしても 0 になるので)
                 client.CloseConnection();
 
                 if (remoteBossData == null)
