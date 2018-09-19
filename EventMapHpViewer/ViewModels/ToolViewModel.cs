@@ -58,7 +58,6 @@ namespace EventMapHpViewer.ViewModels
 
         public void Initialize()
         {
-            Debug.WriteLine("ToolViewModel: Initialize()");
             KanColleClient.Current.Homeport.Organization
                 .Subscribe(nameof(Organization.Fleets), this.UpdateFleets, false)
                 .Subscribe(nameof(Organization.Combined), this.UpdateTransportCapacity, false)

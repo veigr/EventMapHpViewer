@@ -90,8 +90,7 @@
                 </Grid>
                 <TextBlock Style="{DynamicResource DefaultTextStyleKey}"
                            Margin="8,0,0,8">
-                    <Run Text="{}{version}: プラグイン バージョン"/><LineBreak/>
-                    <Run Text="{}{id}: マップ ID"/><LineBreak/>
+                    <Run Text="{}{mapId}: マップ ID"/><LineBreak/>
                     <Run Text="{}{rank}: 難易度"/><LineBreak/>
                     <Run Text="{}{gaugeNum}: ゲージ番号"/>
                 </TextBlock>
@@ -130,8 +129,8 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="ID"
-                                        DisplayMemberBinding="{Binding Id}"/>
+                        <GridViewColumn Header="MapID"
+                                        DisplayMemberBinding="{Binding MapId}"/>
                         <GridViewColumn Header="難易度"
                                         DisplayMemberBinding="{Binding Rank}"/>
                         <GridViewColumn Header="ゲージ番号"
@@ -169,7 +168,8 @@
                                       ItemsSource="{Binding MapItemsSource}"
                                       DisplayMemberPath="Value"
                                       SelectedValuePath="Key"
-                                      SelectedValue="{Binding Id}"
+                                      SelectedValue="{Binding MapId}"
+                                      Prompt=""
                                       Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
@@ -181,6 +181,7 @@
                                       DisplayMemberPath="Value"
                                       SelectedValuePath="Key"
                                       SelectedValue="{Binding Rank}"
+                                      Prompt=""
                                       Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
@@ -188,13 +189,14 @@
                            Text="ゲージ番号: "/>
                 <metro:PromptTextBox Grid.Column="1"
                                      Grid.Row="2"
-                                     Margin="0,4">
+                                     Margin="0,4"
+                                     Prompt="">
                     <Binding Path="GaugeNum"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <metro:Int32Rule Min="1"
                                              Max="9"
-                                             AllowsEmpty="False"/>
+                                             AllowsEmpty="True"/>
                         </Binding.ValidationRules>
                     </Binding>
                 </metro:PromptTextBox>
@@ -204,7 +206,8 @@
                            Text="ボスHP: "/>
                 <metro:PromptTextBox Grid.Column="1"
                                      Grid.Row="3"
-                                     Margin="0,4">
+                                     Margin="0,4"
+                                     Prompt="">
                     <Binding Path="BossHP"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>

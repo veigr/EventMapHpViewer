@@ -76,9 +76,14 @@ namespace EventMapHpViewer.Models.Settings
 
         private AutoCalcTpSettings(string stypeTp, string slotitemTp, string shipTp)
         {
-            this.ShipTypeTp = !string.IsNullOrEmpty(stypeTp) ? DynamicJson.Parse(stypeTp) : Default.ShipTypeTp;
-            this.SlotItemTp = !string.IsNullOrEmpty(slotitemTp) ? DynamicJson.Parse(slotitemTp) : Default.SlotItemTp;
-            this.ShipTp = !string.IsNullOrEmpty(shipTp) ? DynamicJson.Parse(shipTp) : Default.ShipTp;
+            try { this.ShipTypeTp = DynamicJson.Parse(stypeTp); }
+            catch { this.ShipTypeTp = Default.ShipTypeTp; }
+
+            try { this.SlotItemTp = DynamicJson.Parse(slotitemTp); }
+            catch { this.SlotItemTp = Default.SlotItemTp; }
+
+            try { this.ShipTp = DynamicJson.Parse(shipTp); }
+            catch { this.ShipTp = Default.ShipTp; }
         }
 
         private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp, IEnumerable<TpSetting> shipTp)

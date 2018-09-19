@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,13 +20,17 @@ namespace EventMapHpViewer.Models.Settings
     {
         private HttpClient client;
 
-        private ConcurrentDictionary<string, DateTimeOffset> lastModified;
+        private readonly ConcurrentDictionary<string, DateTimeOffset> lastModified;
 
-        private ConcurrentDictionary<string, object> caches;
+        private readonly ConcurrentDictionary<string, object> caches;
 
         private TimeSpan cacheTtl;
 
         private bool updating;
+
+        private static readonly object errorObject = new object();
+
+        public bool IsCacheError { get; set; } = true;
 
 #if DEBUG
         public RemoteSettingsClient() : this(TimeSpan.FromSeconds(10)) { }
@@ -62,11 +67,12 @@ namespace EventMapHpViewer.Models.Settings
 
                 if (DateTimeOffset.Now - lm < this.cacheTtl)
                 {
-                    object value;
-                    if (this.caches.TryGetValue(url, out value)
-                    && value is T)
+                    if (this.caches.TryGetValue(url, out var value))
                     {
-                        return (T)value;
+                        if (value is T)
+                            return (T)value;
+                        else if (value == errorObject)
+                            return null;
                     }
                 }
                 this.updating = true;
@@ -85,6 +91,7 @@ namespace EventMapHpViewer.Models.Settings
                 if (!response.IsSuccessStatusCode)
                 {
                     // 200 じゃなかった
+                    this.CacheError(url, lm);
                     return null;
                 }
 
@@ -97,12 +104,27 @@ namespace EventMapHpViewer.Models.Settings
             catch (HttpRequestException)
             {
                 // HTTP リクエストに失敗した
+                this.CacheError(url, lm);
+                return null;
+            }
+            catch
+            {
+                // 不正な JSON 等
+                this.CacheError(url, lm);
                 return null;
             }
             finally
             {
                 this.updating = false;
             }
+        }
+
+        private void CacheError(string url, DateTimeOffset lastModified)
+        {
+            if (!this.IsCacheError)
+                return;
+            this.lastModified.TryUpdate(url, DateTimeOffset.Now, lastModified);
+            this.caches.AddOrUpdate(url, errorObject, (_, __) => errorObject);
         }
 
         public void CloseConnection()
@@ -152,7 +174,7 @@ namespace EventMapHpViewer.Models.Settings
             return BuildUrl(url, new Dictionary<string, string>
             {
                 { "version", $"{MapHpViewer.version}" },
-                { "id", id.ToString() },
+                { "mapId", id.ToString() },
                 { "rank", rank.ToString() },
                 { "gaugeNum", gaugeNum.ToString() },
             });
@@ -164,7 +186,8 @@ namespace EventMapHpViewer.Models.Settings
                 return url;
             foreach(var placeHolder in placeHolders)
             {
-                url = url.Replace($"{{{placeHolder.Key}}}", placeHolder.Value);
+                var regex = new Regex($"{{{placeHolder.Key}}}", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                url = regex.Replace(url, placeHolder.Value);
             }
             return url;
         }

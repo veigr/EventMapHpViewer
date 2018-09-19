@@ -13,6 +13,7 @@ namespace EventMapHpViewer.Models
 {
     public class MapData
     {
+        private readonly RemoteSettingsClient client = new RemoteSettingsClient();
         public int Id { get; set; }
         public int IsCleared { get; set; }
         public int IsExBoss { get; set; }
@@ -76,31 +77,30 @@ namespace EventMapHpViewer.Models
             if (MapHpSettings.UseLocalBossSettings)
             {
                 var settings = BossSettingsWrapper.FromSettings.List
-                    .Where(x => x.Id == this.Id)
+                    .Where(x => x.MapId == this.Id)
                     .Where(x => x.Rank == (int)this.Eventmap.SelectedRank)
-                    .Where(x => x.GaugeNum == (this.Eventmap.GaugeNum ?? 1))
+                    .Where(x => x.GaugeNum == this.Eventmap.GaugeNum)
                     .ToArray();
                 if (settings.Any())
                     return this.CalculateRemainingCount(settings);
             }
             else
             {
-                var client = new RemoteSettingsClient();
                 var remoteBossData = await client.GetSettings<Raw.map_exboss[]>(
                     RemoteSettingsClient.BuildBossSettingsUrl(
                         MapHpSettings.RemoteBossSettingsUrl,
                         this.Id,
                         (int)this.Eventmap.SelectedRank,
-                        this.Eventmap.GaugeNum ?? 1));
+                        this.Eventmap.GaugeNum ?? 1));  // GaugeNum がない場合どうしよう？とりあえず1
                 client.CloseConnection();
 
                 if (remoteBossData == null)
                     return null;
 
-                if (!remoteBossData.Any(x => x.isLast))
+                if (!remoteBossData.Any(x => x.last))
                     return null;
 
-                if(!remoteBossData.Any(x => !x.isLast))
+                if(!remoteBossData.Any(x => !x.last))
                     return null;
 
                 return this.CalculateRemainingCount(BossSettingsWrapper.Parse(remoteBossData));   //イベント海域(リモートデータ)

@@ -44,16 +44,16 @@ namespace EventMapHpViewer.ViewModels.Settings
         }
         #endregion
 
-        #region Id
-        private int _Id;
-        public int Id
+        #region MapId
+        private int _MapId;
+        public int MapId
         {
-            get => this._Id;
+            get => this._MapId;
             set
             {
-                if (value == this._Id)
+                if (value == this._MapId)
                     return;
-                this._Id = value;
+                this._MapId = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -100,8 +100,8 @@ namespace EventMapHpViewer.ViewModels.Settings
         #endregion
 
         #region GaugeNum
-        private int _GaugeNum;
-        public int GaugeNum
+        private string _GaugeNum;
+        public string GaugeNum
         {
             get => this._GaugeNum;
             set
@@ -148,15 +148,15 @@ namespace EventMapHpViewer.ViewModels.Settings
         public bool IsAddEnabled
         {
             get => !this.Settings.List.Any(
-                x => x.Id == this.Id
+                x => x.MapId == this.MapId
                     && x.Rank == this.Rank
-                    && x.GaugeNum == this.GaugeNum
+                    && x.GaugeNum.ToString() == this.GaugeNum
                     && x.BossHP == this.BossHP
                     && x.IsLast == this.IsLast
                 )
-                && this.Id != default
+                && this.MapId != default
                 && this.Rank != default
-                && this.GaugeNum != default
+                // && this.GaugeNum != default  // 空もありとする
                 && this.BossHP != default;
         }
         #endregion
@@ -178,15 +178,15 @@ namespace EventMapHpViewer.ViewModels.Settings
                 this._SelectedBossSetting = value;
                 if(value != null)
                 {
-                    this.Id = value.Id;
+                    this.MapId = value.MapId;
                     this.Rank = value.Rank;
-                    this.GaugeNum = value.GaugeNum;
+                    this.GaugeNum = value.GaugeNum.ToString();
                     this.BossHP = value.BossHP;
                     this.IsLast = value.IsLast;
                 }
                 else
                 {
-                    this.Id = default;
+                    this.MapId = default;
                     this.Rank = default;
                     this.GaugeNum = default;
                     this.BossHP = default;
@@ -234,7 +234,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             this.Settings = BossSettingsWrapper.FromSettings;
 
             this.BossSettings = this.Settings.List
-                .ToSyncedSortedObservableCollection(x => $"{x.Id:D4}{x.Rank:D2}{x.GaugeNum:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}")
+                .ToSyncedSortedObservableCollection(x => $"{x.MapId:D4}{x.Rank:D2}{x.GaugeNum ?? 0:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}")
                 .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
                 .ToSyncedReadOnlyNotifyChangedCollection();
         }
@@ -243,9 +243,9 @@ namespace EventMapHpViewer.ViewModels.Settings
         {
             var newValue = new BossSetting
             {
-                Id = this.Id,
+                MapId = this.MapId,
                 Rank = this.Rank,
-                GaugeNum = this.GaugeNum,
+                GaugeNum = int.TryParse(this.GaugeNum, out var num) ? num : (int?)null,
                 BossHP = this.BossHP,
                 IsLast = this.IsLast
             };
