@@ -99,7 +99,7 @@ namespace EventMapHpViewer.Models
                 {
                     IsCleared = x.api_cleared,
                     DefeatCount = x.api_defeat_count,
-                    IsExBoss = x.api_exboss_flag,
+                    RequiredDefeatCount = x.api_required_defeat_count,
                     Id = x.api_id,
                     Eventmap = x.api_eventmap != null
                         ? new Eventmap
