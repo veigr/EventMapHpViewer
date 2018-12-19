@@ -16,7 +16,6 @@ namespace EventMapHpViewer.Models
         private readonly RemoteSettingsClient client = new RemoteSettingsClient();
         public int Id { get; set; }
         public int IsCleared { get; set; }
-        //public int IsExBoss { get; set; }
         public int DefeatCount { get; set; }
         public int RequiredDefeatCount { get; set; }
         public Eventmap Eventmap { get; set; }

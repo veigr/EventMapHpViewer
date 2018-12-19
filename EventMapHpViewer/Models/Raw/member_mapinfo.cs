@@ -14,8 +14,5 @@
         //public int api_gauge_type { get; set; }
         //public int api_gauge_num { get; set; }
         public Api_Eventmap api_eventmap { get; set; }
-
-        //Removed from the API
-        //public int api_exboss_flag { get; set; }
     }
 }
