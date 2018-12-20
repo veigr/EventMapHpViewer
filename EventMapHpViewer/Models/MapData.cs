@@ -61,7 +61,7 @@ namespace EventMapHpViewer.Models
 
             if (!this.Current.HasValue) return null;    //難易度切り替え直後
 
-            if (this.RequiredDefeatCount > 1) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
+            if (this.RequiredDefeatCount > 0) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
 
             if (this.Eventmap == null) return new RemainingCount(1);    //ゲージ無し通常海域
 
