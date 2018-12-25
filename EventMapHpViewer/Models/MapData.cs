@@ -34,7 +34,7 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.RequiredDefeatCount > 0) return this.Master.RequiredDefeatCount;
+                if (this.RequiredDefeatCount > 0) return this.RequiredDefeatCount;
                 return this.Eventmap != null
                     ? this.Eventmap.MaxMapHp
                     : 1;
@@ -45,7 +45,7 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.RequiredDefeatCount > 0) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
+                if (this.RequiredDefeatCount > 0) return this.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
                 return this.Eventmap != null
                     ? this.Eventmap.NowMapHp   // イベント海域
                     : 1;    // ゲージ無し通常海域
