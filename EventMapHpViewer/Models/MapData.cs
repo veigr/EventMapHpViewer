@@ -16,8 +16,8 @@ namespace EventMapHpViewer.Models
         private readonly RemoteSettingsClient client = new RemoteSettingsClient();
         public int Id { get; set; }
         public int IsCleared { get; set; }
-        public int IsExBoss { get; set; }
         public int DefeatCount { get; set; }
+        public int RequiredDefeatCount { get; set; }
         public Eventmap Eventmap { get; set; }
 
         public MapInfo Master => Maps.MapInfos[this.Id];
@@ -34,7 +34,7 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount;
+                if (this.RequiredDefeatCount > 0) return this.Master.RequiredDefeatCount;
                 return this.Eventmap != null
                     ? this.Eventmap.MaxMapHp
                     : 1;
@@ -45,7 +45,7 @@ namespace EventMapHpViewer.Models
         {
             get
             {
-                if (this.IsExBoss == 1) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
+                if (this.RequiredDefeatCount > 0) return this.Master.RequiredDefeatCount - this.DefeatCount;  //ゲージ有り通常海域
                 return this.Eventmap != null
                     ? this.Eventmap.NowMapHp   // イベント海域
                     : 1;    // ゲージ無し通常海域
@@ -61,7 +61,7 @@ namespace EventMapHpViewer.Models
 
             if (!this.Current.HasValue) return null;    //難易度切り替え直後
 
-            if (this.IsExBoss == 1) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
+            if (this.RequiredDefeatCount > 0) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
 
             if (this.Eventmap == null) return new RemainingCount(1);    //ゲージ無し通常海域
 
