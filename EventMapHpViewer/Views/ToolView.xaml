@@ -206,18 +206,18 @@
                                                             <Setter.Value>
                                                                 <ControlTemplate>
                                                                     <StackPanel>
-                                                                        <TextBlock>
-                                                                            <Run Text="後 A:"
+                                                                        <TextBlock TextAlignment="Right">
+                                                                            <Run Text="S: 後"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                            <Run Text="{Binding RemainingCountMin}"
+                                                                            <Run Text="{Binding RemainingCountTransportS}"
                                                                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                                                             <Run Text="回"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
                                                                         </TextBlock>
-                                                                        <TextBlock>
-                                                                            <Run Text="後 S:"
+                                                                        <TextBlock TextAlignment="Right">
+                                                                            <Run Text="A: 後"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                                                                            <Run Text="{Binding RemainingCountTransportS}"
+                                                                            <Run Text="{Binding RemainingCountMin}"
                                                                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                                                                             <Run Text="回"
                                                                                  Style="{DynamicResource DefaultTextElementStyleKey}"/>
