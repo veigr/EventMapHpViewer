@@ -98,8 +98,8 @@ namespace EventMapHpViewer.Models
                 .Select(x => new MapData
                 {
                     IsCleared = x.api_cleared,
-                    DefeatCount = x.api_defeat_count,
-                    RequiredDefeatCount = x.api_required_defeat_count,
+                    DefeatCount = x.api_defeat_count ?? 0,
+                    RequiredDefeatCount = x.api_required_defeat_count ?? 0,
                     Id = x.api_id,
                     Eventmap = x.api_eventmap != null
                         ? new Eventmap
@@ -108,10 +108,10 @@ namespace EventMapHpViewer.Models
                             NowMapHp = x.api_eventmap.api_now_maphp,
                             SelectedRank = (Rank) x.api_eventmap.api_selected_rank,
                             State = x.api_eventmap.api_state,
-                            GaugeType = (GaugeType) x.api_eventmap.api_gauge_type,
-                            GaugeNum = x.api_eventmap.api_gauge_num,
                         }
                         : null,
+                    GaugeType = (GaugeType)(x.api_gauge_type ?? 0),
+                    GaugeNum = x.api_gauge_num,
                 }).ToArray();
         }
 
@@ -129,7 +129,7 @@ namespace EventMapHpViewer.Models
 
             targetMap.Eventmap.SelectedRank = (Rank) rank;
             if(int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))
-                targetMap.Eventmap.GaugeType = (GaugeType) gaugeType;
+                targetMap.GaugeType = (GaugeType) gaugeType;
             targetMap.Eventmap.MaxMapHp = data.Data.api_maphp.api_max_maphp;
             targetMap.Eventmap.NowMapHp = data.Data.api_maphp.api_now_maphp;
             return list;
