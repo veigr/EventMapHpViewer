@@ -97,7 +97,7 @@ namespace EventMapHpViewer.Models
             return maps
                 .Select(x => new MapData
                 {
-                    IsCleared = x.api_cleared,
+                    IsCleared = x.api_defeat_count.HasValue ? 0 : x.api_cleared,
                     DefeatCount = x.api_defeat_count ?? 0,
                     RequiredDefeatCount = x.api_required_defeat_count ?? 0,
                     Id = x.api_id,
