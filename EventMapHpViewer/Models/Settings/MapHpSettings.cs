@@ -57,7 +57,7 @@ namespace EventMapHpViewer.Models.Settings
 
         public static SerializableProperty<string> RemoteBossSettingsUrl { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider,
-                "https://kctadilstorage.blob.core.windows.net/viewer/maphp/{mapId}/{rank}/{gaugeNum}.json"
+                Properties.Settings.Default.RemoteBossSettings
                 ) { AutoSave = true };
 
         #endregion
