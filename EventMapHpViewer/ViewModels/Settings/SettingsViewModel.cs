@@ -34,7 +34,7 @@ namespace EventMapHpViewer.ViewModels.Settings
         private void Initialize()
         {
             this.BossSettings.MapItemsSource
-                = Models.Maps.MapInfos
+                = KanColleClient.Current.Master.MapInfos
                 .Where(x => 20 < x.Value.MapAreaId)
                 .Select(x => x.Value)
                 .Select(x => new KeyValuePair<int, string>(x.Id, $"{x.MapAreaId}-{x.IdInEachMapArea} : {x.Name} - {x.OperationName}"))
