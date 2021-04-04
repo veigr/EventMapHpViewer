@@ -38,7 +38,7 @@ namespace EventMapHpViewer.ViewModels.Settings
                 .Where(x => 20 < x.Value.MapAreaId)
                 .Select(x => x.Value)
                 .Select(x => new KeyValuePair<int, string>(x.Id, $"{x.MapAreaId}-{x.IdInEachMapArea} : {x.Name} - {x.OperationName}"))
-                .ToArray();     
+                .ToArray();
             this.BossSettings.IsEnabled = true;
 
             this.TpSettings.Settings.UpdateFromMaster();
