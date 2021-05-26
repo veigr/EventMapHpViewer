@@ -148,6 +148,8 @@ namespace EventMapHpViewer.Models.Settings
                 new TpSetting(166, 166, "大発動艇(八九式中戦車＆陸戦隊)", 8),
                 new TpSetting(230, 230, "特大発動艇＋戦車第11連隊", 8),
                 new TpSetting(355, 355, "M4A1 DD", 8),
+                new TpSetting(409, 409, "武装大発", 8),
+                new TpSetting(408, 408, "装甲艇(AB艇)", 8),
                 new TpSetting(167, 167, "特二式内火艇", 2),
                 new TpSetting(145, 145, "戦闘糧食", 1),
                 new TpSetting(150, 150, "秋刀魚の缶詰", 1),
