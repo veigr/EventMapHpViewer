@@ -153,7 +153,7 @@ namespace EventMapHpViewer.Models.Settings
                 new TpSetting(167, 167, "特二式内火艇", 2),
                 new TpSetting(145, 145, "戦闘糧食", 1),
                 new TpSetting(150, 150, "秋刀魚の缶詰", 1),
-                new TpSetting(241, 241, "戦闘糧食(特別なおにぎり)", 1), 
+                new TpSetting(241, 241, "戦闘糧食(特別なおにぎり)", 1),
             };
 
             var shipTp = new[]
